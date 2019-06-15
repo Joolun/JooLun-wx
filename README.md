@@ -15,6 +15,7 @@
 1. 持久层框架：MyBatis-plus。
 1. 微信开发 Java SDK：WxJava 。
 1. 文件管理：阿里OSS、minio。
+1. JDK：java8+
 
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/0615/235522_4a27ee4a_5079715.gif "wx-menu.gif")
