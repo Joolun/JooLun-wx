@@ -6,9 +6,7 @@
 1. 采用最新前后端完全分离框架
 1. 支持多公众号，redis全局缓存access_token
 
-1. [演示环境
-1. ](http://demo.joolun.com)
-
+[演示环境](http://demo.joolun.com)
 #### 软件架构
 
 1. 核心框架：Spring Boot2 + Spring Cloud Alibaba + Spring Cloud Gateway 。
