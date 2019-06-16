@@ -5,8 +5,10 @@
 1. Spring Cloud微服务化开发，采用Nacos注册和配置中心，具有统一授权、认证后台管理系统，其中包含具备用户管理、资源权限管理、数据导出、打印、Swagger API 管理等多个模块，支持多业务系统并行开发，可以作为后端服务的开发脚手架。代码简洁，架构清晰，restful接口规范，适合学习、毕设、实际项目等使用
 1. 采用最新前后端完全分离框架
 1. 支持多公众号，redis全局缓存access_token
-[演示环境
-](http://demo.joolun.com)
+
+1. [演示环境
+1. ](http://demo.joolun.com)
+
 #### 软件架构
 
 1. 核心框架：Spring Boot2 + Spring Cloud Alibaba + Spring Cloud Gateway 。
