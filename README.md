@@ -23,7 +23,8 @@
 1. JDK：java8+
 
 
-![输入图片说明](https://images.gitee.com/uploads/images/2019/0615/235522_4a27ee4a_5079715.gif "wx-menu.gif")
-![输入图片说明](https://images.gitee.com/uploads/images/2019/0615/235540_d512fa59_5079715.gif "liaotian.gif")
+![自定义菜单](https://images.gitee.com/uploads/images/2019/0615/235522_4a27ee4a_5079715.gif "wx-menu.gif")
+![微信粉丝实时聊天](https://images.gitee.com/uploads/images/2019/0615/235540_d512fa59_5079715.gif "liaotian.gif")
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/0615/235616_dc33cdea_5079715.png "QQ截图20190612232849.png")
+![多账号管理](https://images.gitee.com/uploads/images/2019/0626/094510_96c2c21a_5079715.png "屏幕截图.png")
 [演示地址](http://demo.joolun.com)
