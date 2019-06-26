@@ -10,7 +10,7 @@
 1. 第三方平台全网发布、支持多公众号，redis全局缓存access_token
 1. 后续会提供小程序、h5商城版本
 
-
+[了解更多](http://joolun.com/post/7)
 [演示环境](http://demo.joolun.com)
 #### 软件架构
 
