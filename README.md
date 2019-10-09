@@ -8,7 +8,9 @@
 1. 前端封装微信专用vue组件，开发中实现灵活调用，杜绝重复造轮子，让前端开发更容易
 1. 微信接口采用WxJava（微信开发 Java SDK），开发中无需一个个对接微信接口，直接方法调用。极大的提高了微信开发效率
 1. 第三方平台全网发布、支持多公众号，redis全局缓存access_token
-1. 后续会提供小程序、h5商城版本
+1. 小程序官方原生框架开发，采用纯css框架ColorUI，不冗余，一套代码多端覆盖；商城数据库严格按照通用商城业务设计，绝不含糊，方便二次开发拓展
+
+![小程序商城扫码演示](https://images.gitee.com/uploads/images/2019/1009/094158_b423357c_5079715.jpeg "c119f0d1694aeabc99344814d9b3fe4a.jpg")
 
 [了解更多](http://joolun.com)
 [演示环境](http://demo.joolun.com)
@@ -22,6 +24,7 @@
 1. 文件管理：阿里OSS、minio。
 1. JDK：java8+mysql5.7+
 1. 图表插件：Echarts
+1. 小程序框架：原生框架+ColorUI
 
 
 
