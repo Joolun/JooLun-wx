@@ -10,13 +10,13 @@
 1. 第三方平台全网发布、支持多公众号，redis全局缓存access_token
 1. 后续会提供小程序、h5商城版本
 
-[了解更多](http://joolun.com/post/7)
+[了解更多](http://joolun.com)
 [演示环境](http://demo.joolun.com)
 #### 软件架构
 
 1. 核心框架：Spring Boot2 + Spring Cloud Alibaba + Spring Cloud Gateway 。
 1. 安全框架：Spring Security OAuth2。
-1. 前端框架：Vue2 + element-ui2 + avue2 。
+1. 前端框架：Vue + element-ui + avue。
 1. 持久层框架：MyBatis-plus。
 1. 微信开发 Java SDK：WxJava 。
 1. 文件管理：阿里OSS、minio。
