@@ -1,8 +1,6 @@
 # JooLun微信商城
 
 #### 介绍
-
-
 1. Spring Cloud微服务化开发，采用Nacos注册和配置中心，具有统一授权、认证后台管理系统， 其中包含具备用户管理、资源权限管理、数据导出、打印、Swagger API 管理等多个模块，支持多业务系统并行开发，可以作为后端服务的开发脚手架。 代码简洁，架构清晰，restful接口规范，是学习、毕设、接私活、实际项目的不二选择
 1. 采用最新前后端完全分离框架（Spring Cloud+Spring Boot+Vue2+Element ui）
 1. 前端封装微信专用vue组件，开发中实现灵活调用，杜绝重复造轮子，让前端开发更容易
@@ -10,12 +8,12 @@
 1. 第三方平台全网发布、支持多公众号，redis全局缓存access_token
 1. 小程序官方原生框架开发，采用纯css框架ColorUI，不冗余，一套代码多端覆盖；商城数据库严格按照通用商城业务设计，绝不含糊，方便二次开发拓展
 
+#### 商城演示
 ![小程序商城扫码演示](https://images.gitee.com/uploads/images/2019/1009/094717_f5a9a16d_5079715.jpeg "c119f0d1694aeabc99344814d9b3fe4a.jpg")
-
 [了解更多](http://www.joolun.com)
 [后台演示](http://demo.joolun.com)
-#### 软件架构
 
+#### 软件架构
 1. 核心框架：Spring Boot2 + Spring Cloud Alibaba + Spring Cloud Gateway 。
 1. 安全框架：Spring Security OAuth2。
 1. 前端框架：Vue + element-ui + avue。
