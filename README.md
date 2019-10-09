@@ -10,9 +10,9 @@
 1. 第三方平台全网发布、支持多公众号，redis全局缓存access_token
 1. 小程序官方原生框架开发，采用纯css框架ColorUI，不冗余，一套代码多端覆盖；商城数据库严格按照通用商城业务设计，绝不含糊，方便二次开发拓展
 
-![小程序商城扫码演示](https://images.gitee.com/uploads/images/2019/1009/094158_b423357c_5079715.jpeg "c119f0d1694aeabc99344814d9b3fe4a.jpg")
+![小程序商城扫码演示](https://images.gitee.com/uploads/images/2019/1009/094717_f5a9a16d_5079715.jpeg "c119f0d1694aeabc99344814d9b3fe4a.jpg")
 
-[了解更多](http://joolun.com)
+[了解更多](http://www.joolun.com)
 [演示环境](http://demo.joolun.com)
 #### 软件架构
 
@@ -26,8 +26,13 @@
 1. 图表插件：Echarts
 1. 小程序框架：原生框架+ColorUI
 
-
-
+![输入图片说明](https://images.gitee.com/uploads/images/2019/1009/094925_c1a30b27_5079715.jpeg "d3.jpg")
+![输入图片说明](https://images.gitee.com/uploads/images/2019/1009/094911_f6c62715_5079715.jpeg "d2.jpg")
+![输入图片说明](https://images.gitee.com/uploads/images/2019/1009/094902_e9474d39_5079715.jpeg "d4.jpg")
+![输入图片说明](https://images.gitee.com/uploads/images/2019/1009/094852_4fd2d160_5079715.jpeg "d5.jpg")
+![输入图片说明](https://images.gitee.com/uploads/images/2019/1009/094842_a9fdc49c_5079715.jpeg "d6.jpg")
+![输入图片说明](https://images.gitee.com/uploads/images/2019/1009/094824_642cd2d3_5079715.jpeg "d8.jpg")
+![输入图片说明](https://images.gitee.com/uploads/images/2019/1009/094812_fddf1bc7_5079715.jpeg "d1.jpg")
 ![自定义菜单](https://images.gitee.com/uploads/images/2019/0615/235522_4a27ee4a_5079715.gif "wx-menu.gif")
 ![微信粉丝实时聊天](https://images.gitee.com/uploads/images/2019/0615/235540_d512fa59_5079715.gif "liaotian.gif")
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/0615/235616_dc33cdea_5079715.png "QQ截图20190612232849.png")
