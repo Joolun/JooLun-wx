@@ -70,11 +70,11 @@
 
 
 #### 截图
+![输入图片说明](https://images.gitee.com/uploads/images/2019/1022/121138_ca5d5c2a_5079715.png "QQ截图20191022120919.png")
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/1022/121210_96fa0dfd_5079715.png "QQ截图20191022121047.png")
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/1022/121203_28589eb6_5079715.png "QQ截图20191022121027.png")
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/1022/121156_43ad478c_5079715.png "QQ截图20191022121001.png")
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/1022/121146_88925079_5079715.png "QQ截图20191022120931.png")
-![输入图片说明](https://images.gitee.com/uploads/images/2019/1022/121138_ca5d5c2a_5079715.png "QQ截图20191022120919.png")
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/1022/121127_167c19ec_5079715.png "QQ截图20191022120908.png")
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/1022/121120_4ceec856_5079715.png "QQ截图20191022120858.png")
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/1022/121112_7cd3c378_5079715.png "QQ截图20191022120822.png")
