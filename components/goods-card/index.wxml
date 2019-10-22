@@ -1,0 +1,20 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制
+-->
+<view class="goods-container">
+  <view class="goods-box" wx:for="{{goodsList}}" wx:key="{{index}}">
+    <navigator hover-class='none' url='/pages/goods/goods-detail/index?id={{item.id}}'>
+      <view class="img-box">
+        <image src="{{item.picUrls[0] ? item.picUrls[0] : '/public/img/no_pic.png'}}" class="margin-top-xs"/>
+      </view>
+      <view class="text-black margin-top-xs padding-lr-sm overflow_2">{{item.name}}</view>
+      <view class="flex justify-between">
+        <view class="text-price text-bold text-red margin-top-sm padding-lr-sm">{{item.priceDown}}</view>
+        <view class="text-gray text-sm margin-top-sm padding-lr-sm">已售{{item.saleNum}}</view>
+      </view>
+    </navigator>
+  </view>
+</view>

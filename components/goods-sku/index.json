@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "base-stepper": "/components/base-stepper/index"
+  }
+}

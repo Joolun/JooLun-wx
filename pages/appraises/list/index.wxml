@@ -1,0 +1,32 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制
+-->
+<scroll-view scroll-y scroll-with-animation bindscrolltolower="scrollToLower">
+  <view class="cu-list menu-avatar comment">
+    <view class="cu-item" wx:for="{{goodsAppraises}}" wx:key>
+      <view class="cu-avatar round" style="background-image:url({{item.headimgUrl}})">{{!item.headimgUrl ? '头' : ''}}</view>
+      <view class="content">
+        <view class="text-black flex">
+          {{item.nickName ? item.nickName : '匿名'}}<view class="text-gray margin-left-sm text-sm">{{item.createTime}}</view>
+        </view>
+        <view class="text-gray text-sm" wx:if="{{item.specInfo}}">
+          规格：{{item.specInfo}}
+        </view>
+        <base-rade
+          value='{{item.goodsScore}}'
+          size='lg'/>
+        <view class="text-black text-content text-df">
+          {{item.content ? item.content : '此人很懒没写评语'}}
+        </view>
+        <view class="bg-grey padding-sm radius margin-top-sm text-sm" wx:if="{{item.sellerReply}}">
+          <view class="flex text-sm cuIcon-mark"><view class="text-bold margin-left-xs">卖家回复：</view>{{item.replyTime}}</view>
+          <view class="text-content">{{item.sellerReply}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="cu-load bg-gray {{loadmore?'loading':'over'}}"></view>
+</scroll-view>

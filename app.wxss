@@ -1,0 +1,28 @@
+@import "public/colorui/main.wxss";
+@import "public/colorui/icon.wxss";
+@import "public/colorui/animation.wxss";
+.overflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.overflow_1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.overflow_2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.display-ib{
+  display: inline-block
+}
+.display-i{
+  display: inline
+}

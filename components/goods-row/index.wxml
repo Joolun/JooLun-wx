@@ -1,0 +1,23 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制
+-->
+<view class="cu-card article no-card">
+  <view class="cu-item" wx:for="{{ goodsList }}" wx:key="">
+    <navigator hover-class='none' url='/pages/goods/goods-detail/index?id={{item.id}}'>
+      <view class="content">
+        <image src="{{item.picUrls[0] ? item.picUrls[0] : '/public/img/no_pic.png'}}" mode="aspectFill" class="row-img margin-top-xs"></image>
+        <view class="desc solid-bottom row-info">
+          <view class="text-black margin-top-sm overflow_2">{{item.name}}</view>
+          <view class="text-gray text-sm margin-top-sm overflow_2">{{item.sellPoint}}</view>
+          <view class="flex justify-between">
+            <view class="text-price text-bold text-red margin-top-sm padding-lr-sm">{{item.priceDown}}</view>
+            <view class="text-gray text-sm margin-top-sm padding-lr-sm">已售{{item.saleNum}}</view>
+          </view>
+        </view>
+      </view>
+    </navigator>
+  </view>
+</view>

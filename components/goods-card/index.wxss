@@ -1,0 +1,25 @@
+@import "/app.wxss";
+.goods-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  box-sizing: content-box;
+  padding: 20rpx;
+}
+.goods-box {
+  width: 349rpx;
+  height: 490rpx;
+  background-color: #fff;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+  border-radius: 10rpx;
+}
+.goods-box .img-box {
+  width: 100%;
+  height: 349rpx;
+  overflow: hidden;
+}
+.goods-box .img-box image {
+  width: 100%;
+  height: 349rpx;
+}

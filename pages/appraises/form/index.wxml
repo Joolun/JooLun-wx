@@ -1,0 +1,57 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制
+-->
+<view style="margin-bottom: 100rpx;"> 
+  <view class="cu-list menu-avatar" wx:for="{{orderInfo.listOrderItem}}" wx:key>
+    <view class="cu-item">
+      <view class="cu-avatar lg" style="background-image:url({{item.picUrl ? item.picUrl : '/public/img/no_pic.png'}});"></view>
+      <view class="content">
+        <view class="text-black text-cut">{{item.spuName}}</view>
+        <view class="text-gray text-sm text-cut" wx:if="{{item.specInfo}}">{{item.specInfo}}</view>
+      </view>
+    </view>
+    <view class="cu-form-group">
+      <textarea maxlength="200" bindinput="textareaInput" data-index="{{index}}" placeholder="说说你的使用心得吧"></textarea>
+    </view>
+    <view class="cu-bar bg-white">
+      <view class='action'>
+        <text class='cuIcon-evaluate text-red'></text> 订单打分
+      </view>
+    </view>
+    <view class="cu-list menu">
+      <view class="cu-item">
+        <view class="content flex">
+          <text class="text-black">商品评分：</text>
+          <base-rade
+            bind:onChange="radeOnChange"
+            data-index="{{index}}"
+            data-type="goods"/>
+        </view>
+      </view>
+      <view class="cu-item">
+        <view class="content flex">
+          <text class="text-black">服务评分：</text>
+          <base-rade
+            bind:onChange="radeOnChange"
+            data-index="{{index}}"
+            data-type="service"/>
+        </view>
+      </view>
+      <view class="cu-item">
+        <view class="content flex">
+          <text class="text-black">物流评分：</text>
+          <base-rade
+            bind:onChange="radeOnChange"
+            data-index="{{index}}"
+            data-type="logistics"/>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+<view class="cu-bar bg-white justify-center foot">
+  <button class="cu-btn bg-red" bindtap="subAppraises">确认并提交</button>
+</view>

@@ -1,0 +1,21 @@
+@import "/app.wxss";
+.m-sku-bn{
+  width: 45%
+}
+.row-img{
+  width: 240rpx!important;
+  height: 240rpx!important;
+  border-radius: 10rpx
+}
+.dialo-sku{
+  height: 80%
+}
+.cu-modal{
+  text-align: unset
+}
+.close-icon{
+  position:absolute;
+  right:20rpx;
+  top:20rpx;
+  font-size: 40rpx
+}

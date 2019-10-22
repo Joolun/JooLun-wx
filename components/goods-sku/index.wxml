@@ -1,0 +1,70 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制
+-->
+<view class="cu-modal bottom-modal {{modalSku ? 'show' : ''}}" bindtap="hideModalSku" catchtouchmove="touchMove">
+  <view class="cu-dialog dialo-sku bg-white {{modalSku ? 'animation-slide-bottom' : ''}}" catchtap>
+    <view class="cu-card article no-card">
+      <view class="cu-item">
+        <view class="content">
+          <image src="{{goodsDetail.picUrls[0] ? goodsDetail.picUrls[0] : '/public/img/no_pic.png'}}" mode="aspectFill" class="row-img margin-top-xs" wx:if="{{skuData == ''}}"></image>
+          <image src="{{skuData.picUrl ? skuData.picUrl : goodsDetail.picUrls[0] ? goodsDetail.picUrls[0] : '/public/img/no_pic.png'}}" mode="aspectFill" class="row-img margin-top-xs" wx:if="{{skuData != ''}}"></image>
+          <view class="desc">
+            <view class="text-price margin-top-xl text-bold text-red text-xl" wx:if="{{skuData == ''}}">{{goodsDetail.priceDown}}<text wx:if="{{goodsDetail.priceDown != goodsDetail.priceUp}}" class="text-red margin-lr-xs">-</text><text wx:if="{{goodsDetail.priceDown != goodsDetail.priceUp}}" class="text-red text-bold">{{goodsDetail.priceUp}}</text>
+            </view>
+            <view class="text-price margin-top-xl text-bold text-red text-xl" wx:if="{{skuData != ''}}">{{skuData.salesPrice}}</view>
+            <view class="text-gray text-sm" wx:if="{{skuData.stock != null}}">库存{{skuData.stock}}件</view>
+            <view class="text-black text-sm">选择
+              <view class="display-ib" wx:for="{{goodsSpecData}}" wx:key>
+                <view class="display-ib" wx:if="{{!item.checked}}">{{item.value}}</view>
+                <view class="display-ib" wx:if="{{item.checked}}" wx:for="{{item.leaf}}" wx:for-item="item2" wx:key>
+                  <view class="display-ib" wx:if="{{item.checked == item2.id}}">{{item2.value}}</view>
+                </view>
+                <view class="display-ib" wx:if="{{goodsSpecData.length != (index+1)}}">,</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <text class="cuIcon-close close-icon" bindtap="hideModalSku"></text>
+    </view>
+    <scroll-view scroll-y scroll-with-animation style="height:calc(100vh - 20vh - 380rpx)">
+      <view class="padding-bottom-xs solid-top" wx:for="{{goodsSpecData}}" wx:key>
+        <view class="cu-bar bg-white" style="min-height: 80rpx">
+          <view class="action">
+            <text class="text-black">{{item.value}}</text>
+          </view>
+        </view>
+        <view class="grid bg-white margin-lr-sm">
+          <button class="cu-btn margin-xs {{item.checked == item2.id ? 'line-red' : ''}}" wx:for="{{item.leaf}}" wx:for-item="item2" wx:for-index='index2' wx:key
+          bindtap='tapSpec' data-index='{{index}}' data-index2='{{index2}}' disabled="{{item2.disabled}}">{{item2.value}}</button>
+        </view>
+      </view>
+      <view class="cu-bar bg-white solid-top">
+          <view class="action">
+            <text class="text-black">数量</text>
+          </view>
+          <base-stepper
+            customClass="margin-right"
+            stNum="{{cartNum}}"
+            min="1"
+            max="{{skuData.stock}}"
+            bind:numChange="cartNumChang"
+          />
+        </view>
+    </scroll-view>
+    <view class="cu-bar bg-white tabbar border shop foot">
+      <view class="btn-group" wx:if="{{modalSkuType == ''}}">
+        <button class="cu-btn bg-orange round shadow-blur m-sku-bn lg" bindtap="toDo" data-type="1" disabled="{{!skuData.enable}}" type="">加入购物车</button>
+        <button class="cu-btn bg-red round shadow-blur m-sku-bn lg" bindtap="toDo" data-type="2"
+        disabled="{{skuData.stock <= 0 || !skuData.enable}}" type="">立即购买</button>
+      </view>
+      <view class="btn-group" wx:if="{{modalSkuType != ''}}">
+        <button class="cu-btn bg-red round shadow-blur lg" style="width: 90%" bindtap="toDo" 
+        disabled="{{(modalSkuType == '2' && skuData.stock <= 0) || !skuData.enable}}" type="" data-type="{{modalSkuType}}">确定</button>
+      </view>
+    </view>
+  </view>
+</view>

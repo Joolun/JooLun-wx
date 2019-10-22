@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "商城首页",
+  "usingComponents": {
+    "goods-card": "/components/goods-card/index",
+    "goods-row": "/components/goods-row/index"
+  }
+}

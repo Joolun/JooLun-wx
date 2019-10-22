@@ -1,0 +1,35 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制
+-->
+<view class="cu-bar search bg-white">
+  <view class="search-form round">
+    <text class="cuIcon-search"></text>
+    <input type="text" placeholder="请输入商品名" confirm-type="search" bindconfirm="searchHandle" focus></input>
+  </view>
+</view>
+<view wx:if="{{searchHistory.length > 0}}">
+  <view class="cu-bar bg-white">
+    <view class="action"><text class="cuIcon-time"></text>历史搜索</view>
+    <view class="action">
+      <text class="cuIcon-delete lg text-gray" bindtap="clearSearchHistory"></text>
+    </view>
+  </view>
+  <view class="padding-sm flex flex-wrap bg-white">
+    <view class="padding-xs" wx:for="{{searchHistory}}" wx:key>
+      <view class="cu-tag round" bindtap="searchHandle" data-name="{{item.name}}">{{item.name}}</view>
+    </view>
+  </view>
+</view>
+<view>
+  <view class="cu-bar bg-white">
+    <view class="action"><text class="cuIcon-hot text-orange"></text>热门搜索</view>
+  </view>
+  <view class="padding-sm flex flex-wrap bg-white">
+    <view class="padding-xs" wx:for="{{hotHistory}}" wx:key>
+      <view class="cu-tag round" bindtap="searchHandle" data-name="{{item.name}}">{{item.name}}</view>
+    </view>
+  </view>
+</view>

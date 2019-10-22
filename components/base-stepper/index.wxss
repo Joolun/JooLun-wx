@@ -1,0 +1,11 @@
+@import "/app.wxss";
+.st-num{
+  width: 80rpx;
+  height: 50rpx;
+}
+.st-num-bt{
+  line-height: 50rpx;
+  overflow: hidden;
+  font-size: 30rpx!important;
+  height: 50rpx!important
+}

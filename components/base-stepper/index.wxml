@@ -1,0 +1,17 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制
+-->
+<view class="flex text-center {{customClass}}" style="width:230rpx">
+  <view class="flex-sub">
+    <button class="cu-btn cuIcon-move sm st-num-bt" disabled="{{stNum <= min}}" bindtap="stNumMinus"></button>
+  </view>
+  <view class="flex-sub">
+    <input type="number" class="st-num text-center bg-gray radius" value="{{stNum}}" disabled="true" bindinput="numChange"></input>
+  </view>
+  <view class="flex-sub">
+    <button class="cu-btn cuIcon-add sm st-num-bt" disabled="{{max >= 0 ? stNum >= max : false}}" bindtap="stNumAdd"></button>
+  </view>
+</view>

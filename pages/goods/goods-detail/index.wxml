@@ -1,0 +1,130 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制
+-->
+<view class='product-bg'>
+  <swiper class="screen-swiper {{DotStyle?'square-dot':'round-dot'}}" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500" bindchange="change">
+    <swiper-item wx:for="{{goodsDetail.picUrls}}" wx:key>
+      <image src="{{item}}" mode="aspectFill"></image>
+    </swiper-item>
+  </swiper>
+  <view class='page-index cu-tag round'>{{currents}}/{{goodsDetail.picUrls.length || 1}}</view>
+</view>
+<view class="cu-bar bg-white">
+  <view class="text-xxl padding-tb-xs padding-lr-sm">
+    <text class="text-price text-red text-bold">{{goodsDetail.priceDown}}</text>
+    <text wx:if="{{goodsDetail.priceDown != goodsDetail.priceUp}}"
+      class="text-red margin-lr-xs">-</text>
+    <text wx:if="{{goodsDetail.priceDown != goodsDetail.priceUp}}"
+     class="text-red text-bold">{{goodsDetail.priceUp}}</text>
+  </view>
+</view>
+<view class="cu-bar bg-white">
+  <view class="text-lg padding-tb-xs padding-lr-sm">
+    <text class="text-black">{{goodsDetail.name}}</text>
+  </view>
+</view>
+<view class="cu-bar bg-white">
+  <view class="text-sm padding-tb-xs padding-lr-sm">
+    <text class="text-gray">{{goodsDetail.sellPoint}}</text>
+  </view>
+</view>
+
+<view class="cu-bar bg-white margin-top-sm">
+  <view class="flex response">
+      <view class="flex-sub text-df">
+        <view class="text-gray margin-left-sm">发货</view>
+      </view>
+      <view class="flex-treble text-df">
+        <text class="cuIcon-location text-black">江苏南京</text> |
+        <text class="text-black">快递：免运费</text>
+      </view>
+      <view class="flex-sub text-df text-gray text-right margin-right-sm">销量{{goodsDetail.saleNum}}</view>
+    </view>
+</view>
+
+<view class="cu-bar bg-white margin-top-sm">
+  <view class="flex response">
+      <view class="flex-sub text-df">
+        <view class="text-gray margin-left-sm">服务</view>
+      </view>
+      <view class="flex-treble text-df">
+        <text class="text-black">24小时内发货 | 7天无理由退款</text>
+      </view>
+      <view class="flex-sub text-df text-gray text-right margin-right-sm">
+        <text class="cuIcon-right"></text>
+      </view>
+    </view>
+</view>
+<view class="cu-bar bg-white" wx:if="{{goodsDetail.specType == '1'}}">
+  <view class="flex response" bindtap="showModalSku">
+    <view class="flex-sub text-df">
+      <view class="text-gray margin-left-sm">选择</view>
+    </view>
+    <view class="flex-treble text-df text-black">
+      <view class="display-ib" wx:for="{{goodsSpecData}}" wx:key>
+        <view class="display-ib" wx:if="{{!item.checked}}">{{item.value}}</view>
+        <view class="display-ib" wx:if="{{item.checked}}" wx:for="{{item.leaf}}" wx:for-item="item2" wx:key>
+          <view class="display-ib" wx:if="{{item.checked == item2.id}}">{{item2.value}}</view>
+        </view>
+        <view class="display-ib" wx:if="{{goodsSpecData.length != (index+1)}}">,</view>
+      </view>
+    </view>
+    <view class="flex-sub text-df text-gray text-right margin-right-sm">
+      <text class="cuIcon-right"></text>
+    </view>
+  </view>
+</view>
+
+<view class="cu-bar bg-white margin-top-sm">
+  <view class="content">商品信息</view>
+</view>
+<view class="bg-white">
+  <template is="wxParse" data="{{wxParseData:description.nodes}}"/>
+</view>
+
+<view class="cu-load bg-gray to-down">已经到底啦...</view>
+
+<view class="cu-bar bg-white tabbar border shop foot">
+  <button open-type="contact" bindcontact="handleContact" class="action bg-white">
+    <view class="cuIcon-servicefill"></view> 
+    客服
+  </button>
+  <view class="action" bindtap="userCollect">
+    <view class="cuIcon-{{goodsDetail.collectId ? 'likefill text-red' : 'like'}}"></view>
+    {{goodsDetail.collectId ? '已收藏' : '收藏'}}
+  </view>
+  <navigator class="action" open-type='switchTab' url='/pages/shopping-cart/index'>
+    <view class="cuIcon-cart">
+      <view class="cu-tag badge">{{shoppingCartCount}}</view>
+    </view>
+    购物车
+  </navigator>
+  <view class="btn-group">
+    <button class="cu-btn bg-orange round shadow-blur" bindtap="showModalSku" data-type="1">加入购物车</button>
+    <button class="cu-btn bg-red round shadow-blur" bindtap="showModalSku" data-type="2">立即购买</button>
+  </view>
+</view>
+<!-- html转wxml -->
+<import src="/public/wxParse/wxParse.wxml"/>
+<goods-sku
+  goodsDetail="{{goodsDetail}}"
+  goodsSpecData="{{goodsSpecData}}"
+  skuData="{{goodsDetail.specType == '0' ? goodsDetail.skus[0] : []}}"
+  modalSku="{{modalSku}}"
+  modalSkuType="{{modalSkuType}}"
+  bind:changeSpec="changeSpec"
+  bind:operateCartEvent="operateCartEvent"
+/>
+<view class="cu-modal {{goodsDetail.shelf=='1'?'show':''}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">提示</view>
+    </view>
+    <view class="padding-xl">
+      抱歉，该商品已下架
+    </view>
+  </view>
+</view>

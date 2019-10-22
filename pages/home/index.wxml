@@ -1,0 +1,80 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制
+-->
+<view class="cu-bar search bg-white">
+  <view class="search-form round">
+    <text class="cuIcon-search"></text>
+    <navigator class="response" hover-class='none' url='/pages/base/search/index'>
+      <input type="text" placeholder="请输入商品名"></input>
+    </navigator>
+  </view>
+</view>
+<scroll-view scroll-y scroll-with-animation style="height:calc(100vh - 100rpx)" bindscrolltolower="scrollToLower">
+  <swiper class="screen-swiper {{DotStyle?'square-dot':'round-dot'}}" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
+    <swiper-item wx:for="{{swiperList}}" wx:key bindtap="jumpPage" data-page="{{item.page}}">
+      <image src="{{item.url}}" mode="aspectFill" wx:if="{{item.type=='image'}}"></image>
+      <video src="{{item.url}}" wx:if="{{item.type=='video'}}" controls></video>
+    </swiper-item>
+  </swiper>
+
+  <view class='wrapper bg-white'>
+    <view class="cu-bar bg-white">
+      <view class='action text-bold'>
+        <text class='cuIcon-new text-blue'></text> 新品首发
+      </view>
+      <navigator hover-class="none" url='/pages/goods/goods-list/index?type=1' class='action'>
+        更多<text class='cuIcon-right'></text>
+      </navigator>
+    </view>
+    <view class='wrapper-list'>
+      <scroll-view class="scroll-view_x" scroll-x style="width:auto;overflow:hidden;">
+        <block wx:for="{{goodsListNew}}" wx:key>
+          <navigator hover-class="none" url='/pages/goods/goods-detail/index?id={{item.id}}' class='item'>
+            <view class='img-box'>
+              <image src="{{item.picUrls[0] ? item.picUrls[0] : '/public/img/no_pic.png'}}"></image>
+            </view>
+            <view class='text-cut margin-xs'>{{item.name}}</view>
+            <view class="text-price text-red margin-xs">{{item.priceDown}}</view>
+          </navigator>
+        </block>  
+      </scroll-view>
+    </view>
+  </view>
+
+  <view class='wrapper bg-hot margin-top-sm'>
+    <view class="cu-bar text-white">
+      <view class='action text-bold'>
+        <text class='cuIcon-hot'></text> 热销单品
+      </view>
+      <navigator hover-class="none" url='/pages/goods/goods-list/index?type=2' class='action'>
+        更多<text class='cuIcon-right'></text>
+      </navigator>
+    </view>
+    <view class='wrapper-list bg-white radius'>
+      <scroll-view class="scroll-view_x" scroll-x style="width:auto;overflow:hidden;">
+        <block wx:for="{{goodsListHot}}" wx:key>
+          <navigator hover-class="none" url='/pages/goods/goods-detail/index?id={{item.id}}' class='item'>
+            <view class='img-box'>
+              <image src="{{item.picUrls[0] ? item.picUrls[0] : '/public/img/no_pic.png'}}"></image>
+            </view>
+            <view class='text-cut margin-xs'>{{item.name}}</view>
+            <view class="text-price text-red margin-xs">{{item.priceDown}}</view>
+          </navigator>
+        </block>  
+      </scroll-view>
+    </view>
+  </view>
+
+  <view class="cu-bar justify-center bg-white margin-top-sm">
+    <view class='action border-title'>
+      <text class='text-orange'></text> 猜你喜欢
+      <text class="bg-gradual-blue" style="width:3rem"></text>
+    </view>
+  </view>
+  
+  <goods-row goodsList="{{goodsList}}"/>
+  <view class="cu-load bg-gray {{loadmore?'loading':'over'}}"></view>
+</scroll-view>
