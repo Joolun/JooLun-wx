@@ -70,13 +70,14 @@
 
 
 #### 截图
-![输入图片说明](https://images.gitee.com/uploads/images/2019/1009/094925_c1a30b27_5079715.jpeg "d3.jpg")
-![输入图片说明](https://images.gitee.com/uploads/images/2019/1009/094911_f6c62715_5079715.jpeg "d2.jpg")
-![输入图片说明](https://images.gitee.com/uploads/images/2019/1009/094902_e9474d39_5079715.jpeg "d4.jpg")
-![输入图片说明](https://images.gitee.com/uploads/images/2019/1009/094852_4fd2d160_5079715.jpeg "d5.jpg")
-![输入图片说明](https://images.gitee.com/uploads/images/2019/1009/094842_a9fdc49c_5079715.jpeg "d6.jpg")
-![输入图片说明](https://images.gitee.com/uploads/images/2019/1009/094824_642cd2d3_5079715.jpeg "d8.jpg")
-![输入图片说明](https://images.gitee.com/uploads/images/2019/1009/094812_fddf1bc7_5079715.jpeg "d1.jpg")
+![输入图片说明](https://images.gitee.com/uploads/images/2019/1022/121210_96fa0dfd_5079715.png "QQ截图20191022121047.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2019/1022/121203_28589eb6_5079715.png "QQ截图20191022121027.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2019/1022/121156_43ad478c_5079715.png "QQ截图20191022121001.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2019/1022/121146_88925079_5079715.png "QQ截图20191022120931.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2019/1022/121138_ca5d5c2a_5079715.png "QQ截图20191022120919.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2019/1022/121127_167c19ec_5079715.png "QQ截图20191022120908.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2019/1022/121120_4ceec856_5079715.png "QQ截图20191022120858.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2019/1022/121112_7cd3c378_5079715.png "QQ截图20191022120822.png")
 ![自定义菜单](https://images.gitee.com/uploads/images/2019/0615/235522_4a27ee4a_5079715.gif "wx-menu.gif")
 ![微信粉丝实时聊天](https://images.gitee.com/uploads/images/2019/0615/235540_d512fa59_5079715.gif "liaotian.gif")
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/0615/235616_dc33cdea_5079715.png "QQ截图20190612232849.png")
