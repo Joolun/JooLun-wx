@@ -6,9 +6,8 @@
 
 ### 演示
 
-![小程序商城扫码演示](https://images.gitee.com/uploads/images/2019/1009/094717_f5a9a16d_5079715.jpeg "c119f0d1694aeabc99344814d9b3fe4a.jpg")
-[了解更多](http://www.joolun.com)
-[后台演示](http://demo.joolun.com)
+![输入图片说明](https://images.gitee.com/uploads/images/2020/0305/171054_0a84eb49_5079715.jpeg "qrcode_for_gh_e18eb0ef9a2d_258.jpg")
+[后台演示](http://demo2.joolun.com)
 
 ### 内置功能
 
