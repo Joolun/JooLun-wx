@@ -1,10 +1,10 @@
 # 微信管理平台
 
-## 平台简介
+### 平台简介
 
 在[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue)基础上集成了[MybatisPlus](https://github.com/baomidou/mybatis-plus)和[Avue](https://gitee.com/smallweigit/avue)，微信接口统一使用了[WxJava](https://gitee.com/binary/weixin-java-tools)SDK
 
-#### 演示
+### 演示
 
 ![小程序商城扫码演示](https://images.gitee.com/uploads/images/2019/1009/094717_f5a9a16d_5079715.jpeg "c119f0d1694aeabc99344814d9b3fe4a.jpg")
 [了解更多](http://www.joolun.com)
