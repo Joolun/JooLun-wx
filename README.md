@@ -2,7 +2,7 @@
 
 ### 平台简介
 
-在[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue)基础上集成了[MybatisPlus](https://github.com/baomidou/mybatis-plus)和[Avue](https://gitee.com/smallweigit/avue)，微信接口统一使用了[WxJava](https://gitee.com/binary/weixin-java-tools)SDK
+在[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue)基础上集成了[MybatisPlus](https://github.com/baomidou/mybatis-plus)和[Avue](https://gitee.com/smallweigit/avue)，微信接口统一使用了[WxJava](https://gitee.com/binary/weixin-java-tools) SDK
 
 ### 在线体验
 
