@@ -6,8 +6,9 @@
 
 ### 在线体验
 
-![输入图片说明](https://images.gitee.com/uploads/images/2020/0305/171054_0a84eb49_5079715.jpeg "qrcode_for_gh_e18eb0ef9a2d_258.jpg")
-[demo2.joolun.com](http://demo2.joolun.com)
+演示公众号：![输入图片说明](https://images.gitee.com/uploads/images/2020/0305/171054_0a84eb49_5079715.jpeg "qrcode_for_gh_e18eb0ef9a2d_258.jpg")
+
+后台演示地址：http://demo2.joolun.com
 
 ### 内置功能
 
