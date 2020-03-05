@@ -1,15 +1,16 @@
 # 微信管理平台
 
 ## 平台简介
+
 在[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue)基础上集成了[MybatisPlus](https://github.com/baomidou/mybatis-plus)和[Avue](https://gitee.com/smallweigit/avue)，微信接口统一使用了[WxJava](https://gitee.com/binary/weixin-java-tools)SDK
 
 #### 演示
+
 ![小程序商城扫码演示](https://images.gitee.com/uploads/images/2019/1009/094717_f5a9a16d_5079715.jpeg "c119f0d1694aeabc99344814d9b3fe4a.jpg")
 [了解更多](http://www.joolun.com)
 [后台演示](http://demo.joolun.com)
 
 ### 内置功能
-
 
 1. 公众号用户标签管理
 1. 公众号用户管理
@@ -35,5 +36,10 @@
 1. 服务监控：监视当前系统CPU、内存、磁盘、堆栈等相关信息。
 1. 在线构建器：拖动表单元素生成相应的HTML代码。
 1. 连接池监视：监视当前系统数据库连
-接池状态，可进行分析SQL找出系统性能瓶颈。
+1. 这里是列表文本接池这里是列表文本状态，可进行分析SQL找出系统性能瓶颈。
 
+### 截图
+![输入图片说明](https://images.gitee.com/uploads/images/2020/0305/161111_71e7f26a_5079715.png "QQ截图20200305161005.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2020/0305/161314_7f067064_5079715.png "QQ截图20200305160938.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2020/0305/161331_bae82a4f_5079715.png "QQ截图20200305160904.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2020/0305/161342_d8e42604_5079715.png "QQ截图20200305160731.png")
