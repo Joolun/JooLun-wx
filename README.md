@@ -4,7 +4,7 @@
 
 在[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue)基础上集成了[MybatisPlus](https://github.com/baomidou/mybatis-plus)和[Avue](https://gitee.com/smallweigit/avue)，微信接口统一使用了[WxJava](https://gitee.com/binary/weixin-java-tools)SDK
 
-### 演示
+### 在线体验
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/0305/171054_0a84eb49_5079715.jpeg "qrcode_for_gh_e18eb0ef9a2d_258.jpg")
 [后台演示](http://demo2.joolun.com)
