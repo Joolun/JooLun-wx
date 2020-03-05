@@ -13,7 +13,7 @@
 后台演示地址：http://demo2.joolun.com
 ```
 账号/密码
-admin/admin123
+test/123456
 ```
 ### 系统需求
 
