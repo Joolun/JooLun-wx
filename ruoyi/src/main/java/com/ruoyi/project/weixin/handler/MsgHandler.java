@@ -11,7 +11,6 @@ import com.ruoyi.project.weixin.entity.WxUser;
 import com.ruoyi.project.weixin.mapper.WxUserMapper;
 import com.ruoyi.project.weixin.service.WxAutoReplyService;
 import com.ruoyi.project.weixin.service.WxMsgService;
-import com.ruoyi.project.weixin.service.WxUserService;
 import lombok.AllArgsConstructor;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.session.WxSessionManager;
