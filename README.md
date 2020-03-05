@@ -16,7 +16,9 @@ admin/admin123
 ### 系统需求
 
 JDK >= 1.8
+
 MySQL >= 5.8
+
 Maven >= 3.0
 
 ### 内置功能
