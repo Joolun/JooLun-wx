@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "商品详情",
-  "usingComponents": {
-    "goods-sku": "/components/goods-sku/index"
-  }
-}
