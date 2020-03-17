@@ -1,31 +1,10 @@
 <template>
-  <div class="dashboard-editor-container">
-
-    <panel-group @handleSetLineChartData="handleSetLineChartData" />
-
-    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
-      <line-chart :chart-data="lineChartData" />
-    </el-row>
-
-    <el-row :gutter="32">
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <raddar-chart />
-        </div>
-      </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <pie-chart />
-        </div>
-      </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <bar-chart />
-        </div>
-      </el-col>
-    </el-row>
-
-    
+  <div class="dashboard-editor-container" style="text-align: center">
+    <img src="https://images.gitee.com/uploads/images/2020/0305/171054_0a84eb49_5079715.jpeg">
+    <p>扫码查看演示公众号</p>
+    <p>公众号数据和后台数据同步</p>
+    <p><el-link href="https://demo.joolun.com/" type="primary" target="_blank"><span style="font-size: 20px">多公众号版</span></el-link></p>
+    <p><el-link href="https://demo.joolun.com/" type="success" target="_blank"><span style="font-size: 20px">小程序商城版</span></el-link></p>
   </div>
 </template>
 

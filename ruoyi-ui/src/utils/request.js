@@ -15,7 +15,7 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(
   config => {
-    if(user.state.name == 'test' && config.method !== 'get'){
+    if(user.state.name == 'test' && config.method !== 'get' && config.url != '/logout'){
         MessageBox.confirm('演示账号，不能操作。', '提示',{
             confirmButtonText: '确定',
             cancelButtonText: '取消',

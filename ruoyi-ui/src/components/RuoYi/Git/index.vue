@@ -9,7 +9,7 @@ export default {
   name: 'RuoYiGit',
   data() {
     return {
-      url: 'https://gitee.com/joolun/weixin'
+      url: 'https://gitee.com/joolun/JooLun-wx'
     }
   },
   methods: {
