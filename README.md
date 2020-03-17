@@ -24,6 +24,10 @@ MySQL >= 5.8
 
 Maven >= 3.0
 
+### [运行系统](http://doc.ruoyi.vip/ruoyi-vue/document/hjbs.html#%E8%BF%90%E8%A1%8C%E7%B3%BB%E7%BB%9F)
+
+### [部署系统](http://doc.ruoyi.vip/ruoyi-vue/document/hjbs.html#%E9%83%A8%E7%BD%B2%E7%B3%BB%E7%BB%9F)
+
 ### 内置功能
 
 1. 公众号用户标签管理
