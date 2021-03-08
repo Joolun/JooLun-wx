@@ -1,0 +1,6 @@
+.cu-bar{
+  min-height: 80rpx!important
+}
+.cuIcon-triangledownfill{
+  margin-top: -22rpx
+}

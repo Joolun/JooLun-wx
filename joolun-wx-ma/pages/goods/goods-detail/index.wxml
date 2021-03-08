@@ -1,0 +1,133 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
+<view class='product-bg bg-white padding-top'>
+  <swiper class="screen-swiper square-dot screen" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500" bindchange="change">
+    <swiper-item wx:for="{{goodsSpu.picUrls}}" wx:key="index">
+      <image class="screen-image" src="{{item}}" mode="aspectFill"></image>
+    </swiper-item>
+  </swiper>
+  <view class='page-index cu-tag round'>{{currents}}/{{goodsSpu.picUrls.length || 1}}</view>
+</view>
+<view class="cu-bar bg-white padding-top-xl">
+  <view class="text-xxl padding-tb-xs padding-lr-sm">
+    <text class="text-price text-blue text-bold">{{goodsSpu.salesPrice}}</text>
+  </view>
+  <button class="cu-btn icon margin-right" bindtap="shareShow">
+    <text class="cuIcon-share text-green"></text>
+  </button>
+</view>
+<view class="cu-bar bg-white">
+  <view class="text-lg text-bold padding-lr-sm">
+    <text class="text-black">{{goodsSpu.name}}</text>
+  </view>
+</view>
+<view class="cu-bar bg-white">
+  <view class="text-sm padding-lr-sm">
+    <text class="text-gray">{{goodsSpu.sellPoint}}</text>
+  </view>
+</view>
+<view class="cu-bar bg-white solid-bottom">
+  <view class="text-sm padding-lr-sm text-gray">
+    <text wx:if="{{goodsSpu.marketPrice}}">市场价：</text>
+    <text class="text-price text-gray">{{goodsSpu.marketPrice}}</text>
+  </view>
+  <view class="text-sm margin-right text-gray">
+    <text>库存：{{goodsSpu.stock}}</text>
+  </view>
+</view>
+
+<view class="cu-bar bg-white solid-bottom">
+  <view class="flex response">
+    <view class="flex-sub text-sm">
+      <view class="text-gray margin-left-sm">深圳发货</view>
+    </view>
+    <view class="flex-treble text-sm">
+      <text class="cuIcon-location text-black" wx:if="{{goodsSpu.deliveryPlace}}">{{goodsSpu.deliveryPlace.place}} | </text>
+      <text class="text-black" wx:if="{{goodsSpu.freightTemplat}}">运费：全国包邮</text>
+    </view>
+    <view class="flex-sub text-sm text-gray text-right margin-right-sm">销量{{goodsSpu.saleNum}}</view>
+  </view>
+</view>
+
+<view class="cu-bar bg-white">
+  <view class="flex response" bindtap="showModalService">
+      <view class="flex-sub text-sm">
+        <view class="text-gray margin-left-sm">服务</view>
+      </view>
+      <view class="flex-sub text-sm text-gray text-right margin-right-sm">假一赔十 | 七天无理由退款</view>
+    </view>
+</view>
+
+<ad unit-id="{{config.adBannerID}}" wx:if="{{config.adEnable}}"></ad>
+
+<view class="cu-bar bg-white margin-top-sm">
+  <view class="content">商品信息</view>
+</view>
+
+<view class="bg-white">
+  <template is="wxParse" data="{{wxParseData:description.nodes}}"/>
+</view>
+
+<view class="cu-load bg-gray to-down">已经到底啦...</view>
+
+<view class="cu-bar bg-white tabbar border shop foot">
+  <button open-type="contact" bindcontact="handleContact" class="action bg-white"
+          send-message-title="{{goodsSpu.name}}--咨询"
+          send-message-img="{{goodsSpu.picUrls[0] ? goodsSpu.picUrls[0] : '/public/img/no_pic.png'}}"
+          show-message-card="true" 
+          send-message-path="/pages/goods/goods-detail/index?id={{goodsSpu.id}}">
+    <view class="cuIcon-servicefill"></view> 
+    客服
+  </button>
+  <navigator class="action" open-type='switchTab' url='/pages/shopping-cart/index'>
+    <view class="cuIcon-cart">
+      <view class="cu-tag badge">{{shoppingCartCount}}</view>
+    </view>
+    购物车
+  </navigator>
+  <view class="btn-group">
+    <button class="cu-btn shadow-blur margin-left-sm shopping-cart" bindtap="toDo" data-type="1"><text class="text-white">加入购物车</text></button>
+    <button class="cu-btn shadow-blur buy-now" bindtap="toDo" data-type="2"><text class="text-white">立即购买</text></button>
+  </view>
+</view>
+<!-- html转wxml -->
+<import src="/public/wxParse/wxParse.wxml"/>
+<view class="cu-modal {{goodsSpu.shelf=='0'?'show':''}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">提示</view>
+    </view>
+    <view class="padding-xl">
+      抱歉，该商品已下架
+    </view>
+  </view>
+</view>
+
+<poster id="poster" hide-loading="{{false}}" preload="{{false}}" config="{{posterConfig}}" bind:success="onPosterSuccess" bind:fail="onPosterFail"></poster>
+<view class="cu-modal bottom-modal {{shareShow}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white">
+      <view class="action text-green"></view>
+      <view class="action text-red" bindtap="shareHide">取消</view>
+    </view>
+    <view class="padding flex flex-direction">
+      <button class="cu-btn bg-green lg" open-type='share'>发送给朋友</button>
+    </view>
+  </view>
+</view>
+
+<view class="cu-modal {{posterShow ? 'show' : ''}}">
+  <view class="cu-dialog">
+    <view style="height: calc(100vh - 200rpx)">
+      <image src="{{posterUrl}}" style="height: 100%;"></image>
+    </view>
+    <view class="cu-bar bg-white">
+      <view class="action margin-0 flex-sub" bindtap="hidePosterShow">取消</view>
+      <view class="action margin-0 flex-sub solid-left text-red text-bold" bindtap="savePoster">保存到相册</view>
+    </view>
+  </view>
+</view>

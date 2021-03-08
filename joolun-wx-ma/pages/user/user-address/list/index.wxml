@@ -1,0 +1,31 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
+<view class="cu-list menu-avatar">
+  <view class="cu-item solid-top" wx:for="{{ userAddress }}" wx:key="index">
+    <view class="cu-avatar round bg-red">
+      <text class="avatar-text">{{item.userName}}</text>
+    </view>
+    <view class="content loc-content" bindtap="selectUserAddress" data-index="{{index}}">
+      <view class="flex">
+        <view class="text-black">{{item.userName}}</view>
+        <view class="text-gray text-sm margin-left-sm">{{item.telNum}}</view>
+      </view>
+      <view class="text-black text-sm overflow-2 loc-info">
+          <view class="cu-tag bg-orange sm margin-left-sm" wx:if="{{item.isDefault == '1'}}">默认</view>
+          {{item.provinceName}}{{item.cityName}}{{item.countyName}}{{item.detailInfo}}
+      </view>
+    </view>
+    <view class="action" bindtap="toEdit" data-index="{{index}}">
+      <text class="cuIcon-edit"></text>
+    </view>
+  </view>
+</view>
+<view class="cu-load bg-gray {{loadmore?'loading':''}}"></view>
+<view class="cu-load bg-gray margin-top-xl" wx:if="{{ userAddress.length <= 0 && !loadmore}}"><text class="text-gray">暂无收货地址，请添加</text></view>
+<button class="cu-btn block shadow-blur margin-sm" style="background-color: #2967ff;font-weight:300;height:88rpx; margin-top:200rpx;" wx:if="{{userAddress.length < 10}}" bindtap="toAdd">
+  <text class="text-white">添加新地址</text>
+</button>

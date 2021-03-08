@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "商城首页",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "goods-card": "/components/goods-card-index/index",
+    "goods-row": "/components/goods-row/index"
+  }
+}

@@ -1,0 +1,58 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
+<scroll-view scroll-x class="bg-white nav fixed">
+  <view class="flex text-center">
+    <view class="cu-item flex-sub {{index==tabCur?'text-blue cur':''}}" wx:for="{{orderStatus}}" wx:key="index" 
+    bindtap="tabSelect" data-index="{{index}}" data-key="{{item.key}}">
+      {{item.value}}
+    </view>
+  </view>
+</scroll-view>
+<view class="margin-top-bar">
+  <view class="cu-card article">
+    <view class="cu-item" wx:for="{{ orderList }}" wx:key="index" wx:for-index="index">
+      <navigator hover-class='none' url='/pages/order/order-detail/index?id={{item.id}}'>
+        <view class="cu-bar bg-white">
+          <view class="action">
+            <text class="cuIcon-titles text-black"></text> {{ item.createTime }}
+          </view>
+          <view class="action text-red">
+            {{item.statusDesc}}
+          </view>
+        </view>
+        <view class="cu-item padding-bottom" wx:for="{{ item.listOrderItem }}" wx:for-item="item2" wx:key="index" wx:for-index="index2">
+          <view class="content">
+            <image src="{{item2.picUrl ? item2.picUrl : '/public/img/no_pic.png'}}" mode="aspectFill" class="row-img margin-top-xs"></image>
+            <view class="desc row-info margin-top-sm">
+              <view class="text-black margin-top-sm overflow-2">{{item2.spuName}}</view>
+              <view class="text-gray text-sm margin-top-sm overflow-2" wx:if="{{item2.specInfo}}">{{item2.specInfo}}</view>
+              <view class="flex justify-between">
+                <view class="text-price text-bold text-xl text-blue margin-top-sm">{{item2.paymentPrice}}</view>
+                <view class="text-black text-sm margin-top-sm padding-lr-sm">x{{item2.quantity}}</view>
+              </view>
+            </view>
+          </view>
+          <view class="cu-item text-right padding-sm" catchtap wx:if="{{item2.status != '0'&&item2.statusDesc}}">
+            <navigator class="cu-btn line sm text-orange" 
+              url='/pages/order/order-refunds/form/index?orderItemId={{item2.id}}'>
+              {{item2.statusDesc}}
+            </navigator>
+          </view>
+        </view>
+      </navigator>
+      <order-operate
+        class="response"
+        orderInfo="{{item}}"
+        bind:orderCancel="orderCancel"
+        bind:orderReceive="orderCancel"
+        bind:orderDel="orderDel"
+        bind:unifiedOrder="unifiedOrder"
+        data-index="{{index}}"/>
+    </view>
+  </view>
+  <view class="cu-load bg-gray {{loadmore?'loading':'over'}}"></view>
+</view>

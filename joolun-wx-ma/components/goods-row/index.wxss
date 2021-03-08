@@ -1,0 +1,9 @@
+@import "/app.wxss";
+.row-img{
+  width: 280rpx!important;
+  height: 280rpx!important;
+  border-radius: 10rpx
+}
+.row-info{
+  display: block!important;
+}

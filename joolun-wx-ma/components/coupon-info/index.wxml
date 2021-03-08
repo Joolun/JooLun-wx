@@ -1,0 +1,54 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
+<view class="flex bg-white radius text-white main" wx:if="{{couponInfo.type == '1'}}">
+  <view class="flex-twice padding-sm radius t1-r">
+    <view class="flex">
+      <view class="flex-sub text-xxl text-bold text-price overflow-1">{{couponInfo.reduceAmount}}</view>
+      <view class="flex-twice">
+        <view class="text-sm overflow-1">{{couponInfo.name}}</view>
+        <view class="text-xs overflow-1">订单满{{couponInfo.premiseAmount}}元可使用</view>
+        <view class="text-xs">
+          {{couponInfo.suitType == '1' ? '全部商品可用' : couponInfo.suitType == '2' ? '指定商品可用' : couponInfo.suitType == '3' ? '指定商品不可用' : ''}}
+        </view>
+      </view>
+    </view>
+    <view class="text-xs" wx:if="{{couponInfo.expireType == '1'}}">领取后{{couponInfo.validDays}}天有效</view>
+    <view class="text-xs" wx:if="{{couponInfo.expireType == '2'}}">{{couponInfo.validBeginTime}}至{{couponInfo.validEndTime}}</view>
+  </view>
+  <view class="flex-sub padding-sm radius text-center t1-l">
+    <view class="padding-xs">代金券</view>
+    <button class="cu-btn bg-white" wx:if="{{!couponInfo.couponUser}}" bindtap = "couponUserSave">立即领取</button>
+    <view wx:if="{{couponInfo.couponUser}}">
+      <view class="padding-xs" wx:if="{{!toUse}}">已领取</view>
+      <navigator hover-class='none' url='/pages/goods/goods-list/index?couponUserId={{couponInfo.couponUser.id}}' class="cu-btn bg-white sm" wx:if="{{toUse}}">已领取，去使用</navigator>
+    </view>
+  </view>
+</view>
+<view class="flex bg-white radius text-white main" wx:if="{{couponInfo.type == '2'}}">
+  <view class="flex-twice padding-sm radius t2-r">
+    <view class="flex">
+      <view class="flex-sub text-xxl text-bold overflow-1">{{couponInfo.discount}}<text class="text-sm">折</text></view>
+      <view class="flex-twice">
+        <view class="text-sm overflow-1">{{couponInfo.name}}</view>
+        <view class="text-xs overflow-1">订单满{{couponInfo.premiseAmount}}元可使用</view>
+        <view class="text-xs">
+          {{couponInfo.suitType == '1' ? '全部商品可用' : couponInfo.suitType == '2' ? '指定商品可用' : couponInfo.suitType == '3' ? '指定商品不可用' : ''}}
+        </view>
+      </view>
+    </view>
+    <view class="text-xs" wx:if="{{couponInfo.expireType == '1'}}">领取后{{couponInfo.validDays}}天有效</view>
+    <view class="text-xs" wx:if="{{couponInfo.expireType == '2'}}">{{couponInfo.validBeginTime}}至{{couponInfo.validEndTime}}</view>
+  </view>
+  <view class="flex-sub padding-sm radius text-center t2-l">
+    <view class="padding-xs">折扣券</view>
+    <button class="cu-btn bg-white" wx:if="{{!couponInfo.couponUser}}" bindtap = "couponUserSave">立即领取</button>
+    <view wx:if="{{couponInfo.couponUser}}">
+      <view class="padding-xs" wx:if="{{!toUse}}">已领取</view>
+      <navigator hover-class='none' url='/pages/goods/goods-list/index?couponUserId={{couponInfo.couponUser.id}}' class="cu-btn bg-white sm" wx:if="{{toUse}}">已领取，去使用</navigator>
+    </view>
+  </view>
+</view>

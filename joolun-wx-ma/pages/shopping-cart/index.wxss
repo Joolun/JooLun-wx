@@ -1,0 +1,42 @@
+.bar-rt{
+  width: 480rpx!important;
+  text-align: right!important;
+  margin-right: 10rpx!important
+}
+.settle-bt{
+  background-color: #2967ff !important;
+  font-weight:300;
+  width:220rpx;
+}
+.row-img{
+  width: 30%!important;
+  border-radius: 10rpx
+}
+.row-info{
+  display: block!important;
+  width: 60%;
+}
+.row-specs{
+  width: 200px;
+}
+.cu-tag {
+  white-space: unset!important
+}
+.without {
+  margin: auto;
+}
+.without image {
+  padding-top: 50rpx;
+  width: 360rpx;
+  height: 305rpx;
+}
+.collection{
+  background-color: #2d2d2f !important;
+  font-weight:300;
+  width:220rpx;
+}
+.delete{
+  background-color: #2967ff !important;
+  font-weight:300;
+  width:220rpx;
+}

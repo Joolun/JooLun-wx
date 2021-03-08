@@ -1,0 +1,26 @@
+@import "/app.wxss";
+.main{
+  height: 160rpx
+}
+.t1-r{
+  background: radial-gradient(circle at top right, transparent 5px, #f37b1d 0) top right, radial-gradient(circle at bottom right, transparent 5px, #f37b1d 0) bottom right;
+  background-size: 100% 60%;
+  background-repeat: no-repeat;
+}
+.t1-l{
+  background: radial-gradient(circle at top left, transparent 5px, #f37b1d 0) top left,radial-gradient(circle at bottom left, transparent 5px, #f37b1d 0) bottom left;
+  background-size: 100% 60%;
+  background-repeat: no-repeat;
+  border-left: 2rpx dashed rgba(255,255,255,.3);
+}
+.t2-r{
+  background: radial-gradient(circle at top right, transparent 5px, #39b54a 0) top right, radial-gradient(circle at bottom right, transparent 5px, #39b54a 0) bottom right;
+  background-size: 100% 60%;
+  background-repeat: no-repeat;
+}
+.t2-l{
+  background: radial-gradient(circle at top left, transparent 5px, #39b54a 0) top left,radial-gradient(circle at bottom left, transparent 5px, #39b54a 0) bottom left;
+  background-size: 100% 60%;
+  background-repeat: no-repeat;
+  border-left: 2rpx dashed rgba(255,255,255,.3);
+}

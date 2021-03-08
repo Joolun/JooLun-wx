@@ -1,0 +1,85 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
+<wxs module="numberUtil" src="../../../utils/numberUtil.wxs"></wxs>
+<view class="margin-bottom-bar">
+  <view class="cu-list menu-avatar">
+    <navigator class="cu-item" url='/pages/user/user-address/list/index?select=true' wx:if="{{orderSubParm.deliveryWay == '1'}}">
+      <view class="cu-avatar round cuIcon-location bg-black"></view>
+      <view class="content loc-content" wx:if="{{userAddress}}">
+        <view class="flex padding-top-sm">
+          <view class="cu-tag bg-red radius margin-right-sm" wx:if="{{userAddress.isDefault == '1'}}">默认</view>
+          <view class="text-black">{{userAddress.userName}}</view>
+          <view class="text-gray text-sm margin-left-sm">{{userAddress.telNum}}</view>
+        </view>
+        <view class="text-gray text-sm overflow-2 loc-info padding-bottom-sm address">
+						{{userAddress.provinceName}}{{userAddress.cityName}}{{ituserAddressem.countyName}}{{userAddress.detailInfo}}
+        </view>
+      </view>
+      <view class="content loc-content" wx:if="{{!userAddress}}">
+        请选择收货地址
+      </view>
+      <view class="action">
+        <text class="cuIcon-right"></text>
+      </view>
+    </navigator>
+  </view>
+  <view class="cu-card article">
+    <view class="cu-item">
+      <view class="cu-list menu">
+        <view wx:for="{{ orderConfirmData }}" wx:key="index">
+            <view class="flex align-center">
+              <image src="{{item.picUrl ? item.picUrl : '/public/img/no_pic.png'}}" mode="aspectFill" class="row-img margin-top-xs"></image>
+             </view> 
+              <view class="row-info margin-left">
+                <view class="text-black margin-top-xl overflow-2">{{item.spuName}}</view>
+                <view class="text-gray text-sm margin-top-xs cu-tag round" wx:if="{{item.specInfo}}">{{item.specInfo}}</view>
+                <view class="flex margin-top-sm">
+                  <view class="flex-sub">
+                    <text class="text-price text-xl text-blue text-bold margin-top-sm">{{item.salesPrice}}</text>
+                  </view>
+                  <view class="flex-twice text-gray text-sm text-right margin-right">
+                    x{{item.quantity}}
+                  </view>
+                </view>
+              </view>
+        </view>
+        <view class="cu-item margin-top-sm">
+          <text class="text-gray text-sm">订单金额</text>
+          <view class="action">
+            <view class="text-price">{{salesPrice}}</view>
+          </view>
+        </view>
+        <view class="cu-item margin-top-sm">
+          <text class="text-gray text-sm">运费金额</text>
+          <view class="action">
+            <view class="text-price">{{freightPrice}}</view>
+          </view>
+        </view>
+        
+      </view>
+    </view>
+  </view>
+  <view class="cu-card mar-top-30">
+    <view class="cu-item cu-form-group align-start" style="height:200rpx;">
+      <input style="font-size:24rpx; margin-top:20rpx;" bindinput="userMessageInput" placeholder="给卖家留言"></input>
+    </view>
+	</view>
+</view>
+<view class="cu-bar tabbar bg-white border foot">
+  <view class="flex response">
+    <view class="flex-sub"></view>
+    <view class="flex-treble bar-rt">
+      <text class="text-sm text-gray">共{{ orderConfirmData.length }}件，</text>
+      <text class="text-sm text-gray">合计：</text>
+      <text class="text-xl text-price text-blue text-bold">{{numberUtil.numberAddition(paymentPrice,freightPrice)}}</text>
+      <button class="cu-btn shadow-blur margin-left-sm" style="background-color: #2967ff;font-weight:300;width:220rpx;" bindtap="orderSub" loading="{{loading}}" disabled="{{loading}}" type="">
+        <text class="text-white">提交订单</text>
+      </button>
+    </view>
+  </view>
+</view>
+<user-auth/>

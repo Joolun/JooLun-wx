@@ -1,0 +1,41 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
+<form bindsubmit="userAddressSave">
+  <view class="cu-form-group">
+		<view class="title">姓名</view>
+		<input placeholder="请输入姓名" name="userName" value="{{userAddress.userName}}"></input>
+	</view>
+  <view class="cu-form-group">
+		<view class="title">联系电话</view>
+		<input placeholder="请输入电话" name="telNum" value="{{userAddress.telNum}}"></input>
+	</view>
+  <view class="cu-form-group">
+		<view class="title">地址选择</view>
+		<picker mode="region" bindchange="regionChange" value="{{region}}" custom-item="{{customItem}}">
+			<view class="picker">
+				{{region[0]}}，{{region[1]}}，{{region[2]}}
+			</view>
+		</picker>
+	</view>
+  <view class="cu-form-group">
+		<view class="title">详细地址</view>
+		<input placeholder="请输入详细地址" name="detailInfo" value="{{userAddress.detailInfo}}"></input>
+	</view>
+  <view class="cu-form-group">
+		<view class="title">设为默认地址</view>
+		<switch class="red sm" checked="{{userAddress.isDefault == '1'}}" bindchange="isDefaultChange"></switch>
+	</view>
+  <button class="cu-btn block bg-green margin-sm" formType="submit">
+    立即保存
+  </button>
+  <button class="cu-btn block bg-red margin-sm" bindtap="userAddressDelete" wx:if="{{userAddress.id}}">
+    删除
+  </button>
+  <button class="cu-btn block bg-orange margin-sm cuIcon-weixin" bindtap="getWxAddress">
+    导入微信地址
+  </button>
+</form>

@@ -1,0 +1,79 @@
+.list-item{
+  background-color: #fff
+}
+
+.wrapper-list{
+  white-space:nowrap;padding:0rpx 20rpx 50rpx 0rpx;
+}
+
+.wrapper-list .item{
+  display:inline-block;
+  width: 560rpx;
+  height:800rpx;
+  margin: 60rpx 0 60rpx 50rpx;
+  padding: 10rpx 30rpx;
+  border-radius:25rpx;
+	box-shadow: 0rpx 0rpx 50rpx 10rpx rgba(211, 211, 211, 1);
+}
+
+.wrapper-list .item:nth-last-child(1){
+  margin-right:20rpx;
+}
+
+.wrapper-list .item .img-box{
+  width:100%;
+  height:480rpx;
+}
+
+.wrapper-list .item .img-box image{
+  width:100%;
+  height:100%;
+}
+
+.adsec{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  padding: 7rpx 10rpx;
+  height: 80rpx;
+}
+
+.adsec-icon{
+  height: 80rpx;
+  line-height: 80rpx;
+}
+
+.swiper_container {
+  height: 80rpx;
+  width: 95%;
+  line-height: 80rpx;
+}
+
+.screen-swiper{
+  height:600rpx;
+  margin-top: 100rpx;
+}
+
+.goods-image{
+  width:100%;
+  height: 1150rpx;
+}
+
+.hot-goods{
+  width:auto;
+  overflow:hidden;
+}
+
+.goods-buy{
+  margin-left: 500rpx;
+  margin-top: -120rpx;
+  padding-bottom: 50rpx;
+}
+
+.buy-now{
+  background-color: #2967ff !important;
+  font-weight:300;
+  width:220rpx;
+}

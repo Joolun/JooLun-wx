@@ -1,0 +1,17 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
+<view class="cu-modal show" wx:if="{{switchOn && wxUser && !wxUser.headimgUrl}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-red justify-end">
+      <view class="content">登录授权</view>
+    </view>
+    <view class="padding-xl">
+      <view class="text-left">需要获取您的头像等信息，以便为您提供更好的服务</view>
+      <button class="cu-btn text-green cuIcon-weixin lg" open-type="getUserInfo" bind:getuserinfo="agreeGetUser" lang="zh_CN">点击授权</button>
+    </view>
+  </view>
+</view>

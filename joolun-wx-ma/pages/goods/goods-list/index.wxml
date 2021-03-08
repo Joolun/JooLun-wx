@@ -1,0 +1,58 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
+<view class="cu-bar search bg-white fixed">
+  <view class="search-form round">
+    <text class="cuIcon-search"></text>
+    <navigator class="response" hover-class='none' url='/pages/base/search/index'>
+      <input type="text" placeholder="请输入商品名" value="{{parameter.name}}"></input>
+    </navigator>
+  </view>
+  <view class="action">
+    <view class="text-xxl">
+      <text class="cuIcon-{{viewType ? 'list' : 'cascades'}} text-black" bindtap="viewTypeEdit"></text>
+    </view>
+  </view>
+</view>
+<view class="cu-bar justify-center bg-white fixed" style="margin-top:80rpx">
+  <view class="grid response text-center align-start">
+    <view class="flex-sub padding-sm margin-xs radius text-blue text-bold">{{title}}</view>
+    <view class="flex-sub padding-sm margin-xs radius">
+      <view class="grid text-center" bindtap="sortHandle" data-type='price'>
+        价格
+        <view class="margin-left-xs">
+          <view class="cuIcon-triangleupfill {{price=='asc' ? 'text-blue' : ''}}" data-type='price'/>
+          <view class="basis-df"/>
+          <view class="cuIcon-triangledownfill {{price=='desc' ? 'text-blue' : ''}}" data-type='price'/>
+        </view>
+      </view>
+    </view>
+    <view class="flex-sub padding-sm margin-xs radius">
+      <view class="grid text-center" bindtap="sortHandle" data-type='sales'>
+        销量
+        <view class="margin-left-xs">
+          <view class="cuIcon-triangleupfill {{sales=='asc' ? 'text-blue' : ''}}" data-type='sales'/>
+          <view class="basis-df"/>
+          <view class="cuIcon-triangledownfill {{sales=='desc' ? 'text-blue' : ''}}" data-type='sales'/>
+        </view>
+      </view>
+    </view>
+    <view class="flex-sub padding-sm margin-xs radius">
+      <view class="{{createTime=='desc' ? 'text-blue text-bold' : ''}}" bindtap="sortHandle" data-type='createTime'>
+        新上架
+      </view>
+    </view>
+  </view>
+</view>
+<view style="margin-top:160rpx">
+  <view wx:if="{{viewType}}">
+    <goods-card goodsList="{{goodsList}}"/>
+  </view>
+  <view wx:if="{{!viewType}}">
+    <goods-row goodsList="{{goodsList}}"/>
+  </view>
+  <view class="cu-load bg-gray {{loadmore?'loading':'over'}}"></view>
+</view>

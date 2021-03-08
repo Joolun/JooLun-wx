@@ -1,0 +1,44 @@
+@import "public/colorui/main.wxss";
+@import "public/colorui/icon.wxss";
+@import "public/colorui/animation.wxss";
+@import "public/wxParse/wxParse.wxss";
+.overflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.overflow-1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.overflow-2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.display-ib{
+  display: inline-block
+}
+.display-i{
+  display: inline
+}
+.margin-top-bar{
+  margin-top: 80rpx
+}
+.margin-bottom-bar{
+  margin-bottom: 80rpx
+}
+.vertical-center{
+  margin: auto 0rpx
+}
+.text-decorat{
+  text-decoration:line-through;
+}
+.mar-top-30{
+  margin-top: -30rpx!important
+}

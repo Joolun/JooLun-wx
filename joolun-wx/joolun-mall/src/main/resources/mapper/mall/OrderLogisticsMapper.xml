@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2018-2019
+  ~ All rights reserved, Designed By www.joolun.com
+  ~ 注意：
+  ~ 本软件为www.joolun.com开发研制，项目使用请保留此说明
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joolun.mall.mapper.OrderLogisticsMapper">
+
+	<resultMap id="orderLogisticsMap" type="com.joolun.mall.entity.OrderLogistics">
+		<id property="id" column="id"/>
+		<result property="delFlag" column="del_flag"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="postalCode" column="postal_code"/>
+		<result property="userName" column="user_name"/>
+		<result property="telNum" column="tel_num"/>
+		<result property="address" column="address"/>
+		<result property="logistics" column="logistics"/>
+		<result property="logisticsNo" column="logistics_no"/>
+		<result property="status" column="status"/>
+		<result property="isCheck" column="is_check"/>
+		<result property="message" column="message"/>
+	</resultMap>
+
+	<resultMap id="orderLogisticsMap2" extends="orderLogisticsMap" type="com.joolun.mall.entity.OrderLogistics">
+
+	</resultMap>
+
+	<sql id="orderLogisticsSql">
+		order_logistics.`id`,
+		order_logistics.`del_flag`,
+		order_logistics.`create_time`,
+		order_logistics.`update_time`,
+		order_logistics.`postal_code`,
+		order_logistics.`user_name`,
+		order_logistics.`tel_num`,
+		order_logistics.`address`,
+		order_logistics.`logistics`,
+		order_logistics.`logistics_no`,
+		order_logistics.`status`,
+		order_logistics.`is_check`,
+		order_logistics.`message`
+	</sql>
+
+	<select id="selectById2" resultMap="orderLogisticsMap2">
+		SELECT
+		<include refid="orderLogisticsSql"/>
+		FROM order_logistics order_logistics
+		WHERE order_logistics.`id` = #{id}
+	</select>
+</mapper>

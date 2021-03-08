@@ -1,0 +1,28 @@
+.row-img{
+  width: 600rpx!important;
+  height: 600rpx!important;
+  margin: auto !important;
+  border-radius: 10rpx
+}
+.row-info{
+  display: block!important;
+}
+.loc-content{
+  width: calc(100% - 96rpx - 60rpx - 80rpx)!important;
+  left: 126rpx!important
+}
+.loc-info{
+  line-height: 1.4em
+}
+.cu-list.menu>.cu-item:after {
+  border-bottom: unset !important;
+}
+.cu-list.menu>.cu-item {
+  min-height: unset !important;
+}
+.status-desc{
+  font-size: 38rpx!important;
+}
+.font-weight{
+  font-weight: 300;
+}

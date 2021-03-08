@@ -1,0 +1,40 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
+<view class="flex justify-end">
+  <button class="cu-btn radius margin-right shadow-blur service" open-type="contact" bindcontact="handleContact" wx:if="{{contact}}">
+    <view class="cuIcon-servicefill text-white"></view> 
+    <text class="text-white">客服</text>
+  </button>
+  <button class="cu-btn radius margin-right shadow-blur delete-order" bindtap="orderDel" loading="{{loading}}" 
+  disabled="{{loading}}" type="" wx:if="{{orderInfo.status == '5' && orderInfo.isPay == '0'}}">
+    <text class="text-white">删除订单</text>
+  </button>
+  <button class="cu-btn radius margin-right shadow-blur cancel-order" bindtap="orderCancel" loading="{{loading}}" 
+  disabled="{{loading}}" type="" wx:if="{{orderInfo.isPay == '0' && !orderInfo.status}}">
+    <text class="text-white">取消订单</text>
+  </button>
+  <button class="cu-btn radius margin-right shadow-blur check-logistics" bindtap="orderLogistics" loading="{{loading}}" 
+  disabled="{{loading}}" type="" wx:if="{{orderInfo.deliveryWay == '1' && (orderInfo.status == '2' || orderInfo.status == '3' || orderInfo.status == '4')}}">
+    <text class="text-white">查看物流</text>
+  </button>
+  <button class="cu-btn radius margin-right shadow-blur payment" bindtap="unifiedOrder" loading="{{loading}}" 
+  disabled="{{loading}}" type="" wx:if="{{orderInfo.isPay == '0' && !orderInfo.status}}">
+    <text class="text-white">付款</text>
+  </button>
+  <!-- <button class="cu-btn round line-red margin-right" bindtap="urgeOrder" loading="{{loading}}" 
+  disabled="{{loading}}" type="" wx:if="{{orderInfo.status == '1'}}">
+    提醒卖家发货
+  </button> -->
+  <button class="cu-btn radius margin-right shadow-blur confirm-goods" bindtap="orderReceive" loading="{{loading}}" 
+  disabled="{{loading}}" type="" wx:if="{{orderInfo.status == '2'}}">
+    <text class="text-white">确认收货</text>
+  </button>
+  <button class="cu-btn radius margin-right shadow-blur evaluation" bindtap="orderAppraise" loading="{{loading}}" 
+  disabled="{{loading}}" type="" wx:if="{{orderInfo.status == '3' && orderInfo.appraisesStatus == '0'}}">
+    <text class="text-white">评价</text>
+  </button>
+</view>

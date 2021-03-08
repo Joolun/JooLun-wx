@@ -1,0 +1,7 @@
+.row-img{
+  height: 240rpx!important;
+  border-radius: 10rpx
+}
+.row-info{
+  display: block!important;
+}

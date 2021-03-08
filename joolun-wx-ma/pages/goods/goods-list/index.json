@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "商品列表",
+  "usingComponents": {
+    "goods-card": "/components/goods-card/index",
+    "goods-row": "/components/goods-row/index"
+  }
+}

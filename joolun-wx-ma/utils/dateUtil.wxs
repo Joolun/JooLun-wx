@@ -1,0 +1,11 @@
+//时间工具
+var dateUtil = {
+  getOutTime: function (date) {//获取某个时间点到当前时间的差（秒）
+    var nowDate = getDate()
+    var endDate = getDate(date.replace(getRegExp('-','g'),'/'))
+    return (endDate.getTime() - nowDate.getTime())
+  }
+}
+module.exports = {//暴露接口调用
+  getOutTime: dateUtil.getOutTime
+}

@@ -1,0 +1,10 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
+<view class="text-{{size}} text-red">
+  <text class="cuIcon-like{{value > index ? 'fill' : ''}} margin-right" wx:for="{{5}}" wx:key="index" 
+    bindtap="redeHander" data-index="{{index}}"></text>
+</view>

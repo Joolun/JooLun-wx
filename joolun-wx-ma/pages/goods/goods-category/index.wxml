@@ -1,0 +1,42 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
+<view class="cu-bar search bg-white">
+  <view class="search-form round">
+    <text class="cuIcon-search"></text>
+    <navigator class="response" hover-class='none' url='/pages/base/search/index'>
+      <input type="text" placeholder="请输入商品名"></input>
+    </navigator>
+  </view>
+</view>
+<view class="VerticalBox margin-top-xs margin-left-xs">
+  <scroll-view class="VerticalNav nav" scroll-y scroll-with-animation scroll-top="{{VerticalNavTop}}" style="height:calc(100vh - 100rpx)">
+    <view class="cu-item {{index==TabCur?'text-red cur':''}}" wx:for="{{goodsCategory}}" wx:key="index" bindtap='tabSelect' data-id="{{index}}">
+      {{item.name}}
+    </view>
+  </scroll-view>
+  <scroll-view class="VerticalMain" scroll-y scroll-with-animation style="height:calc(100vh - 100rpx)" scroll-into-view="main-{{MainCur}}" bindscroll="VerticalMain">
+    <view class="padding-tb-xs padding-lr-sm" wx:for="{{goodsCategory}}" wx:key="index" id="main-{{index}}">
+      <view class='cu-bar solid-bottom bg-white'>
+        <view class='action'>
+          <text class="cuIcon-titles text-black"></text>{{item.name}}
+        </view>
+      </view>
+      <view class="cu-bar bg-white solid-bottom">
+        <view class="cate-list">
+          <image wx:if="{{item.picUrl}}" class="img-banner radius" src="{{item.picUrl}}"></image>
+          <view wx:if="{{ item.children.length>0 }}" wx:for="{{item.children}}" wx:for-item="item2" wx:key="index" class="cate">
+            <navigator hover-class='none' url='/pages/goods/goods-list/index?categorySecond={{item2.id}}&title={{item2.name}}'>
+              <image class="cate-img" src="{{item2.picUrl ? item2.picUrl : '/public/img/no_pic.png'}}"></image>
+              <view class='text-sm'>{{item2.name}}</view>
+            </navigator>
+          </view>
+          <view class='padding response text-center' wx:if="{{ !item.children }}">暂无数据</view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

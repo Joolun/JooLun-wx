@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "确认订单",
+  "usingComponents": {
+    "user-auth": "/components/user-auth/index",
+    "coupon-user-info": "/components/coupon-user-info/index"
+  }
+}

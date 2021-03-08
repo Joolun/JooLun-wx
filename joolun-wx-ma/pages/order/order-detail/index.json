@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "订单详情",
+  "usingComponents": {
+    "order-operate": "/components/order-operate/index",
+    "count-down": "/components/count-down/index"
+  }
+}

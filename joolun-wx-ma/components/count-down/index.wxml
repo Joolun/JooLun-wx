@@ -1,0 +1,10 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
+<text wx:if="{{day}}">{{day}}天</text>
+<text wx:if="{{hour}}">{{hour}}小时</text>
+<text wx:if="{{minute}}">{{minute}}分</text>
+<text wx:if="{{second}}">{{second}}秒</text>

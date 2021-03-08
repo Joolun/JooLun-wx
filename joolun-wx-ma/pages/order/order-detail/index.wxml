@@ -1,0 +1,154 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  - 注意：
+  - 本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
+<view class="margin-bottom-bar">
+  <view class="bg-white padding">
+    <view class="status-desc text-red margin-left text-bold text-center cuIcon-{{orderInfo.status == '0' ? 'pay' : orderInfo.status == '1' ? 'send' : orderInfo.status == '2' ? 'deliver' : orderInfo.status == '3' ? 'evaluate' : orderInfo.status == '4' ? 'upstage' : orderInfo.status == '5' ? 'roundclose' : ''}}">
+      {{orderInfo.statusDesc}}
+    </view>
+    <view class="text-black margin-left text-center" wx:if="{{orderInfo.isPay == '0' && !orderInfo.status}}">
+      请在<count-down outTime="{{1000 * orderInfo.outTime}}" bind:countDownDone="countDownDone"/>内付款，超时订单将自动取消
+    </view>
+    <view class="text-black margin-left text-center" wx:if="{{orderInfo.status == '2'}}">
+      还剩<count-down outTime="{{1000 * orderInfo.outTime}}" bind:countDownDone="countDownDone"/>自动确认
+    </view>
+  </view>
+  <view class="cu-list cu-card menu-avatar">
+    <navigator class="cu-item" url='/pages/order/order-logistics/index?id={{orderInfo.orderLogistics.id}}' wx:if="{{orderInfo.deliveryWay == '1' && (orderInfo.status == '2' || orderInfo.status == '3' || orderInfo.status == '4')}}">
+      <view class="cu-avatar round cuIcon-deliver bg-red"></view>
+      <view class="content loc-content">
+        <view class="flex">
+          <view class="text-black">{{orderInfo.orderLogistics.statusDesc}}</view>
+          <view class="text-sm margin-left-sm">{{orderInfo.orderLogistics.logisticsDesc}}</view>
+        </view>
+        <view class="text-black text-sm overflow-2 loc-info" wx:if="{{orderInfo.orderLogistics.message}}">
+					{{orderInfo.orderLogistics.message}}
+        </view>
+      </view>
+      <view class="action">
+        <text class="cuIcon-right"></text>
+      </view>
+    </navigator>
+    <view class="cu-item">
+      <view class="cu-avatar round cuIcon-location bg-black"></view>
+      <view class="content loc-content">
+        <view class="flex">
+          <view class="text-black">{{orderInfo.orderLogistics.userName}}</view>
+          <view class="text-gray text-sm margin-left-sm">{{orderInfo.orderLogistics.telNum}}</view>
+        </view>
+        <view class="text-gray text-sm overflow-2 loc-info">
+					{{orderInfo.orderLogistics.address}}
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="cu-card article mar-top-30">
+    <view class="cu-item">
+      <view class="cu-list menu">
+        <view wx:for="{{ orderInfo.listOrderItem }}" wx:key="index">
+          <navigator hover-class='none' url='/pages/goods/goods-detail/index?id={{item.spuId}}' class="cu-item">
+            <view class="align-center">
+              <view class="flex align-center">
+                <image src="{{item.picUrl ? item.picUrl : '/public/img/no_pic.png'}}" mode="aspectFill" class="row-img margin-top-xs"></image>
+              </view>
+                <view class="desc row-info">
+                  <view class="text-black margin-left margin-top-sm overflow-2">{{item.spuName}}</view>
+                  <view class="text-gray text-sm margin-top-sm overflow-2" wx:if="{{item.specInfo}}">{{item.specInfo}}</view>
+                  <view class="flex justify-between">
+                    <view class="text-bold text-gray margin-top-sm margin-left-xs padding-lr-sm font-weight">数量</view>
+                    <view class="text-black text-sm margin-top-sm margin-right-xs padding-lr-sm">x{{item.quantity}}</view>
+                  </view>
+                </view>
+            </view>
+          </navigator>
+        </view>
+        <view class="cu-item margin-top-xs">
+            <text class="text-gray font-weight">订单金额</text>
+          <view class="action">
+            <text class="text-price">{{orderInfo.salesPrice}}</text>
+          </view>
+        </view>
+        <view class="cu-item margin-top-xs">
+            <text class="text-gray font-weight">运费金额</text>
+          <view class="action">
+            + <text class="text-price">{{orderInfo.freightPrice}}</text>
+          </view>
+        </view>
+        <view class="cu-item margin-top-xs">
+            <text class="text-gray font-weight">支付金额</text>
+          <view class="action">
+            <text class="text-price text-xl text-blue text-bold">{{orderInfo.paymentPrice}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="cu-card mar-top-30">
+    <view class="cu-item">
+      <view class="cu-bar bg-white">
+        <view class="action">
+          <text class="cuIcon-titles text-black"></text>订单信息
+        </view>
+      </view>
+      <view class="margin flex">
+        <text class="flex-sub text-gray font-weight">订单编号</text>
+        <view class="action">{{orderInfo.orderNo}}
+          <button class="cu-btn sm" bindtap="copyData" data-data="{{orderInfo.orderNo}}">复制</button>
+        </view>
+      </view>
+      <view class="margin flex">
+        <text class="flex-sub text-gray font-weight">创建时间</text>
+        <view class="action">{{orderInfo.createTime}}</view>
+      </view>
+      <view class="margin flex" wx:if="{{orderInfo.paymentTime}}">
+        <text class="flex-sub text-gray font-weight">付款时间</text>
+        <view class="action">{{orderInfo.paymentTime}}</view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="cu-card mar-top-30" wx:if="{{orderInfo.orderLogistics.logisticsDesc}}">
+    <view class="cu-item">
+      <view class="cu-bar bg-white">
+        <view class="action">
+          <text class="cuIcon-titles text-orange "></text> 物流信息
+        </view>
+      </view>
+      <view class="margin flex">
+        <text class="flex-sub">快递公司</text>
+        <view class="flex-twice">
+          {{orderInfo.orderLogistics.logisticsDesc}}
+        </view>
+      </view>
+      <view class="margin flex">
+        <text class="flex-sub">快递单号</text>
+        <view class="flex-twice">
+          {{orderInfo.orderLogistics.logisticsNo}}
+          <button class="cu-btn sm" bindtap="copyData" data-data="{{orderInfo.orderLogistics.logisticsNo}}">复制</button>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="cu-card mar-top-30" wx:if="{{orderInfo.userMessage}}">
+    <view class="cu-item cu-form-group align-start">
+      <view class="title">给卖家留言</view>
+      <textarea readonly value="{{orderInfo.userMessage}}"></textarea>
+    </view>
+	</view>
+</view>
+<view class="cu-bar tabbar bg-white border foot">
+  <order-operate
+    class="response"
+    orderInfo="{{orderInfo}}"
+    callPay="{{callPay}}"
+    contact="true"
+    bind:orderCancel="orderCancel"
+    bind:orderReceive="orderCancel"
+    bind:orderDel="orderDel"
+    bind:unifiedOrder="unifiedOrder"
+  />
+</view>

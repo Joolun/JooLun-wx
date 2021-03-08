@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2018-2019
+  ~ All rights reserved, Designed By www.joolun.com
+  ~ 注意：
+  ~ 本软件为www.joolun.com开发研制，项目使用请保留此说明
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joolun.mall.mapper.GoodsSpuMapper">
+	<resultMap id="goodsSpuMap" type="com.joolun.mall.entity.GoodsSpu">
+		<id property="id" column="id"/>
+		<result property="spuCode" column="spu_code"/>
+		<result property="name" column="name"/>
+		<result property="sellPoint" column="sell_point"/>
+		<result property="description" column="description"/>
+		<result property="categoryFirst" column="category_first"/>
+		<result property="categorySecond" column="category_second"/>
+		<result property="picUrls" column="pic_urls"/>
+		<result property="shelf" column="shelf"/>
+		<result property="sort" column="sort"/>
+		<result property="salesPrice" column="sales_price"/>
+		<result property="marketPrice" column="market_price"/>
+		<result property="costPrice" column="cost_price"/>
+		<result property="stock" column="stock"/>
+		<result property="saleNum" column="sale_num"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="delFlag" column="del_flag"/>
+	</resultMap>
+
+	<resultMap id="goodsSpuMap1" extends="goodsSpuMap" type="com.joolun.mall.entity.GoodsSpu">
+
+	</resultMap>
+
+	<resultMap id="goodsSpuMap2" extends="goodsSpuMap" type="com.joolun.mall.entity.GoodsSpu">
+
+	</resultMap>
+
+	<resultMap id="goodsSpuMap3" extends="goodsSpuMap" type="com.joolun.mall.entity.GoodsSpu">
+
+	</resultMap>
+
+	<resultMap id="goodsSpuMap4" extends="goodsSpuMap" type="com.joolun.mall.entity.GoodsSpu">
+
+	</resultMap>
+
+	<sql id="goodsSpuSql">
+		goods_spu.`id`,
+		goods_spu.`spu_code`,
+		goods_spu.`name`,
+		goods_spu.`sell_point`,
+		goods_spu.`description`,
+		goods_spu.`category_first`,
+		goods_spu.`category_second`,
+		goods_spu.`pic_urls`,
+		goods_spu.`shelf`,
+		goods_spu.`sort`,
+		goods_spu.`sales_price`,
+		goods_spu.`market_price`,
+		goods_spu.`cost_price`,
+		goods_spu.`stock`,
+		goods_spu.`sale_num`,
+		goods_spu.`create_time`,
+		goods_spu.`update_time`,
+		goods_spu.`del_flag`
+	</sql>
+
+	<sql id="goodsSpuSql2">
+		goods_spu.`id`,
+		goods_spu.`spu_code`,
+		goods_spu.`name`,
+		goods_spu.`sell_point`,
+		null `description`,
+		goods_spu.`category_first`,
+		goods_spu.`category_second`,
+		goods_spu.`pic_urls`,
+		goods_spu.`shelf`,
+		goods_spu.`sort`,
+		goods_spu.`sales_price`,
+		goods_spu.`market_price`,
+		goods_spu.`cost_price`,
+		goods_spu.`stock`,
+		goods_spu.`sale_num`,
+		goods_spu.`create_time`,
+		goods_spu.`update_time`,
+		goods_spu.`del_flag`
+	</sql>
+
+	<select id="selectPage1" resultMap="goodsSpuMap">
+		SELECT
+		<include refid="goodsSpuSql2"/>
+		FROM goods_spu goods_spu
+		<where>
+			<if test="query.shelf != null">
+				AND goods_spu.`shelf` = #{query.shelf}
+			</if>
+			<if test="query.categorySecond != null">
+				AND goods_spu.`category_second` = #{query.categorySecond}
+			</if>
+			<if test="query.name != null">
+				AND goods_spu.`name` LIKE CONCAT('%',#{query.name},'%')
+			</if>
+			<if test="query.spuCode != null">
+				AND goods_spu.`spu_code` = #{query.spuCode}
+			</if>
+		</where>
+	</select>
+
+	<select id="selectById1" resultMap="goodsSpuMap1">
+		SELECT
+		<include refid="goodsSpuSql"/>
+		FROM goods_spu goods_spu
+		WHERE goods_spu.`id` = #{id}
+	</select>
+
+	<select id="selectById2" resultMap="goodsSpuMap2">
+		SELECT
+			<include refid="goodsSpuSql"/>
+		FROM goods_spu goods_spu
+		WHERE goods_spu.`id` = #{id}
+	</select>
+
+	<select id="selectOneByShoppingCart" resultMap="goodsSpuMap3">
+		SELECT
+			<include refid="goodsSpuSql2"/>
+		FROM goods_spu goods_spu
+		WHERE goods_spu.`id` = #{id}
+	</select>
+
+
+	<select id="selectPage2" resultMap="goodsSpuMap3">
+		SELECT
+		<include refid="goodsSpuSql2"/>
+		FROM goods_spu goods_spu
+		<where>
+			<if test="query.shelf != null">
+				AND goods_spu.`shelf` = #{query.shelf}
+			</if>
+			<if test="query.categorySecond != null">
+				AND goods_spu.`category_second` = #{query.categorySecond}
+			</if>
+			<if test="query.name != null">
+				AND goods_spu.`name` LIKE CONCAT('%',#{query.name},'%')
+			</if>
+		</where>
+	</select>
+
+	<select id="selectById4" resultMap="goodsSpuMap4">
+		SELECT
+		<include refid="goodsSpuSql"/>
+		FROM goods_spu goods_spu
+		WHERE goods_spu.`id` = #{id}
+	</select>
+</mapper>

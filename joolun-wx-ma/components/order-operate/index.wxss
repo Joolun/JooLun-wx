@@ -1,0 +1,29 @@
+@import "/app.wxss";
+.service{
+  background-color: #13b229 !important; 
+  width:160rpx;
+}
+.delete-order{
+  background-color: #2d2d2f !important; 
+  width:200rpx;
+}
+.cancel-order{
+  background-color: #2d2d2f !important; 
+  width:200rpx;
+}
+.check-logistics{
+  background-color: #2d2d2f !important; 
+  width:200rpx;
+}
+.payment{
+  background-color: #2967ff !important; 
+  width:200rpx;
+}
+.confirm-goods{
+  background-color: #2967ff !important; 
+  width:200rpx;
+}
+.evaluation{
+  background-color: #2d2d2f !important; 
+  width:200rpx;
+}

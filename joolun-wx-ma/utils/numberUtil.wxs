@@ -1,0 +1,38 @@
+//数字工具
+var numberUtil = {
+  numberFormat: function (value,num) {//小数点精确到指定位数
+    return parseFloat(value.toFixed(num))
+  },
+  numberSubtract: function (value1, value2) {//减法运算value1-value2
+    var v = parseFloat(value1) - parseFloat(value2)
+    return parseFloat(v.toFixed(2))
+  },
+  numberAddition: function (value1, value2) {//加法运算value1+value2
+    var v = parseFloat(value1) + parseFloat(value2)
+    return parseFloat(v.toFixed(2))
+  },
+  getAreaDistance: function (lat1, lng1, lat2, lng2) {//计算经纬距离
+    lat1 = lat1 || 0;
+    lng1 = lng1 || 0;
+    lat2 = lat2 || 0;
+    lng2 = lng2 || 0;
+    if (!lat1  || !lng1 ){
+      return '0'
+    }
+    var rad1 = lat1 * Math.PI / 180.0;
+    var rad2 = lat2 * Math.PI / 180.0;
+    var a = rad1 - rad2;
+    var b = lng1 * Math.PI / 180.0 - lng2 * Math.PI / 180.0;
+    var r = 6378137;
+    var rs = r * 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) + Math.cos(rad1) * Math.cos(rad2) * Math.pow(Math.sin(b / 2), 2)))
+    rs = rs / 1000
+    rs = rs.toFixed(2)
+    return rs
+  }
+}
+module.exports = {//暴露接口调用
+  numberFormat: numberUtil.numberFormat,
+  numberSubtract: numberUtil.numberSubtract,
+  numberAddition: numberUtil.numberAddition,
+  getAreaDistance: numberUtil.getAreaDistance
+}

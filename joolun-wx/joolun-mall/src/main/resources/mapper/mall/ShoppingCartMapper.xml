@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2018-2019
+  ~ All rights reserved, Designed By www.joolun.com
+  ~ 注意：
+  ~ 本软件为www.joolun.com开发研制，项目使用请保留此说明
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joolun.mall.mapper.ShoppingCartMapper">
+
+	<resultMap id="shoppingCartMap" type="com.joolun.mall.entity.ShoppingCart">
+		<id property="id" column="id"/>
+		<result property="delFlag" column="del_flag"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="userId" column="user_id"/>
+		<result property="spuId" column="spu_id"/>
+		<result property="quantity" column="quantity"/>
+		<result property="addPrice" column="add_price"/>
+		<result property="spuName" column="spu_name"/>
+		<result property="picUrl" column="pic_url"/>
+	</resultMap>
+	<resultMap id="shoppingCartMap2" extends="shoppingCartMap" type="com.joolun.mall.entity.ShoppingCart">
+		<collection property="goodsSpu" ofType="com.joolun.mall.entity.GoodsSpu"
+					select="com.joolun.mall.mapper.GoodsSpuMapper.selectOneByShoppingCart"
+					column="{id=spu_id}">
+		</collection>
+	</resultMap>
+
+	<sql id="shoppingCartSql2">
+		obj.`id`,
+		obj.`del_flag`,
+		obj.`create_time`,
+		obj.`update_time`,
+		obj.`user_id`,
+		obj.`spu_id`,
+		obj.`quantity`,
+		obj.`add_price`,
+		obj.`spu_name`,
+		obj.`pic_url`
+	</sql>
+
+	<select id="selectPage2" resultMap="shoppingCartMap2">
+		SELECT
+			<include refid="shoppingCartSql2"/>
+		FROM shopping_cart obj
+		<where>
+			<if test="query.userId != null and query.userId != ''">
+				and obj.`user_id` = #{query.userId}
+			</if>
+		</where>
+	</select>
+</mapper>

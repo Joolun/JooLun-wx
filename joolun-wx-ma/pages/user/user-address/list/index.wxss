@@ -1,0 +1,7 @@
+.loc-content{
+  width: calc(100% - 96rpx - 60rpx - 80rpx)!important;
+  left: 126rpx!important
+}
+.loc-info{
+  line-height: 1.4em
+}
