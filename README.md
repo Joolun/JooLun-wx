@@ -10,7 +10,7 @@
 * 权限认证使用Jwt，支持多终端认证系统。
 * 支持加载动态权限菜单，多方式轻松权限控制。
 * 高效率开发，使用代码生成器可以一键生成前后端代码。
-* 开源版不提供人工服务，遇到问题或发现bug请到码云上发[Issues](https://gitee.com/joolun/JooLun-wx/issues)提出来，我们会定期处理
+* 开源版不提供人工服务，遇到问题或发现bug请统一到码云gitee上发[Issues](https://gitee.com/joolun/JooLun-wx/issues)提出来，我们会定期处理
 * 请按照自己业务需求进行测试后再使用，因框架问题造成的任何损失JooLun概不负责
 * 阿里云优惠券：[点我领取](https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=ktp7i3ac)
 
