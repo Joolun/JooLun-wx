@@ -1,7 +1,6 @@
 ### [阿里云领取￥2000红包，服务器低至￥91.80/年](https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=ktp7i3ac)
 ### 如果对您有帮助，记得点右上角 "Star" ❤️ 支持一下哦 谢谢！
-### 该项目已实时托管置Gitee，了解项目最新动态请移步https://gitee.com/joolun/JooLun-wx 
-### 遇到问题或发现bug请统一到码云gitee上发[Issues](https://gitee.com/joolun/JooLun-wx/issues)提出来，我们会定期处理
+#### 该项目已实时托管置Gitee，了解项目最新动态请移步https://gitee.com/joolun/JooLun-wx ;遇到问题或发现bug请统一到码云gitee发[Issues](https://gitee.com/joolun/JooLun-wx/issues)提出来，我们会定期处理
 ## 平台简介
 * 基于[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue)二开，集成了[MybatisPlus](https://github.com/baomidou/mybatis-plus)、[Avue](https://gitee.com/smallweigit/avue)、[WxJava](https://gitee.com/binary/weixin-java-tools) SDK
 * MIT开源的微信二开利器，放心使用
@@ -12,7 +11,7 @@
 * 权限认证使用Jwt，支持多终端认证系统。
 * 支持加载动态权限菜单，多方式轻松权限控制。
 * 高效率开发，使用代码生成器可以一键生成前后端代码。
-* 开源版不提供人工服务，遇到问题或发现bug请统一到码云gitee上发[Issues](https://gitee.com/joolun/JooLun-wx/issues)提出来，我们会定期处理
+* 开源版不提供人工服务，遇到问题或发现bug请统一到码云gitee发[Issues](https://gitee.com/joolun/JooLun-wx/issues)提出来，我们会定期处理
 * 请按照自己业务需求进行测试后再使用，因框架问题造成的任何损失JooLun概不负责
 * 阿里云优惠券：[点我领取](https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=ktp7i3ac)
 
