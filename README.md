@@ -1,6 +1,6 @@
 ### [阿里云领取￥2000红包，服务器低至￥91.80/年](https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=ktp7i3ac)
 ### 如果对您有帮助，记得点右上角 "Star" ❤️ 支持一下哦 谢谢！
-#### 该项目已实时托管置Gitee，了解项目最新动态请移步https://gitee.com/joolun/JooLun-wx ;遇到问题或发现bug请统一到码云gitee发[Issues](https://gitee.com/joolun/JooLun-wx/issues)提出来，我们会定期处理
+#### 该项目已实时托管置Gitee，了解项目最新动态请移步https://gitee.com/joolun/JooLun-wx ；遇到问题或发现bug请统一到Gitee发[Issues](https://gitee.com/joolun/JooLun-wx/issues)提出来，我们会定期处理
 ## 平台简介
 * 基于[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue)二开，集成了[MybatisPlus](https://github.com/baomidou/mybatis-plus)、[Avue](https://gitee.com/smallweigit/avue)、[WxJava](https://gitee.com/binary/weixin-java-tools) SDK
 * MIT开源的微信二开利器，放心使用
