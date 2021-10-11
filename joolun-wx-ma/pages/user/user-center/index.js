@@ -26,8 +26,6 @@ Page({
     })
     this.wxUserGet()
     this.orderCountAll()
-  },
-  onLoad(){
     if(this.data.config.adEnable){
       // 在页面中定义插屏广告
       let interstitialAd = null
@@ -48,6 +46,9 @@ Page({
       }
     }
   },
+  onLoad(){
+    
+  },
   /**
    * 小程序设置
   */
@@ -58,9 +59,11 @@ Page({
       }
     })
   },
-  agreeGetUser(e) {
-    if (e.detail.errMsg == 'getUserInfo:ok') {
-      app.api.wxUserSave(e.detail)
+  getUserProfile(e) {
+    wx.getUserProfile({
+      desc: '用于完善会员资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+      success: (detail) => {
+        app.api.wxUserSave(detail)
         .then(res => {
           let wxUser = res.data
           this.setData({
@@ -69,7 +72,8 @@ Page({
           app.globalData.wxUser = wxUser
           this.wxUserGet()
         })
-    }
+      }
+    })
   },
   //获取商城用户信息
   wxUserGet(){

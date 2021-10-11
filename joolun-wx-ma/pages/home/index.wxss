@@ -1,9 +1,5 @@
-.list-item{
-  background-color: #fff
-}
-
 .wrapper-list{
-  white-space:nowrap;padding:0rpx 20rpx 50rpx 0rpx;
+  white-space:nowrap;padding:0rpx 0rpx 50rpx 0rpx;
 }
 
 .wrapper-list .item{
@@ -13,7 +9,7 @@
   margin: 60rpx 0 60rpx 50rpx;
   padding: 10rpx 30rpx;
   border-radius:25rpx;
-	box-shadow: 0rpx 0rpx 50rpx 10rpx rgba(211, 211, 211, 1);
+	box-shadow: 0rpx 0rpx 60rpx rgba(211, 211, 211, 1);
 }
 
 .wrapper-list .item:nth-last-child(1){
@@ -42,18 +38,39 @@
 
 .adsec-icon{
   height: 80rpx;
-  line-height: 80rpx;
+  line-height: 40rpx;
+}
+
+.search-form{
+  border-radius: 20rpx;
 }
 
 .swiper_container {
   height: 80rpx;
   width: 95%;
   line-height: 80rpx;
+  line-height: 40rpx;
 }
 
 .screen-swiper{
-  height:600rpx;
-  margin-top: 100rpx;
+  height: 480rpx;
+}
+
+.swiper-image{
+  width: 96% !important;
+  height:350rpx !important;
+  margin:40rpx auto !important;
+  border-radius: 20rpx;
+  box-shadow: 0rpx 10rpx 60rpx rgba(211, 211, 211, 1);
+}
+
+.nav-image{
+  width:100rpx;
+  height:100rpx
+}
+
+.text-black{
+  color: #000 !important;
 }
 
 .goods-image{
@@ -66,14 +83,7 @@
   overflow:hidden;
 }
 
-.goods-buy{
-  margin-left: 500rpx;
-  margin-top: -120rpx;
-  padding-bottom: 50rpx;
-}
-
 .buy-now{
-  background-color: #2967ff !important;
-  font-weight:300;
-  width:220rpx;
+  color:#2967ff;
+  width:160rpx;
 }

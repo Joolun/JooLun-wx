@@ -1,10 +1,21 @@
 /**index.wxss**/
 page{
-  background-color:white;
+  background-color:#f3f4f7 !important;
 }
 
 .order-list{
-  box-shadow: 0rpx 0rpx 50rpx 10rpx rgba(211, 211, 211, 0.5);
+  margin: auto;
+  border-radius: 40rpx;
+  background-color: white;
+}
+
+.order-list-2{
+  background-image: linear-gradient(#fff, #f3f4f7);
+}
+
+.order-image{
+  width: 80rpx;
+  height: 80rpx;
 }
 
 .userinfo {
@@ -29,8 +40,12 @@ page{
 }
 
 .address{
-  margin-top: 40rpx !important;
-  box-shadow: 0rpx 0rpx 50rpx 10rpx rgba(211, 211, 211, 0.5);
+  margin-top: 60rpx !important;
+}
+
+.address-image{
+  width: 100rpx;
+  height: 100rpx;
 }
 
 .head {
@@ -40,4 +55,8 @@ page{
 
 .titles-color{
   color:rgb(107, 107, 107);
+}
+
+.text-black{
+  color: #000 !important;
 }

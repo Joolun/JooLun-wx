@@ -9,9 +9,11 @@ export default {
   basePath: 'https://demo2.joolun.com/prod-api',
   //广告配置，小程序流量主：https://mp.weixin.qq.com/wxopen/frame
   //广告开关（true/false）
-  adEnable: false,
+  adEnable: true,
   //Banner广告ID
-  adBannerID: 'adunit-80d788ab8518b5b3',
+  adBannerID: 'adunit-9d021cb4da95d1d8',
   //插屏广告ID
-  adInsertScreenID: 'adunit-e7046daf3d8fdde5',
+  adInsertScreenID: 'adunit-2de35a3c8ce17ce8',
+  //激励式广告ID
+  adIncentiveID: 'adunit-c4029aba1e16094b',
 }

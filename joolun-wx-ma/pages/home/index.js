@@ -19,9 +19,10 @@ Page({
     goodsListNew: [],
     goodsListHot: [],
     swiperData: [
-      'http://joolun-open.oss-cn-zhangjiakou.aliyuncs.com/banner1.png',
-      'http://joolun-open.oss-cn-zhangjiakou.aliyuncs.com/banner2.png',
-      'http://joolun-open.oss-cn-zhangjiakou.aliyuncs.com/banner3.png'
+      'https://joolun-base-test.oss-cn-zhangjiakou.aliyuncs.com/1/material/c888e1d3-f542-4b4e-aa43-be9d50cc0696.jpg',
+      'https://joolun-base-test.oss-cn-zhangjiakou.aliyuncs.com/1/material/a5e3b9f4-f1fe-4bb2-b487-13f4395ef187.jpg',
+      'https://joolun-base-test.oss-cn-zhangjiakou.aliyuncs.com/1/material/c8fd87ff-ca5d-4f95-8f81-e99cae48b0f7.jpg',
+      'https://joolun-base-test.oss-cn-zhangjiakou.aliyuncs.com/1/material/bf176bd5-3487-4b61-8d30-1cc2ad95b8ac.jpg'
     ],
     cardCur: 0,
     noticeData: []

@@ -5,7 +5,7 @@
   - 本软件为www.joolun.com开发研制，项目使用请保留此说明
 -->
 <view class="cu-bar search bg-white fixed" style="box-shadow:none">
-  <view class="search-form round">
+  <view class="search-form">
     <text class="cuIcon-search"></text>
     <navigator class="response" hover-class='none' url='/pages/base/search/index'>
       <input type="text" placeholder="请输入商品名"></input>
@@ -13,46 +13,72 @@
   </view>
 </view>
 <view class="margin-top-bar bg-white">
-<navigator hover-class="none" url='/pages/goods/goods-detail/index?id=1355440649314263041'>
+<navigator hover-class="none" url='/pages/goods/goods-detail/index?id=1442505794278191105'>
   <swiper class="screen-swiper square-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500" bindchange="change" indicator-color="#cccccc" indicator-active-color="#676767">
-    <swiper-item wx:for="{{swiperData}}" wx:key="index">
-      <image src="{{item}}"></image>
+    <swiper-item wx:for="{{swiperData}}" wx:key="index" class="margin-top-sm">
+      <image class="swiper-image" src="{{item}}"></image>
     </swiper-item>
   </swiper>
 </navigator>
+<view class="cu-list grid no-border justify-around">
+  <navigator class="cu-item" hover-class="none" url='/pages/goods/goods-detail/index?id=1442505794278191105'>
+    <image class="nav-image" src="/public/img/6-1.png"></image>
+		<text class="text-black">iPhone</text>
+  </navigator>
+  <navigator class="cu-item" hover-class="none" url='/pages/goods/goods-detail/index?id=1442512382615416833'>
+    <image class="nav-image" src="/public/img/6-2.png"></image>
+		<text class="text-black">iPad</text>
+  </navigator>
+  <navigator class="cu-item" hover-class="none" url='/pages/goods/goods-detail/index?id=1442512958581436418'>
+    <image class="nav-image" src="/public/img/6-3.png"></image>
+		<text class="text-black">Mac</text>
+  </navigator>
+  <navigator class="cu-item" hover-class="none" url='/pages/goods/goods-detail/index?id=1442513594978988034'>
+    <image class="nav-image" src="/public/img/6-4.png"></image>
+		<text class="text-black">Watch</text>
+  </navigator>
+  <navigator class="cu-item" hover-class="none" url='/pages/goods/goods-detail/index?id=1442514202062548994'>
+    <image class="nav-image" src="/public/img/6-5.png"></image>
+		<text class="text-black">AirPods</text>
+  </navigator>
+</view>
 <!-- 公告 -->
 <view class="adsec light bg-white margin-top-sm">
   <swiper class="swiper_container" autoplay="true" circular="true" interval="6000">
-    <swiper-item >
-      <view class="bg-white padding-left text-black">
+    <swiper-item>
+      <view class="bg-white padding-left-sm text-black">
         <text class="cu-tag line-black text-bold">公告</text>
         <text class="details margin-left">再见2020，你好2021！</text>
       </view>
     </swiper-item>
     <swiper-item >
-      <view class="bg-white padding-left text-black">
+      <view class="bg-white padding-left-sm text-black">
         <text class="cu-tag line-black text-bold">注意</text>
         <text class="details margin-left">演示商城，不发货不退款</text>
       </view>
     </swiper-item>
   </swiper>
 </view>
-<navigator hover-class="none" url='/pages/goods/goods-detail/index?id=1355440649314263041'>
-  <image class="margin-top-sm goods-image" src="http://joolun-open.oss-cn-zhangjiakou.aliyuncs.com/goods-1.png"></image>
-  <view class="flex justify-between margin-top goods-buy">
-    <view class="cu-btn round text-white buy-now">立即购买</view>
+
+<navigator hover-class="none" url='/pages/goods/goods-detail/index?id=1442505794278191105'>
+  <image class="margin-top-sm goods-image" src="https://joolun-base-test.oss-cn-zhangjiakou.aliyuncs.com/1/material/055f3304-13d1-43c8-8547-326cc3efc7fc.jpg"></image>
+  <view class="flex justify-between margin-top-sm align-center padding-lr">
+    <view class="text-black">RMB 7999 起</view>
+    <view class="cu-btn round bg-gray text-white buy-now">购买</view>
   </view>
 </navigator>
-<navigator hover-class="none" url='/pages/goods/goods-detail/index?id=1355412081553190914'>
-  <image class="margin-top-sm goods-image" src="http://joolun-open.oss-cn-zhangjiakou.aliyuncs.com/goods-2.png"></image>
-  <view class="flex justify-between margin-top goods-buy">
-    <view class="cu-btn round text-white buy-now">立即购买</view>
+<navigator hover-class="none" url='/pages/goods/goods-detail/index?id=1442512050032275457'>
+  <image class="margin-top-xl goods-image" src="https://joolun-base-test.oss-cn-zhangjiakou.aliyuncs.com/1/material/2f290591-8351-4be8-a9ab-6277d007b8c7.jpg"></image>
+  <view class="flex justify-between margin-top-sm align-center padding-lr padding-bottom">
+    <view class="text-black">RMB 3799 起</view>
+    <view class="cu-btn round bg-gray text-white buy-now">购买</view>
   </view>
 </navigator>
-  <view class='wrapper bg-white margin-top-sm'>
+<!--<ad unit-id="{{config.adBannerID}}" wx:if="{{config.adEnable}}"></ad>-->
+  <view class='wrapper bg-white margin-top-xl'>
     <view class="cu-bar text-black">
       <view class='action margin-left-sm'>
-        <text class="text-xl text-bold">热销单品</text>
+        <text class="text-xxl text-bold">热销单品</text>
       </view>
       <navigator hover-class="none" url='/pages/goods/goods-list/index?type=2' class='action'>
         更多<text class='cuIcon-right'></text>
@@ -68,8 +94,8 @@
               <image src="{{item.picUrls[0] ? item.picUrls[0] : '/public/img/no_pic.png'}}"></image>
             </view>
             <view class="flex justify-between margin-top">
-              <view class="text-sm padding-top-sm">购买 <text class="text-price">{{item.salesPrice}}</text> 起</view>
-              <view class="cu-btn round shadow-blur text-white buy-now">立即购买</view>
+              <view class="text-df padding-top-sm"><text class="text-price">{{item.salesPrice}}</text> 起</view>
+              <view class="cu-btn round shadow-blur text-white buy-now">购买</view>
             </view>
           </navigator>
         </block>  
@@ -78,7 +104,7 @@
   </view>
   <view class="cu-bar">
       <view class='action'>
-        <text class="text-xl text-bold text-black">猜你喜欢</text> 
+        <text class="text-xxl text-bold text-black">猜你喜欢</text> 
       </view>
     </view>
   <goods-card goodsList="{{goodsList}}"/>

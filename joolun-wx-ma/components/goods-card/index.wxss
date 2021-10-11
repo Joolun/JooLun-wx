@@ -7,13 +7,13 @@
   padding: 20rpx;
 }
 .goods-box {
-  width: 336rpx;
+  width: 346rpx;
   height: 560rpx;
   background-color: #fff;
   overflow: hidden;
-  margin-top: 40rpx;
+  margin-bottom: 40rpx;
   border-radius: 20rpx;
-  box-shadow: 0rpx 0rpx 50rpx 10rpx rgba(211, 211, 211, 1);
+	box-shadow: 0rpx 0rpx 60rpx rgba(211, 211, 211, 1);
 }
 .goods-box .img-box {
   width: 100%;

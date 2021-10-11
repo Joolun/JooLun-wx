@@ -17,7 +17,7 @@
     </view>
   </view>
 </view>
-<view class="cu-bar justify-center bg-white fixed" style="margin-top:80rpx">
+<view class="cu-bar justify-center bg-white fixed" style="margin-top:80rpx;box-shadow:none;">
   <view class="grid response text-center align-start">
     <view class="flex-sub padding-sm margin-xs radius text-blue text-bold">{{title}}</view>
     <view class="flex-sub padding-sm margin-xs radius">
@@ -47,7 +47,7 @@
     </view>
   </view>
 </view>
-<view style="margin-top:160rpx">
+<view style="margin-top:200rpx">
   <view wx:if="{{viewType}}">
     <goods-card goodsList="{{goodsList}}"/>
   </view>
