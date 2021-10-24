@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import com.joolun.common.config.JooLunConfig;
 import com.joolun.common.exception.DemoModeException;
 import com.joolun.common.utils.SecurityUtils;
 import com.joolun.common.utils.ServletUtils;
@@ -104,23 +105,25 @@ public class BaseController
     @ModelAttribute
     public void init(HttpServletRequest httpServletRequest, HttpServletResponse response) throws IOException
     {
-        Long userId = SecurityUtils.getLoginUser().getUser().getUserId();
-        if(SecurityUtils.isAdmin(userId)){//管理员直接放行
-            return;
-        }
-        String url = ServletUtils.getRequest().getRequestURI();
+        if(JooLunConfig.isDemoEnabled()){//演示模式，只有admin能操作
+            Long userId = SecurityUtils.getLoginUser().getUser().getUserId();
+            if(SecurityUtils.isAdmin(userId)){//管理员直接放行
+                return;
+            }
+            String url = ServletUtils.getRequest().getRequestURI();
 
-        // 需要放开的url
-        if (StringUtils.isNotEmpty(url) && (url.contains("/demo") || url.contains("/tool/gen")))
-        {
-            return;
-        }
+            // 需要放开的url
+            if (StringUtils.isNotEmpty(url) && (url.contains("/demo") || url.contains("/tool/gen")))
+            {
+                return;
+            }
 
-        // 增删改 请求
-        if ("DELETE".equals(httpServletRequest.getMethod()) || "POST".equals(httpServletRequest.getMethod())
-                || "PUT".equals(httpServletRequest.getMethod()))
-        {
-            throw new DemoModeException();
+            // 增删改 请求
+            if ("DELETE".equals(httpServletRequest.getMethod()) || "POST".equals(httpServletRequest.getMethod())
+                    || "PUT".equals(httpServletRequest.getMethod()))
+            {
+                throw new DemoModeException();
+            }
         }
     }
 }

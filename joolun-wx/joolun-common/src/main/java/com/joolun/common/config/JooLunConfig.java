@@ -22,7 +22,7 @@ public class JooLunConfig
     private String copyrightYear;
 
     /** 实例演示开关 */
-    private boolean demoEnabled;
+    private static boolean demoEnabled;
 
     /** 上传路径 */
     private static String profile;
@@ -60,14 +60,14 @@ public class JooLunConfig
         this.copyrightYear = copyrightYear;
     }
 
-    public boolean isDemoEnabled()
+    public static boolean isDemoEnabled()
     {
         return demoEnabled;
     }
 
-    public void setDemoEnabled(boolean demoEnabled)
+    public  void setDemoEnabled(boolean demoEnabled)
     {
-        this.demoEnabled = demoEnabled;
+        JooLunConfig.demoEnabled = demoEnabled;
     }
 
     public static String getProfile()

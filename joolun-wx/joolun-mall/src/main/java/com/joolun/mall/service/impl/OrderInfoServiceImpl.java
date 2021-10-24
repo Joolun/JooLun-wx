@@ -115,6 +115,16 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 	public void orderCancel(OrderInfo orderInfo) {
 		if(CommonConstants.NO.equals(orderInfo.getIsPay()) && !OrderInfoEnum.STATUS_5.getValue().equals(orderInfo.getStatus())){//校验
 			orderInfo.setStatus(OrderInfoEnum.STATUS_5.getValue());
+			//回滚库存
+			List<OrderItem> listOrderItem = orderItemService.list(Wrappers.<OrderItem>lambdaQuery()
+					.eq(OrderItem::getOrderId,orderInfo.getId()));
+			listOrderItem.forEach(orderItem -> {
+				GoodsSpu goodsSpu = goodsSpuService.getById(orderItem.getSpuId());
+				if (goodsSpu != null) {
+					goodsSpu.setStock(goodsSpu.getStock() + orderItem.getQuantity());
+					goodsSpuService.updateById(goodsSpu);//更新回滚库存
+				}
+			});
 			baseMapper.updateById(orderInfo);
 		}
 	}
@@ -149,7 +159,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 		placeOrderDTO.getSkus().forEach(orderGoods -> {//过滤
 			GoodsSpu goodsSpu = goodsSpuService.getOne(Wrappers.<GoodsSpu>lambdaQuery()
 					.eq(GoodsSpu::getId,orderGoods.getSpuId())
-					.eq(GoodsSpu::getShelf, CommonConstants.YES));
+					.eq(GoodsSpu::getShelf, CommonConstants.YES)
+					.ge(GoodsSpu::getStock,orderGoods.getQuantity()));
 			if(goodsSpu != null){
 				OrderItem orderItem = new OrderItem();
 				orderItem.setOrderId(orderInfo.getId());
