@@ -33,7 +33,7 @@
 |  商业版  |  SpringCloud微服务、Nacos、Sentinel、vue前后端分离、uniapp等  |  功能强大、模块完善，多样化的营销工具，商城自定义拖拽装修，支持阿里oss、七牛云、腾讯cos、minio多种存储方式，多租户（多商城）、多店铺、多公众号、多小程序等等  |  小程序、公众号h5、安卓app、ios app、商户端app等  |  https://www.joolun.com/  |
 
 ### QQ群：
-* * 没有QQ群，有问题可以直接发[Issues](https://gitee.com/joolun/JooLun-wx/issues)
+* 没有QQ群，有问题可以直接发[Issues](https://gitee.com/joolun/JooLun-wx/issues)
 
 ### 系统需求
 
