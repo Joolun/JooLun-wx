@@ -1,4 +1,4 @@
-### [![输入图片说明](https://images.gitee.com/uploads/images/2021/0622/110750_59b42ced_5079715.jpeg "n_community_0l.jpg")](https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=ktp7i3ac)<br>[阿里云领取￥2000红包，服务器低至￥91.80/年](https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=ktp7i3ac)
+### [![输入图片说明](https://images.gitee.com/uploads/images/2021/0622/110750_59b42ced_5079715.jpeg "n_community_0l.jpg")](https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=wnw8gle1)<br>[阿里云领取￥2000红包，服务器低至￥91.80/年](https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=wnw8gle1)
 ### 如果对您有帮助，记得点右上角 "Star" ❤️ 支持一下哦 谢谢！
 #### 该项目已实时托管置Gitee，了解项目最新动态请移步https://gitee.com/joolun/JooLun-wx ；遇到问题或发现bug请统一到Gitee发[Issues](https://gitee.com/joolun/JooLun-wx/issues)提出来，我们会定期处理
 ### 平台简介
@@ -13,7 +13,7 @@
 * 高效率开发，使用代码生成器可以一键生成前后端代码。
 * 开源版不提供人工服务，遇到问题或发现bug请统一到码云gitee发[Issues](https://gitee.com/joolun/JooLun-wx/issues)提出来，我们会定期处理
 * 请按照自己业务需求进行测试后再使用，因框架问题造成的任何损失JooLun概不负责
-* 阿里云优惠券：[点我领取](https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=ktp7i3ac)
+* 阿里云优惠券：[点我领取](https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=wnw8gle1)
 
 ### 开源版（MIT开源，可以免费使用，保留代码头部版权和代码原始作者即可），在线体验
 |  后台演示地址  |  商城演示二维码  |  包含终端  |
@@ -32,8 +32,8 @@
 |  开源版  |  RuoYi SpringBoot单应用   |  功能简单，单租户（单商城）、单公众号、单小程序  |  只有小程序  |  https://gitee.com/joolun/JooLun-wx  |
 |  商业版  |  SpringCloud微服务、Nacos、Sentinel、vue前后端分离、uniapp等  |  功能强大、模块完善，多样化的营销工具，商城自定义拖拽装修，支持阿里oss、七牛云、腾讯cos、minio多种存储方式，多租户（多商城）、多店铺、多公众号、多小程序等等  |  小程序、公众号h5、安卓app、ios app、商户端app等  |  https://www.joolun.com/  |
 
-### 官方QQ群：
-* <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=0b0NQL8Li2G1leiLyi-kqaghfnJhwRxO&jump_from=webapi"><img border="0" src="pub.idqqimg.com/wpa/images/group.png" alt="JooLun小程序商城开源版" title="JooLun小程序商城开源版"></a>：838130518
+### QQ群：
+* 没有QQ群，有问题可以直接发[Issues](https://gitee.com/joolun/JooLun-wx/issues)
 
 ### 系统需求
 
