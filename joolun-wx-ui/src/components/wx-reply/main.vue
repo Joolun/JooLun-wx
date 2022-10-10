@@ -123,12 +123,12 @@
         <div v-if="!objData.content">
           <el-row style="text-align: center">
             <el-col :span="24" class="col-select2">
-              <el-button type="success" @click="openMaterial">素材库选择<i class="el-icon-circle-check el-icon--right"></i></el-button>
+              <el-button type="success" @click="openMaterial">{{newsType == '1' ? '选择已发布图文' : '选择草稿箱图文'}}<i class="el-icon-circle-check el-icon--right"></i></el-button>
             </el-col>
           </el-row>
         </div>
         <el-dialog title="选择图文" :visible.sync="dialogNewsVisible" width="90%" append-to-body>
-          <WxMaterialSelect :objData="objData" @selectMaterial="selectMaterial"></WxMaterialSelect>
+          <WxMaterialSelect :objData="objData" @selectMaterial="selectMaterial" :newsType="newsType"></WxMaterialSelect>
         </el-dialog>
       </el-row>
     </el-tab-pane>
@@ -189,7 +189,12 @@
     props: {
       objData:{
         type:Object
-      }
+      },
+      //图文类型：1、已发布图文；2、草稿箱图文
+      newsType:{
+        type: String,
+        default: "1"
+      },
     },
     data() {
       return {
@@ -217,7 +222,7 @@
           "title":'',
           "introduction":''
         },
-        actionUrl: '/dev-api/wxmaterial/materialFileUpload',
+        actionUrl: process.env.VUE_APP_BASE_API +'/wxmaterial/materialFileUpload',
         headers: {
           Authorization: 'Bearer ' + getToken()
         }

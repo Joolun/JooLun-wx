@@ -250,7 +250,6 @@
             handleUpdate: function (row, index, done, loading) {
                 row.categoryFirst = row.categoryId[0]
                 row.categorySecond = row.categoryId[1]
-                row.picUrls = row.picUrls?row.picUrls.split(','):''
                 putObj(row).then(data => {
                     this.$message({
                         showClose: true,
@@ -272,7 +271,6 @@
             handleSave: function (row, done, loading) {
                 row.categoryFirst = row.categoryId[0]
                 row.categorySecond = row.categoryId[1]
-                row.picUrls = row.picUrls?row.picUrls.split(','):''
                 addObj(row).then(data => {
                     this.$message({
                         showClose: true,

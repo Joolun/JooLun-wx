@@ -12,6 +12,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.joolun.common.sensitive.Sensitive;
+import com.joolun.common.sensitive.SensitiveTypeEnum;
 import com.joolun.mall.enums.OrderLogisticsEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -68,6 +70,7 @@ public class OrderLogistics extends Model<OrderLogistics> {
    * 电话号码
    */
 	@ApiModelProperty(value = "电话号码")
+	@Sensitive(type = SensitiveTypeEnum.MOBILE_PHONE)
     private String telNum;
     /**
    * 详细地址

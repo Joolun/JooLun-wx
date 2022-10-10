@@ -88,7 +88,7 @@ SOFTWARE.
                                         </div>
                                         <p class="blue">tips:需要和公众号进行关联才可以把小程序绑定带微信菜单上哟！</p>
                                     </div>
-                                    <div class="configur_content" v-if="tempObj.type == 'view_limited'">
+                                    <div class="configur_content" v-if="tempObj.type == 'article_view_limited'">
                                         <el-row>
                                             <div class="select-item" v-if="tempObj && tempObj.content && tempObj.content.articles">
                                                 <WxNews :objData="tempObj.content.articles"></WxNews>
@@ -164,7 +164,7 @@ SOFTWARE.
                     value: 'click',
                     label: '点击回复'
                 }, {
-                    value: 'view_limited',
+                    value: 'article_view_limited',
                     label: '跳转图文消息'
                 }, {
                     value: 'scancode_push',
@@ -216,7 +216,7 @@ SOFTWARE.
                     })
                 }
                 this.dialogNewsVisible = false
-                this.tempObj.media_id = item.mediaId
+                this.tempObj.article_id = item.articleId
                 this.tempObj.mediaName = item.name
                 this.tempObj.url = item.url
                 item.mediaType = this.tempObj.mediaType
@@ -311,7 +311,7 @@ SOFTWARE.
                     this.$delete( item, 'pagepath')
                     this.$delete( item, 'url')
                     this.$delete( item, 'key')
-                    this.$delete( item, 'media_id')
+                    this.$delete( item, 'article_id')
                     this.$delete( item, 'textContent')
                     this.showConfigurContent = false
                 }

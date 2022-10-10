@@ -93,6 +93,7 @@ SOFTWARE.
                          :permission="permissionList"
                          :table-loading="tableLoading"
                          :option="tableOption3"
+                         @on-load="getPage"
                          @refresh-change="refreshChange"
                          @sort-change="sortChange"
                          @search-change="searchChange">

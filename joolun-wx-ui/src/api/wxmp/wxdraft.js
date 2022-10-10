@@ -25,7 +25,7 @@ import request from '@/utils/request'
 
 export function getPage(query) {
   return request({
-    url: '/wxmaterial/page',
+    url: '/wxdraft/page',
     method: 'get',
     params: query
   })
@@ -33,22 +33,23 @@ export function getPage(query) {
 
 export function addObj(obj) {
   return request({
-    url: '/wxmaterial/materialNews',
+    url: '/wxdraft',
     method: 'post',
     data: obj
   })
 }
 
+
 export function getObj(id) {
   return request({
-    url: '/wxmaterial/' + id,
+    url: '/wxdraft/' + id,
     method: 'get'
   })
 }
 
 export function delObj(query) {
   return request({
-    url: '/wxmaterial',
+    url: '/wxdraft',
     method: 'delete',
     params: query
   })
@@ -56,34 +57,15 @@ export function delObj(query) {
 
 export function putObj(obj) {
   return request({
-    url: '/wxmaterial',
+    url: '/wxdraft',
     method: 'put',
     data: obj
   })
 }
 
-export function getMaterialOther(query) {
+export function publish(id) {
   return request({
-    url: '/wxmaterial/materialOther',
-    method: 'get',
-    params: query,
-    responseType: 'blob'
-  })
-}
-
-export function getMaterialVideo(query) {
-  return request({
-    url: '/wxmaterial/materialVideo',
-    method: 'get',
-    params: query
-  })
-}
-
-export function  getTempMaterialOther(query) {
-  return request({
-    url: '/wxmaterial/tempMaterialOther',
-    method: 'get',
-    params: query,
-    responseType: 'blob'
+    url: '/wxdraft/publish/'+id,
+    method: 'post'
   })
 }

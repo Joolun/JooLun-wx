@@ -87,4 +87,5 @@ public class MenuButton implements Serializable {
 	 * 缩略图url
 	 */
 	private String repThumbUrl;
+	private String article_id;
 }

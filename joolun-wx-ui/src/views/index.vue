@@ -164,10 +164,10 @@
     </el-row>
     <el-row :gutter="20">
       <el-col :sm="24" :lg="24">
-        <a href="https://www.aliyun.com/minisite/goods?userCode=ktp7i3ac" target="_blank">
+        <a href="https://www.aliyun.com/minisite/goods?userCode=wnw8gle1" target="_blank">
           <img src="https://23592599.s21i.faiusr.com/2/ABUIABACGAAgyPjr9gUop57p5gIwyAE4fg.jpg.webp">
         </a>
-        <p><el-link href="https://www.aliyun.com/minisite/goods?userCode=ktp7i3ac" type="danger" target="_blank">阿里云领取￥2000红包，服务器低至￥91.80/年</el-link></p>
+        <p><el-link href="https://www.aliyun.com/minisite/goods?userCode=wnw8gle1" type="danger" target="_blank">阿里云领取￥2000红包，服务器低至￥91.80/年</el-link></p>
         <hr />
       </el-col>
     </el-row>

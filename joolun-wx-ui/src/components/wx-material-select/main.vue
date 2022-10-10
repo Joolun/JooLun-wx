@@ -100,6 +100,8 @@
   import { tableOptionVoice } from '@/const/crud/wxmp/wxmaterial_voice'
   import { tableOptionVideo } from '@/const/crud/wxmp/wxmaterial_video'
   import WxNews from '@/components/wx-news/main.vue'
+  import {getPage as getPageNews} from '@/api/wxmp/wxfreepublish'
+  import {getPage as getPageNewsDraft} from '@/api/wxmp/wxdraft'
 
   export default {
     name: "wxMaterialSelect",
@@ -109,7 +111,12 @@
     props: {
       objData:{
         type:Object
-      }
+      },
+      //图文类型：1、已发布图文；2、草稿箱图文
+      newsType:{
+        type: String,
+        default: "1"
+      },
     },
     data() {
       return {
@@ -141,17 +148,56 @@
       },
       getPage(page, params) {
         this.tableLoading = true
-        getPage(Object.assign({
-          current: page.currentPage,
-          size: page.pageSize,
-          type:this.objData.repType
-        }, params)).then(response => {
-          this.tableData = response.data.items
-          this.page.total = response.data.totalCount
-          this.page.currentPage = page.currentPage
-          this.page.pageSize = page.pageSize
-          this.tableLoading = false
-        })
+        if(this.objData.repType == 'news'){
+          if(this.newsType == '1'){
+            getPageNews(Object.assign({
+              current: page.currentPage,
+              size: page.pageSize,
+              appId:this.appId,
+            }, params)).then(response => {
+              let tableData = response.data.items
+              tableData.forEach(item => {
+                item.mediaId = item.articleId
+                item.content.articles = item.content.newsItem
+              })
+              this.tableData = tableData
+              this.page.total = response.data.totalCount
+              this.page.currentPage = page.currentPage
+              this.page.pageSize = page.pageSize
+              this.tableLoading = false
+            })
+          }else if(this.newsType == '2'){
+            getPageNewsDraft(Object.assign({
+              current: page.currentPage,
+              size: page.pageSize,
+              appId:this.appId,
+            }, params)).then(response => {
+              let tableData = response.data.items
+              tableData.forEach(item => {
+                item.mediaId = item.mediaId
+                item.content.articles = item.content.newsItem
+              })
+              this.tableData = tableData
+              this.page.total = response.data.totalCount
+              this.page.currentPage = page.currentPage
+              this.page.pageSize = page.pageSize
+              this.tableLoading = false
+            })
+          }
+        }else{
+          getPage(Object.assign({
+            current: page.currentPage,
+            size: page.pageSize,
+            appId:this.appId,
+            type:this.objData.repType
+          }, params)).then(response => {
+            this.tableData = response.data.items
+            this.page.total = response.data.totalCount
+            this.page.currentPage = page.currentPage
+            this.page.pageSize = page.pageSize
+            this.tableLoading = false
+          })
+        }
       },
       sizeChange(val) {
         this.page.currentPage = 1

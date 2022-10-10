@@ -5,7 +5,7 @@
  * 本软件为www.joolun.com开发研制，项目使用请保留此说明
  */
 /**
- * <version>3.3.1</version>
+ * <version>3.3.2</version>
  */
 import api from './utils/api'
 import __config from './config/env'

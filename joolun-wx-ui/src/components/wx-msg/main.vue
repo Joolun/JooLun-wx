@@ -134,7 +134,8 @@
       this.disconnect()
     },
     mounted(){
-      this.initWebSocket()
+      //开源版接口没有实现websocket，固隐藏
+      // this.initWebSocket()
     },
     beforeDestroy() {
       // 页面离开时断开连接,清除定时器

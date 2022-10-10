@@ -215,116 +215,6 @@ SOFTWARE.
               >
               </el-pagination>
             </el-tab-pane>
-            <el-tab-pane name="news">
-              <span slot="label"><i class="el-icon-news"></i> 图文</span>
-              <div class="add_but">
-                <el-button type="primary"
-                           @click="handleAddNews"
-                           size="mini">新 增</el-button>
-              </div>
-              <el-dialog :title="operateMaterial=='add'?'新建图文':'修改图文'"
-                         :before-close="dialogNewsClose"
-                         :close-on-click-modal="false"
-                         :visible.sync="dialogNewsVisible"
-                         width="80%"
-                         top="20px">
-                <div class="left">
-                  <div class="select-item">
-                    <div v-for="(news, index) in articlesAdd" :key='news.id'>
-                      <div class="news-main father" v-if="index==0" :class="{'activeAddNews': isActiveAddNews == index}" @click="activeNews(index)">
-                        <div class="news-content">
-                          <img class="material-img" v-if="news.thumbUrl" :src="news.thumbUrl"/>
-                          <div class="news-content-title">{{news.title}}</div>
-                        </div>
-                        <div class="child" v-if="articlesAdd.length>1">
-                          <el-button type="mini" icon="el-icon-sort-down" @click="downNews(index)">下移</el-button>
-                          <el-button v-if="operateMaterial=='add'" type="mini" icon="el-icon-delete" @click="minusNews(index)">删除</el-button>
-                        </div>
-                      </div>
-                      <div class="news-main-item father" v-if="index>0" :class="{'activeAddNews': isActiveAddNews == index}" @click="activeNews(index)">
-                        <div class="news-content-item">
-                          <div class="news-content-item-title ">{{news.title}}</div>
-                          <div class="news-content-item-img">
-                            <img class="material-img" v-if="news.thumbUrl" :src="news.thumbUrl" height="100%"/>
-                          </div>
-                        </div>
-                        <div class="child">
-                          <el-button v-if="articlesAdd.length > index+1" type="mini" icon="el-icon-sort-down" @click="downNews(index)">下移</el-button>
-                          <el-button type="mini" icon="el-icon-sort-up" @click="upNews(index)">上移</el-button>
-                          <el-button v-if="operateMaterial=='add'" type="mini" icon="el-icon-delete" @click="minusNews(index)">删除</el-button>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="news-main-plus" @click="plusNews" v-if="articlesAdd.length<8 && operateMaterial=='add'">
-                      <i class="el-icon-circle-plus icon-plus"></i>
-                    </div>
-                  </div>
-                </div>
-                <div class="right" v-loading="addMaterialLoading">
-                  <!--富文本编辑器组件-->
-                  <el-row>
-                    <WxEditor v-model="articlesAdd[isActiveAddNews].content" :uploadData="uploadData" v-if="hackResetEditor"/>
-                  </el-row>
-                  <br><br><br><br>
-                  <div class="input-tt">封面和摘要：</div>
-                  <div>
-                    <div class="thumb-div">
-                      <img class="material-img" v-if="articlesAdd[isActiveAddNews].thumbUrl" :src="articlesAdd[isActiveAddNews].thumbUrl" :class="isActiveAddNews == 0 ? 'avatar':'avatar1'">
-                      <i v-else class="el-icon-plus avatar-uploader-icon" :class="isActiveAddNews == 0 ? 'avatar':'avatar1'"></i>
-                      <div class="thumb-but">
-                        <el-upload
-                                :action="actionUrl"
-                                :headers="headers"
-                                multiple
-                                :limit="1"
-                                :on-success="handleUploadSuccess"
-                                :file-list="fileList"
-                                :before-upload="beforeThumbImageUpload"
-                                :data="uploadData">
-                          <el-button slot="trigger" size="mini" type="primary">本地上传</el-button>
-                          <el-button size="mini" type="primary" @click="openMaterial" style="margin-left: 5px">素材库选择</el-button>
-                          <div slot="tip" class="el-upload__tip">支持bmp/png/jpeg/jpg/gif格式，大小不超过2M</div>
-                        </el-upload>
-                      </div>
-                    </div>
-                    <el-dialog title="选择图片" :visible.sync="dialogImageVisible" width="80%" append-to-body>
-                      <WxMaterialSelect :objData="{repType:'image'}" @selectMaterial="selectMaterial"></WxMaterialSelect>
-                    </el-dialog>
-                    <el-input :rows="8" type="textarea" v-model="articlesAdd[isActiveAddNews].digest" placeholder="请输入摘要" class="digest" maxlength="120"></el-input>
-                  </div>
-                  <div class="input-tt">标题：</div><el-input v-model="articlesAdd[isActiveAddNews].title" placeholder="请输入标题"></el-input>
-                  <div class="input-tt">作者：</div><el-input v-model="articlesAdd[isActiveAddNews].author" placeholder="请输入作者"></el-input>
-                  <div class="input-tt">原文地址：</div><el-input v-model="articlesAdd[isActiveAddNews].contentSourceUrl" placeholder="请输入原文地址"></el-input>
-                </div>
-                <div slot="footer" class="dialog-footer">
-                  <el-button @click="dialogNewsVisible = false">取 消</el-button>
-                  <el-button type="primary" @click="subNews">提 交</el-button>
-                </div>
-              </el-dialog>
-              <div class="waterfall" v-loading="tableLoading">
-                <div v-if="item.content && item.content.articles" class="waterfall-item" v-for="item in tableData" :key='item.id'>
-                  <WxNews :objData="item.content.articles"></WxNews>
-                  <el-row class="ope-row">
-                    <el-button type="primary" icon="el-icon-edit" circle @click="handleEditNews(item)"></el-button>
-                    <el-button type="danger" icon="el-icon-delete" circle @click="delMaterial(item)"></el-button>
-                  </el-row>
-                </div>
-              </div>
-              <div v-if="tableData.length <=0 && !tableLoading" class="el-table__empty-block">
-                <span class="el-table__empty-text">暂无数据</span>
-              </div>
-              <el-pagination
-                      @size-change="sizeChange"
-                      @current-change="currentChange"
-                      :current-page.sync="page.currentPage"
-                      :page-sizes="[10, 20]"
-                      :page-size="page.pageSize"
-                      layout="total, sizes, prev, pager, next, jumper"
-                      :total="page.total"
-                      class="pagination"
-              >
-              </el-pagination>
-            </el-tab-pane>
           </el-tabs>
   </div>
 </template>
@@ -359,7 +249,7 @@ SOFTWARE.
           pageSize: 10 // 每页显示多少条
         },
         tableLoading: false,
-        actionUrl: '/dev-api/wxmaterial/materialFileUpload',
+        actionUrl: process.env.VUE_APP_BASE_API +'/wxmaterial/materialFileUpload',
         headers: {
           Authorization: 'Bearer ' + getToken()
         },

@@ -109,7 +109,7 @@
             }
           }
         },
-        serverUrl: "/dev-api/wxmaterial/newsImgUpload", // 这里写你要上传的图片服务器地址
+        serverUrl: process.env.VUE_APP_BASE_API +'/wxmaterial/newsImgUpload', // 这里写你要上传的图片服务器地址
         header: {
           Authorization: 'Bearer ' + getToken()
         } // 有的图片服务器要求请求头需要有token

@@ -28,6 +28,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.joolun.common.sensitive.Sensitive;
+import com.joolun.common.sensitive.SensitiveTypeEnum;
 import com.joolun.framework.config.typehandler.ArrayLongTypeHandler;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -127,6 +129,7 @@ private static final long serialVersionUID = 1L;
     /**
    * 手机号码
    */
+    @Sensitive(type = SensitiveTypeEnum.MOBILE_PHONE)
     private String phone;
     /**
    * 用户语言

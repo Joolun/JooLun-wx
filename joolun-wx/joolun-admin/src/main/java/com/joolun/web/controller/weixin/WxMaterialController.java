@@ -23,8 +23,6 @@ SOFTWARE.
 */
 package com.joolun.web.controller.weixin;
 
-import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.joolun.common.core.controller.BaseController;
@@ -103,67 +101,6 @@ public class WxMaterialController extends BaseController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("上传失败", e);
-			return AjaxResult.error(e.getLocalizedMessage());
-		}
-	}
-
-	/**
-	 * 新增图文消息
-	 * @param data
-	 * @return
-	 */
-	@PostMapping("/materialNews")
-	@PreAuthorize("@ss.hasPermi('wxmp:wxmaterial:add')")
-	public AjaxResult materialNewsUpload(@RequestBody JSONObject data) {
-		try {
-			JSONArray jSONArray = data.getJSONArray("articles");
-			List<WxMpMaterialNews.WxMpMaterialNewsArticle> articles = jSONArray.toList(WxMpMaterialNews.WxMpMaterialNewsArticle.class);
-			WxMpMaterialNews news = new WxMpMaterialNews();
-			news.setArticles(articles);
-			WxMpMaterialService wxMpMaterialService = wxService.getMaterialService();
-			WxMpMaterialUploadResult wxMpMaterialUploadResult = wxMpMaterialService.materialNewsUpload(news);
-			return AjaxResult.success(wxMpMaterialUploadResult);
-		} catch (WxErrorException e) {
-			e.printStackTrace();
-			log.error("新增图文失败" + e.getMessage());
-			return AjaxResult.error(e.getMessage());
-		} catch (Exception e) {
-			e.printStackTrace();
-			log.error("新增图文失败", e);
-			return AjaxResult.error(e.getLocalizedMessage());
-		}
-	}
-
-	/**
-	 *修改图文消息
-	 * @param data
-	 * @return
-	 */
-	@PutMapping("/materialNews")
-	@PreAuthorize("@ss.hasPermi('wxmp:wxmaterial:edit')")
-	public AjaxResult materialNewsUpdate(@RequestBody JSONObject data) {
-		try {
-			String mediaId = data.getStr("mediaId");
-			JSONArray jSONArray = data.getJSONArray("articles");
-			List<WxMpMaterialNews.WxMpMaterialNewsArticle> articles = jSONArray.toList(WxMpMaterialNews.WxMpMaterialNewsArticle.class);
-			WxMpMaterialService wxMpMaterialService = wxService.getMaterialService();
-			WxMpMaterialArticleUpdate wxMpMaterialArticleUpdate = new WxMpMaterialArticleUpdate();
-			wxMpMaterialArticleUpdate.setMediaId(mediaId);
-			int index = 0;
-			for(WxMpMaterialNews.WxMpMaterialNewsArticle article : articles){
-				wxMpMaterialArticleUpdate.setIndex(index);
-				wxMpMaterialArticleUpdate.setArticles(article);
-				wxMpMaterialService.materialNewsUpdate(wxMpMaterialArticleUpdate);
-				index++;
-			}
-			return AjaxResult.success();
-		} catch (WxErrorException e) {
-			e.printStackTrace();
-			log.error("修改图文失败" + e);
-			return AjaxResult.error(e.getMessage());
-		} catch (Exception e) {
-			e.printStackTrace();
-			log.error("修改图文失败", e);
 			return AjaxResult.error(e.getLocalizedMessage());
 		}
 	}
