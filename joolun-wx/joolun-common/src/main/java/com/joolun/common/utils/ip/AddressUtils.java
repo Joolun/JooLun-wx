@@ -2,7 +2,8 @@ package com.joolun.common.utils.ip;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.joolun.common.config.JooLunConfig;
 import com.joolun.common.constant.Constants;
 import com.joolun.common.utils.StringUtils;
@@ -25,7 +26,6 @@ public class AddressUtils
 
     public static String getRealAddressByIP(String ip)
     {
-        String address = UNKNOWN;
         // 内网不查询
         if (IpUtils.internalIp(ip))
         {
@@ -41,7 +41,7 @@ public class AddressUtils
                     log.error("获取地理位置异常 {}", ip);
                     return UNKNOWN;
                 }
-                JSONObject obj = JSONObject.parseObject(rspStr);
+                JSONObject obj = JSON.parseObject(rspStr);
                 String region = obj.getString("pro");
                 String city = obj.getString("city");
                 return String.format("%s %s", region, city);
@@ -51,6 +51,6 @@ public class AddressUtils
                 log.error("获取地理位置异常 {}", ip);
             }
         }
-        return address;
+        return UNKNOWN;
     }
 }

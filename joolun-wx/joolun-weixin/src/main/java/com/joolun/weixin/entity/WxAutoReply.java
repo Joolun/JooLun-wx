@@ -33,8 +33,7 @@ import com.joolun.framework.config.typehandler.JsonTypeHandler;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.ibatis.type.JdbcType;
-
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**

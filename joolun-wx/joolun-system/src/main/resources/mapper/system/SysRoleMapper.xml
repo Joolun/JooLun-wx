@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.joolun.system.mapper.SysRoleMapper">
 
-	<resultMap type="com.joolun.common.core.domain.entity.SysRole" id="SysRoleResult">
+	<resultMap type="SysRole" id="SysRoleResult">
 		<id     property="roleId"             column="role_id"               />
 		<result property="roleName"           column="role_name"             />
 		<result property="roleKey"            column="role_key"              />
@@ -30,9 +30,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	        left join sys_dept d on u.dept_id = d.dept_id
     </sql>
     
-    <select id="selectRoleList" parameterType="com.joolun.common.core.domain.entity.SysRole" resultMap="SysRoleResult">
+    <select id="selectRoleList" parameterType="SysRole" resultMap="SysRoleResult">
 		<include refid="selectRoleVo"/>
 		where r.del_flag = '0'
+		<if test="roleId != null and roleId != 0">
+			AND r.role_id = #{roleId}
+		</if>
 		<if test="roleName != null and roleName != ''">
 			AND r.role_name like concat('%', #{roleName}, '%')
 		</if>
@@ -43,17 +46,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			AND r.role_key like concat('%', #{roleKey}, '%')
 		</if>
 		<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
-			and date_format(r.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+			and date_format(r.create_time,'%Y%m%d') &gt;= date_format(#{params.beginTime},'%Y%m%d')
 		</if>
 		<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
-			and date_format(r.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+			and date_format(r.create_time,'%Y%m%d') &lt;= date_format(#{params.endTime},'%Y%m%d')
 		</if>
 		<!-- 数据范围过滤 -->
 		${params.dataScope}
 		order by r.role_sort
 	</select>
     
-	<select id="selectRolePermissionByUserId" parameterType="java.lang.Long" resultMap="SysRoleResult">
+	<select id="selectRolePermissionByUserId" parameterType="Long" resultMap="SysRoleResult">
 		<include refid="selectRoleVo"/>
 		WHERE r.del_flag = '0' and ur.user_id = #{userId}
 	</select>
@@ -62,7 +65,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<include refid="selectRoleVo"/>
 	</select>
 	
-	<select id="selectRoleListByUserId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+	<select id="selectRoleListByUserId" parameterType="Long" resultType="Long">
 		select r.role_id
         from sys_role r
 	        left join sys_user_role ur on ur.role_id = r.role_id
@@ -70,32 +73,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    where u.user_id = #{userId}
 	</select>
 	
-	<select id="selectRoleById" parameterType="java.lang.Long" resultMap="SysRoleResult">
+	<select id="selectRoleById" parameterType="Long" resultMap="SysRoleResult">
 		<include refid="selectRoleVo"/>
 		where r.role_id = #{roleId}
 	</select>
 	
-	<select id="selectRolesByUserName" parameterType="java.lang.String" resultMap="SysRoleResult">
+	<select id="selectRolesByUserName" parameterType="String" resultMap="SysRoleResult">
 		<include refid="selectRoleVo"/>
 		WHERE r.del_flag = '0' and u.user_name = #{userName}
 	</select>
 	
-	<select id="checkRoleNameUnique" parameterType="java.lang.String" resultMap="SysRoleResult">
+	<select id="checkRoleNameUnique" parameterType="String" resultMap="SysRoleResult">
 		<include refid="selectRoleVo"/>
-		 where r.role_name=#{roleName} limit 1
+		 where r.role_name=#{roleName} and r.del_flag = '0' limit 1
 	</select>
 	
-	<select id="checkRoleKeyUnique" parameterType="java.lang.String" resultMap="SysRoleResult">
+	<select id="checkRoleKeyUnique" parameterType="String" resultMap="SysRoleResult">
 		<include refid="selectRoleVo"/>
-		 where r.role_key=#{roleKey} limit 1
+		 where r.role_key=#{roleKey} and r.del_flag = '0' limit 1
 	</select>
 	
- 	<insert id="insertRole" parameterType="com.joolun.common.core.domain.entity.SysRole" useGeneratedKeys="true" keyProperty="roleId">
+ 	<insert id="insertRole" parameterType="SysRole" useGeneratedKeys="true" keyProperty="roleId">
  		insert into sys_role(
  			<if test="roleId != null and roleId != 0">role_id,</if>
  			<if test="roleName != null and roleName != ''">role_name,</if>
  			<if test="roleKey != null and roleKey != ''">role_key,</if>
- 			<if test="roleSort != null and roleSort != ''">role_sort,</if>
+ 			<if test="roleSort != null">role_sort,</if>
  			<if test="dataScope != null and dataScope != ''">data_scope,</if>
  			<if test="menuCheckStrictly != null">menu_check_strictly,</if>
  			<if test="deptCheckStrictly != null">dept_check_strictly,</if>
@@ -107,7 +110,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="roleId != null and roleId != 0">#{roleId},</if>
  			<if test="roleName != null and roleName != ''">#{roleName},</if>
  			<if test="roleKey != null and roleKey != ''">#{roleKey},</if>
- 			<if test="roleSort != null and roleSort != ''">#{roleSort},</if>
+ 			<if test="roleSort != null">#{roleSort},</if>
  			<if test="dataScope != null and dataScope != ''">#{dataScope},</if>
  			<if test="menuCheckStrictly != null">#{menuCheckStrictly},</if>
  			<if test="deptCheckStrictly != null">#{deptCheckStrictly},</if>
@@ -118,12 +121,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		)
 	</insert>
 	
-	<update id="updateRole" parameterType="com.joolun.common.core.domain.entity.SysRole">
+	<update id="updateRole" parameterType="SysRole">
  		update sys_role
  		<set>
  			<if test="roleName != null and roleName != ''">role_name = #{roleName},</if>
  			<if test="roleKey != null and roleKey != ''">role_key = #{roleKey},</if>
- 			<if test="roleSort != null and roleSort != ''">role_sort = #{roleSort},</if>
+ 			<if test="roleSort != null">role_sort = #{roleSort},</if>
  			<if test="dataScope != null and dataScope != ''">data_scope = #{dataScope},</if>
  			<if test="menuCheckStrictly != null">menu_check_strictly = #{menuCheckStrictly},</if>
  			<if test="deptCheckStrictly != null">dept_check_strictly = #{deptCheckStrictly},</if>
@@ -135,15 +138,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		where role_id = #{roleId}
 	</update>
 	
-	<update id="updateRoleStatus" parameterType="com.joolun.common.core.domain.entity.SysRole">
- 		update sys_user set status = #{status} where user_id = #{userId}
-	</update>
-	
-	<delete id="deleteRoleById" parameterType="java.lang.Long">
- 		delete from sys_role where role_id = #{roleId}
+	<delete id="deleteRoleById" parameterType="Long">
+ 		update sys_role set del_flag = '2' where role_id = #{roleId}
  	</delete>
  	
- 	<delete id="deleteRoleByIds" parameterType="java.lang.Long">
+ 	<delete id="deleteRoleByIds" parameterType="Long">
  	    update sys_role set del_flag = '2' where role_id in
  		<foreach collection="array" item="roleId" open="(" separator="," close=")">
  			#{roleId}

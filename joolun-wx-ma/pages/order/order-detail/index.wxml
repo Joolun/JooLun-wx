@@ -61,9 +61,20 @@
                     <view class="text-bold text-gray margin-top-sm margin-left-xs padding-lr-sm font-weight">数量</view>
                     <view class="text-black text-sm margin-top-sm margin-right-xs padding-lr-sm">x{{item.quantity}}</view>
                   </view>
+                  <view class="flex justify-between">
+                    <view class="text-bold text-gray margin-top-sm margin-left-xs padding-lr-sm font-weight">是否退款</view>
+                    <view class="text-black text-sm margin-top-sm margin-right-xs padding-lr-sm">{{item.isRefund == '0' ? '否' : '是'}}</view>
+                  </view>
+                  <view class="flex justify-between">
+                    <view class="text-bold text-gray margin-top-sm margin-left-xs padding-lr-sm font-weight">状态</view>
+                    <view class="text-black text-sm margin-top-sm margin-right-xs padding-lr-sm">{{item.status == '0' ? '正常' : item.status == '1' ? '申请退款中' : item.status == '2' ? '拒绝退款' : item.status == '3' ? '同意退款' : ''}}</view>
+                  </view>
                 </view>
             </view>
           </navigator>
+          <view class="cu-item margin" wx:if="{{orderInfo.isPay == '1' && item.isRefund == '0' && (item.status == '0' || item.status == '2')}}" >
+            <button class="cu-btn sm" bindtap="refunds" data-data="{{item.id}}">申请退款</button>
+          </view>
         </view>
         <view class="cu-item margin-top-xs">
             <text class="text-gray font-weight">订单金额</text>
@@ -138,6 +149,8 @@
       <view class="title">给卖家留言</view>
       <textarea readonly value="{{orderInfo.userMessage}}"></textarea>
     </view>
+	</view>
+  <view style="padding-bottom: 60px;">
 	</view>
 </view>
 <view class="cu-bar tabbar bg-white border foot">

@@ -73,3 +73,11 @@ export function takeGoods(id) {
     method: 'put'
   })
 }
+
+export function doOrderRefunds(obj) {
+  return request({
+    url: '/orderinfo/doOrderRefunds',
+    method: 'put',
+    data: obj
+  })
+}

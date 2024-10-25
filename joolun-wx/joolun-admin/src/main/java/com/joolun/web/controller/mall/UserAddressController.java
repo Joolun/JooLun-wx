@@ -12,8 +12,6 @@ import com.joolun.common.core.controller.BaseController;
 import com.joolun.common.core.domain.AjaxResult;
 import com.joolun.mall.entity.UserAddress;
 import com.joolun.mall.service.UserAddressService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,7 +27,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/useraddress")
-@Api(value = "useraddress", tags = "用户收货地址管理")
 public class UserAddressController extends BaseController {
 
     private final UserAddressService userAddressService;
@@ -40,7 +37,6 @@ public class UserAddressController extends BaseController {
     * @param userAddress 用户收货地址
     * @return
     */
-	@ApiOperation(value = "分页查询")
     @GetMapping("/page")
     @PreAuthorize("@ss.hasPermi('mall:useraddress:index')")
     public AjaxResult getUserAddressPage(Page page, UserAddress userAddress) {
@@ -52,7 +48,6 @@ public class UserAddressController extends BaseController {
     * @param id
     * @return R
     */
-	@ApiOperation(value = "通过id查询用户收货地址")
     @GetMapping("/{id}")
     @PreAuthorize("@ss.hasPermi('mall:useraddress:get')")
     public AjaxResult getById(@PathVariable("id") String id){
@@ -64,7 +59,6 @@ public class UserAddressController extends BaseController {
     * @param userAddress 用户收货地址
     * @return R
     */
-	@ApiOperation(value = "新增用户收货地址")
     @PostMapping
     @PreAuthorize("@ss.hasPermi('mall:useraddress:add')")
     public AjaxResult save(@RequestBody UserAddress userAddress){
@@ -76,7 +70,6 @@ public class UserAddressController extends BaseController {
     * @param userAddress 用户收货地址
     * @return R
     */
-	@ApiOperation(value = "修改用户收货地址")
     @PutMapping
     @PreAuthorize("@ss.hasPermi('mall:useraddress:edit')")
     public AjaxResult updateById(@RequestBody UserAddress userAddress){
@@ -88,7 +81,6 @@ public class UserAddressController extends BaseController {
     * @param id
     * @return R
     */
-	@ApiOperation(value = "通过id删除用户收货地址")
     @DeleteMapping("/{id}")
     @PreAuthorize("@ss.hasPermi('mall:useraddress:del')")
     public AjaxResult removeById(@PathVariable String id){

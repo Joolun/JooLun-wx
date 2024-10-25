@@ -6,8 +6,7 @@
  */
 package com.joolun.mall.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import com.joolun.common.annotation.Excel;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -20,30 +19,29 @@ import java.math.BigDecimal;
  * @date 2019-08-13 10:18:34
  */
 @Data
-@ApiModel(description = "下单参数")
 public class PlaceOrderGoodsDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * 商品Id
 	 */
-	@ApiModelProperty(value = "商品Id")
+	@Excel(name = "商品Id")
 	private String spuId;
 
 	/**
 	 * 数量
 	 */
-	@ApiModelProperty(value = "数量")
+	@Excel(name = "数量")
 	private Integer quantity;
 	/**
 	 * 支付金额
 	 */
-	@ApiModelProperty(value = "支付金额")
+	@Excel(name = "支付金额")
 	private BigDecimal paymentPrice;
 	/**
 	 * 运费金额
 	 */
-	@ApiModelProperty(value = "运费金额")
+	@Excel(name = "运费金额")
 	private BigDecimal freightPrice;
 
 }

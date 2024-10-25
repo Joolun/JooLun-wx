@@ -10,9 +10,12 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
+import com.joolun.common.constant.Constants;
 import com.joolun.common.constant.ScheduleConstants;
 import com.joolun.common.exception.job.TaskException;
 import com.joolun.common.exception.job.TaskException.Code;
+import com.joolun.common.utils.StringUtils;
+import com.joolun.common.utils.spring.SpringUtils;
 import com.joolun.quartz.domain.SysJob;
 
 /**
@@ -80,7 +83,12 @@ public class ScheduleUtils
             scheduler.deleteJob(getJobKey(jobId, jobGroup));
         }
 
-        scheduler.scheduleJob(jobDetail, trigger);
+        // 判断任务是否过期
+        if (StringUtils.isNotNull(CronUtils.getNextExecution(job.getCronExpression())))
+        {
+            // 执行调度任务
+            scheduler.scheduleJob(jobDetail, trigger);
+        }
 
         // 暂停任务
         if (job.getStatus().equals(ScheduleConstants.Status.PAUSE.getValue()))
@@ -109,5 +117,25 @@ public class ScheduleUtils
                 throw new TaskException("The task misfire policy '" + job.getMisfirePolicy()
                         + "' cannot be used in cron schedule tasks", Code.CONFIG_ERROR);
         }
+    }
+
+    /**
+     * 检查包名是否为白名单配置
+     * 
+     * @param invokeTarget 目标字符串
+     * @return 结果
+     */
+    public static boolean whiteList(String invokeTarget)
+    {
+        String packageName = StringUtils.substringBefore(invokeTarget, "(");
+        int count = StringUtils.countMatches(packageName, ".");
+        if (count > 1)
+        {
+            return StringUtils.containsAnyIgnoreCase(invokeTarget, Constants.JOB_WHITELIST_STR);
+        }
+        Object obj = SpringUtils.getBean(StringUtils.split(invokeTarget, ".")[0]);
+        String beanPackageName = obj.getClass().getPackage().getName();
+        return StringUtils.containsAnyIgnoreCase(beanPackageName, Constants.JOB_WHITELIST_STR)
+                && !StringUtils.containsAnyIgnoreCase(beanPackageName, Constants.JOB_ERROR_STR);
     }
 }

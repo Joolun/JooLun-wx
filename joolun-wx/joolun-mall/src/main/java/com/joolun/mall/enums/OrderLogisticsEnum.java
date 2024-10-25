@@ -1,6 +1,6 @@
 package com.joolun.mall.enums;
 
-import com.baomidou.mybatisplus.core.enums.IEnum;
+import com.baomidou.mybatisplus.annotation.IEnum;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.ArrayList;
 import java.util.HashMap;

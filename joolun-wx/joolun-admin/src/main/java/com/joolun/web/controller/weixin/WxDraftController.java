@@ -28,8 +28,6 @@ import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.joolun.common.core.controller.BaseController;
 import com.joolun.common.core.domain.AjaxResult;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.mp.api.WxMpDraftService;
@@ -53,7 +51,6 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/wxdraft")
-@Api(value = "wxdraft", tags = "微信草稿箱")
 public class WxDraftController extends BaseController {
 	private final WxMpService wxService;
 
@@ -63,7 +60,6 @@ public class WxDraftController extends BaseController {
 	 * @param data
 	 * @return
 	 */
-	@ApiOperation(value = "新增草稿箱")
 	@PostMapping
 	@PreAuthorize("@ss.hasPermi('wxmp:wxdraft:add')")
 	public AjaxResult add(@RequestBody JSONObject data) throws Exception {
@@ -82,7 +78,6 @@ public class WxDraftController extends BaseController {
 	 * @param data
 	 * @return
 	 */
-	@ApiOperation(value = "修改微信草稿箱")
 	@PutMapping
 	@PreAuthorize("@ss.hasPermi('wxmp:wxdraft:edit')")
 	public AjaxResult edit(@RequestBody JSONObject data) throws Exception {
@@ -108,7 +103,6 @@ public class WxDraftController extends BaseController {
 	 * @param
 	 * @return R
 	 */
-	@ApiOperation(value = "通过id删除微信草稿箱")
 	@DeleteMapping
 	@PreAuthorize("@ss.hasPermi('wxmp:wxdraft:del')")
 	public AjaxResult del(String id) throws Exception {
@@ -123,7 +117,6 @@ public class WxDraftController extends BaseController {
 	 * @param
 	 * @return
 	 */
-	@ApiOperation(value = "分页查询")
 	@GetMapping("/page")
 	@PreAuthorize("@ss.hasPermi('wxmp:wxdraft:index')")
 	public AjaxResult getPage(Page page) throws Exception {
@@ -138,7 +131,6 @@ public class WxDraftController extends BaseController {
 	 * @param id
 	 * @return
 	 */
-	@ApiOperation(value = "发布草稿箱")
 	@PostMapping("/publish/{id}")
 	@PreAuthorize("@ss.hasPermi('wxmp:wxdraft:publish')")
 	public AjaxResult publish(@PathVariable String id) throws Exception {

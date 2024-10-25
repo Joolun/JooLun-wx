@@ -1,3 +1,4 @@
+Application Version: ${joolun.version}
 Spring Boot Version: ${spring-boot.version}
 ////////////////////////////////////////////////////////////////////
 //                          _ooOoo_                               //

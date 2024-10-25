@@ -3,73 +3,96 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
+	
     <groupId>com.joolun</groupId>
     <artifactId>joolun-wx</artifactId>
-    <version>3.3.2</version>
+    <version>3.8.8</version>
 
     <name>joolun-wx</name>
     <url>http://www.joolun.com</url>
-    <description>JooLun微信管理系统</description>
+    <description>joolun商城管理系统</description>
     
     <properties>
+        <joolun.version>3.8.8</joolun.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
+        <spring-boot.version>3.3.4</spring-boot.version>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
-        <druid.version>1.2.4</druid.version>
+        <druid.version>1.2.23</druid.version>
         <bitwalker.version>1.21</bitwalker.version>
-        <swagger.version>2.9.2</swagger.version>
-		<kaptcha.version>2.3.2</kaptcha.version>
-        <pagehelper.boot.version>1.3.0</pagehelper.boot.version>
-        <fastjson.version>1.2.83</fastjson.version>
-        <oshi.version>5.3.6</oshi.version>
-        <jna.version>5.6.0</jna.version>
-        <commons.io.version>2.5</commons.io.version>
-        <commons.fileupload.version>1.3.3</commons.fileupload.version>
+        <swagger.version>3.0.0</swagger.version>
+        <kaptcha.version>2.3.3</kaptcha.version>
+        <pagehelper.boot.version>1.4.7</pagehelper.boot.version>
+        <fastjson.version>2.0.43</fastjson.version>
+        <oshi.version>6.6.3</oshi.version>
+        <commons.io.version>2.13.0</commons.io.version>
         <poi.version>4.1.2</poi.version>
-        <velocity.version>1.7</velocity.version>
+        <velocity.version>2.3</velocity.version>
         <jwt.version>0.9.1</jwt.version>
-        <swagger.version>2.9.2</swagger.version>
-        <mybatis-plus.version>3.3.2</mybatis-plus.version>
+        <mysql.version>8.2.0</mysql.version>
+        <jaxb-api.version>2.3.1</jaxb-api.version>
+        <jakarta.version>6.0.0</jakarta.version>
+        <springdoc.version>2.5.0</springdoc.version>
+        <mybatis-plus.version>3.5.5</mybatis-plus.version>
         <hutool.version>5.1.0</hutool.version>
-        <weixin-java.version>4.2.8.B</weixin-java.version>
+        <weixin-java.version>4.6.2.B</weixin-java.version>
         <ttl.version>2.11.4</ttl.version>
     </properties>
-	
+
     <!-- 依赖声明 -->
     <dependencyManagement>
         <dependencies>
+
             <!-- SpringBoot的依赖配置-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>2.2.12.RELEASE</version>
+                <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            
-            <!--阿里数据库连接池 -->
+
+            <!-- 阿里数据库连接池 -->
             <dependency>
                 <groupId>com.alibaba</groupId>
-                <artifactId>druid-spring-boot-starter</artifactId>
+                <artifactId>druid-spring-boot-3-starter</artifactId>
                 <version>${druid.version}</version>
             </dependency>
-	        
+
             <!-- 解析客户端操作系统、浏览器等 -->
             <dependency>
                 <groupId>eu.bitwalker</groupId>
                 <artifactId>UserAgentUtils</artifactId>
                 <version>${bitwalker.version}</version>
             </dependency>
-			
+
             <!-- pagehelper 分页插件 -->
             <dependency>
                 <groupId>com.github.pagehelper</groupId>
                 <artifactId>pagehelper-spring-boot-starter</artifactId>
                 <version>${pagehelper.boot.version}</version>
             </dependency>
-			
+
+
+            <dependency>
+                <groupId>com.mysql</groupId>
+                <artifactId>mysql-connector-j</artifactId>
+                <version>${mysql.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb-api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.servlet</groupId>
+                <artifactId>jakarta.servlet-api</artifactId>
+                <version>${jakarta.version}</version>
+            </dependency>
+
             <!-- 获取系统信息 -->
             <dependency>
                 <groupId>com.github.oshi</groupId>
@@ -77,124 +100,88 @@
                 <version>${oshi.version}</version>
             </dependency>
 
+            <!-- spring-doc -->
             <dependency>
-                <groupId>net.java.dev.jna</groupId>
-                <artifactId>jna</artifactId>
-                <version>${jna.version}</version>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>net.java.dev.jna</groupId>
-                <artifactId>jna-platform</artifactId>
-                <version>${jna.version}</version>
-            </dependency>
-			
-            <!-- swagger2-->
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${swagger.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>io.swagger</groupId>
-                        <artifactId>swagger-annotations</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>io.swagger</groupId>
-                        <artifactId>swagger-models</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-			
-            <!-- swagger2-UI-->
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
-                <version>${swagger.version}</version>
-            </dependency>
-            
-            <!--io常用工具类 -->
+            <!-- io常用工具类 -->
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons.io.version}</version>
             </dependency>
-	
-            <!--文件上传工具类 -->
-            <dependency>
-                <groupId>commons-fileupload</groupId>
-                <artifactId>commons-fileupload</artifactId>
-                <version>${commons.fileupload.version}</version>
-            </dependency>
-			
+
             <!-- excel工具 -->
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
                 <version>${poi.version}</version>
             </dependency>
-			
-            <!--velocity代码生成使用模板 -->
+
+            <!-- velocity代码生成使用模板 -->
             <dependency>
                 <groupId>org.apache.velocity</groupId>
-                <artifactId>velocity</artifactId>
+                <artifactId>velocity-engine-core</artifactId>
                 <version>${velocity.version}</version>
             </dependency>
-	        
+
             <!-- 阿里JSON解析器 -->
             <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
                 <version>${fastjson.version}</version>
             </dependency>
-			
-            <!--Token生成与解析-->
+
+            <!-- Token生成与解析-->
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>
                 <version>${jwt.version}</version>
             </dependency>
-			
-            <!--验证码 -->
+
+            <!-- 验证码 -->
             <dependency>
-                <groupId>com.github.penggle</groupId>
+                <groupId>pro.fessional</groupId>
                 <artifactId>kaptcha</artifactId>
                 <version>${kaptcha.version}</version>
             </dependency>
-            
+
             <!-- 定时任务-->
             <dependency>
                 <groupId>com.joolun</groupId>
                 <artifactId>joolun-quartz</artifactId>
-                <version>${project.version}</version>
+                <version>${joolun.version}</version>
             </dependency>
-	
+
             <!-- 代码生成-->
             <dependency>
                 <groupId>com.joolun</groupId>
                 <artifactId>joolun-generator</artifactId>
-                <version>${project.version}</version>
+                <version>${joolun.version}</version>
             </dependency>
-			
+
             <!-- 核心模块-->
             <dependency>
                 <groupId>com.joolun</groupId>
                 <artifactId>joolun-framework</artifactId>
-                <version>${project.version}</version>
+                <version>${joolun.version}</version>
             </dependency>
-			
+
             <!-- 系统模块-->
             <dependency>
                 <groupId>com.joolun</groupId>
                 <artifactId>joolun-system</artifactId>
-                <version>${project.version}</version>
+                <version>${joolun.version}</version>
             </dependency>
-			
+
             <!-- 通用工具-->
             <dependency>
                 <groupId>com.joolun</groupId>
                 <artifactId>joolun-common</artifactId>
-                <version>${project.version}</version>
+                <version>${joolun.version}</version>
             </dependency>
 
             <!-- 微信模块-->
@@ -220,7 +207,7 @@
             <!--mybatis-->
             <dependency>
                 <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
             <!--hutool-->
@@ -274,49 +261,12 @@
     </modules>
     <packaging>pom</packaging>
 
-
     <dependencies>
         <!--Lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <!-- swagger2-->
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${swagger.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.swagger</groupId>
-                    <artifactId>swagger-annotations</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>io.swagger</groupId>
-                    <artifactId>swagger-models</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!--防止进入swagger页面报类型转换错误，排除2.9.2中的引用，手动增加1.5.21版本-->
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>1.5.21</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-models</artifactId>
-            <version>1.5.21</version>
-        </dependency>
-
-        <!-- swagger2-UI-->
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${swagger.version}</version>
         </dependency>
     </dependencies>
 
@@ -325,12 +275,18 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.13.0</version>
                 <configuration>
+                    <parameters>true</parameters>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
             </plugin>
         </plugins>
     </build>
@@ -339,7 +295,7 @@
         <repository>
             <id>public</id>
             <name>aliyun nexus</name>
-            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <url>https://maven.aliyun.com/repository/public</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -350,7 +306,7 @@
         <pluginRepository>
             <id>public</id>
             <name>aliyun nexus</name>
-            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <url>https://maven.aliyun.com/repository/public</url>
             <releases>
                 <enabled>true</enabled>
             </releases>

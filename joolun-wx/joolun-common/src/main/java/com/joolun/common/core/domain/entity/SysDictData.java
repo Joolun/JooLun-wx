@@ -1,7 +1,7 @@
 package com.joolun.common.core.domain.entity;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.joolun.common.annotation.Excel;
@@ -131,7 +131,7 @@ public class SysDictData extends BaseEntity
 
     public boolean getDefault()
     {
-        return UserConstants.YES.equals(this.isDefault) ? true : false;
+        return UserConstants.YES.equals(this.isDefault);
     }
 
     public String getIsDefault()

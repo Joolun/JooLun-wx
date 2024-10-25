@@ -32,13 +32,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.joolun.common.core.controller.BaseController;
 import com.joolun.common.core.domain.AjaxResult;
 import com.joolun.weixin.config.CommonConstants;
-import com.joolun.weixin.service.WxMsgService;
-import com.joolun.weixin.service.WxUserService;
 import com.joolun.weixin.constant.ConfigConstant;
 import com.joolun.weixin.entity.WxMsg;
 import com.joolun.weixin.entity.WxMsgVO;
 import com.joolun.weixin.entity.WxUser;
-import io.swagger.annotations.Api;
+import com.joolun.weixin.service.WxMsgService;
+import com.joolun.weixin.service.WxUserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.api.WxConsts;
@@ -64,7 +63,6 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/wxmsg")
-@Api(value = "wxmsg", tags = "wxmsg管理")
 public class WxMsgController extends BaseController {
 
     private final WxMsgService wxMsgService;

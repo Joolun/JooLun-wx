@@ -18,11 +18,10 @@ public class ExceptionUtil
     {
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw, true));
-        String str = sw.toString();
-        return str;
+        return sw.toString();
     }
 
-    public static String getRootErrorMseeage(Exception e)
+    public static String getRootErrorMessage(Exception e)
     {
         Throwable root = ExceptionUtils.getRootCause(e);
         root = (root == null ? e : root);

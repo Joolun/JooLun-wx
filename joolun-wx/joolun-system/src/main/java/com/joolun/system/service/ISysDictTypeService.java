@@ -54,14 +54,23 @@ public interface ISysDictTypeService
      * 批量删除字典信息
      * 
      * @param dictIds 需要删除的字典ID
-     * @return 结果
      */
-    public int deleteDictTypeByIds(Long[] dictIds);
+    public void deleteDictTypeByIds(Long[] dictIds);
 
     /**
-     * 清空缓存数据
+     * 加载字典缓存数据
      */
-    public void clearCache();
+    public void loadingDictCache();
+
+    /**
+     * 清空字典缓存数据
+     */
+    public void clearDictCache();
+
+    /**
+     * 重置字典缓存数据
+     */
+    public void resetDictCache();
 
     /**
      * 新增保存字典类型信息
@@ -85,5 +94,5 @@ public interface ISysDictTypeService
      * @param dictType 字典类型
      * @return 结果
      */
-    public String checkDictTypeUnique(SysDictType dictType);
+    public boolean checkDictTypeUnique(SysDictType dictType);
 }

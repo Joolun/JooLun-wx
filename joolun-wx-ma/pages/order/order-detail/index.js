@@ -54,6 +54,27 @@ Page({
       data: e.currentTarget.dataset.data
     })
   },
+  refunds(e){
+    let that = this
+    wx.showModal({
+      content: '确认申请退款吗？',
+      cancelText: '我再想想',
+      confirmColor: '#ff0000',
+      success(res) {
+        if (res.confirm) {
+          let orderItemId = e.currentTarget.dataset.data
+          app.api.orderRefunds({
+            id: orderItemId
+          })
+          .then(res => {
+            let id = that.data.orderInfo.id
+            that.orderGet(id)
+          })
+        }
+      }
+    })
+  
+  },
   orderCancel(){
     let id = this.data.orderInfo.id
     this.orderGet(id)

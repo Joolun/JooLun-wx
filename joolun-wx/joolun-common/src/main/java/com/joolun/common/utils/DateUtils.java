@@ -3,6 +3,11 @@ package com.joolun.common.utils;
 import java.lang.management.ManagementFactory;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
@@ -22,7 +27,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
     public static String YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
 
     public static String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
-    
+
     private static String[] parsePatterns = {
             "yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM", 
             "yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss", "yyyy/MM/dd HH:mm", "yyyy/MM",
@@ -121,7 +126,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
             return null;
         }
     }
-    
+
     /**
      * 获取服务器启动时间
      */
@@ -132,16 +137,28 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
     }
 
     /**
-     * 计算两个时间差
+     * 计算相差天数
      */
-    public static String getDatePoor(Date endDate, Date nowDate)
+    public static int differentDaysByMillisecond(Date date1, Date date2)
+    {
+        return Math.abs((int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24)));
+    }
+
+    /**
+     * 计算时间差
+     *
+     * @param endDate 最后时间
+     * @param startTime 开始时间
+     * @return 时间差（天/小时/分钟）
+     */
+    public static String timeDistance(Date endDate, Date startTime)
     {
         long nd = 1000 * 24 * 60 * 60;
         long nh = 1000 * 60 * 60;
         long nm = 1000 * 60;
         // long ns = 1000;
         // 获得两个时间的毫秒时间差异
-        long diff = endDate.getTime() - nowDate.getTime();
+        long diff = endDate.getTime() - startTime.getTime();
         // 计算差多少天
         long day = diff / nd;
         // 计算差多少小时
@@ -151,5 +168,24 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
         // 计算差多少秒//输出结果
         // long sec = diff % nd % nh % nm / ns;
         return day + "天" + hour + "小时" + min + "分钟";
+    }
+
+    /**
+     * 增加 LocalDateTime ==> Date
+     */
+    public static Date toDate(LocalDateTime temporalAccessor)
+    {
+        ZonedDateTime zdt = temporalAccessor.atZone(ZoneId.systemDefault());
+        return Date.from(zdt.toInstant());
+    }
+
+    /**
+     * 增加 LocalDate ==> Date
+     */
+    public static Date toDate(LocalDate temporalAccessor)
+    {
+        LocalDateTime localDateTime = LocalDateTime.of(temporalAccessor, LocalTime.of(0, 0, 0));
+        ZonedDateTime zdt = localDateTime.atZone(ZoneId.systemDefault());
+        return Date.from(zdt.toInstant());
     }
 }

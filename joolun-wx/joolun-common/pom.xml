@@ -5,7 +5,7 @@
     <parent>
         <artifactId>joolun-wx</artifactId>
         <groupId>com.joolun</groupId>
-        <version>3.3.2</version>
+        <version>3.8.8</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -43,8 +43,8 @@
 
         <!-- 自定义验证注解 -->
         <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
         <!--常用工具类 -->
@@ -58,23 +58,17 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
-
+        
         <!-- 阿里JSON解析器 -->
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
         </dependency>
 
         <!-- io常用工具类 -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-        </dependency>
-
-        <!-- 文件上传工具类 -->
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
         </dependency>
 
         <!-- excel工具 -->
@@ -89,10 +83,16 @@
             <artifactId>snakeyaml</artifactId>
         </dependency>
 
-        <!--Token生成与解析-->
+        <!-- Token生成与解析-->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
+        </dependency>
+
+        <!-- Jaxb -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
         </dependency>
 
         <!-- redis 缓存操作 -->
@@ -115,8 +115,8 @@
 
         <!-- servlet包 -->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
         </dependency>
 
         <!--hutool-->

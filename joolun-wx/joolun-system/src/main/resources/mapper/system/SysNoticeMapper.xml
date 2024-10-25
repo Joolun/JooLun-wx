@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.joolun.system.mapper.SysNoticeMapper">
     
-    <resultMap type="com.joolun.system.domain.SysNotice" id="SysNoticeResult">
+    <resultMap type="SysNotice" id="SysNoticeResult">
         <result property="noticeId"       column="notice_id"       />
         <result property="noticeTitle"    column="notice_title"    />
         <result property="noticeType"     column="notice_type"     />
@@ -22,12 +22,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from sys_notice
     </sql>
     
-    <select id="selectNoticeById" parameterType="java.lang.Long" resultMap="SysNoticeResult">
+    <select id="selectNoticeById" parameterType="Long" resultMap="SysNoticeResult">
         <include refid="selectNoticeVo"/>
         where notice_id = #{noticeId}
     </select>
     
-    <select id="selectNoticeList" parameterType="com.joolun.system.domain.SysNotice" resultMap="SysNoticeResult">
+    <select id="selectNoticeList" parameterType="SysNotice" resultMap="SysNoticeResult">
         <include refid="selectNoticeVo"/>
         <where>
 			<if test="noticeTitle != null and noticeTitle != ''">
@@ -42,7 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</where>
     </select>
     
-    <insert id="insertNotice" parameterType="com.joolun.system.domain.SysNotice">
+    <insert id="insertNotice" parameterType="SysNotice">
         insert into sys_notice (
 			<if test="noticeTitle != null and noticeTitle != '' ">notice_title, </if>
 			<if test="noticeType != null and noticeType != '' ">notice_type, </if>
@@ -62,7 +62,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		)
     </insert>
 	 
-    <update id="updateNotice" parameterType="com.joolun.system.domain.SysNotice">
+    <update id="updateNotice" parameterType="SysNotice">
         update sys_notice 
         <set>
             <if test="noticeTitle != null and noticeTitle != ''">notice_title = #{noticeTitle}, </if>
@@ -75,11 +75,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where notice_id = #{noticeId}
     </update>
 	
-    <delete id="deleteNoticeById" parameterType="java.lang.Long">
+    <delete id="deleteNoticeById" parameterType="Long">
         delete from sys_notice where notice_id = #{noticeId}
     </delete>
     
-    <delete id="deleteNoticeByIds" parameterType="java.lang.Long">
+    <delete id="deleteNoticeByIds" parameterType="Long">
         delete from sys_notice where notice_id in 
         <foreach item="noticeId" collection="array" open="(" separator="," close=")">
             #{noticeId}

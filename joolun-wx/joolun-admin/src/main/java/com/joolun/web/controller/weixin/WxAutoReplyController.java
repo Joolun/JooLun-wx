@@ -28,13 +28,14 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.joolun.common.core.controller.BaseController;
 import com.joolun.common.core.domain.AjaxResult;
-import com.joolun.weixin.service.WxAutoReplyService;
 import com.joolun.weixin.constant.ConfigConstant;
 import com.joolun.weixin.entity.WxAutoReply;
+import com.joolun.weixin.service.WxAutoReplyService;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 /**

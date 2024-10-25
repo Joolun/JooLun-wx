@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.joolun.common.constant.UserConstants;
-import com.joolun.common.exception.CustomException;
+import com.joolun.common.exception.ServiceException;
 import com.joolun.common.utils.StringUtils;
 import com.joolun.system.domain.SysPost;
 import com.joolun.system.mapper.SysPostMapper;
@@ -67,7 +67,7 @@ public class SysPostServiceImpl implements ISysPostService
      * @return 选中岗位ID列表
      */
     @Override
-    public List<Integer> selectPostListByUserId(Long userId)
+    public List<Long> selectPostListByUserId(Long userId)
     {
         return postMapper.selectPostListByUserId(userId);
     }
@@ -79,7 +79,7 @@ public class SysPostServiceImpl implements ISysPostService
      * @return 结果
      */
     @Override
-    public String checkPostNameUnique(SysPost post)
+    public boolean checkPostNameUnique(SysPost post)
     {
         Long postId = StringUtils.isNull(post.getPostId()) ? -1L : post.getPostId();
         SysPost info = postMapper.checkPostNameUnique(post.getPostName());
@@ -97,7 +97,7 @@ public class SysPostServiceImpl implements ISysPostService
      * @return 结果
      */
     @Override
-    public String checkPostCodeUnique(SysPost post)
+    public boolean checkPostCodeUnique(SysPost post)
     {
         Long postId = StringUtils.isNull(post.getPostId()) ? -1L : post.getPostId();
         SysPost info = postMapper.checkPostCodeUnique(post.getPostCode());
@@ -137,7 +137,6 @@ public class SysPostServiceImpl implements ISysPostService
      * 
      * @param postIds 需要删除的岗位ID
      * @return 结果
-     * @throws Exception 异常
      */
     @Override
     public int deletePostByIds(Long[] postIds)
@@ -147,7 +146,7 @@ public class SysPostServiceImpl implements ISysPostService
             SysPost post = selectPostById(postId);
             if (countUserPostById(postId) > 0)
             {
-                throw new CustomException(String.format("%1$s已分配,不能删除", post.getPostName()));
+                throw new ServiceException(String.format("%1$s已分配,不能删除", post.getPostName()));
             }
         }
         return postMapper.deletePostByIds(postIds);

@@ -9,15 +9,15 @@ import com.joolun.weixin.constant.MyReturnCode;
 import com.joolun.weixin.constant.WxMaConstants;
 import com.joolun.weixin.entity.ThirdSession;
 import com.joolun.weixin.utils.ThirdSessionHolder;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -28,7 +28,7 @@ import java.io.PrintWriter;
 @Slf4j
 @Component
 @AllArgsConstructor
-public class ThirdSessionInterceptor extends HandlerInterceptorAdapter {
+public class ThirdSessionInterceptor implements AsyncHandlerInterceptor {
 
 	private final RedisTemplate redisTemplate;
 

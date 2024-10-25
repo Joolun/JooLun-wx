@@ -11,13 +11,10 @@ import com.joolun.weixin.entity.WxUser;
 import com.joolun.weixin.service.WxUserService;
 import com.joolun.weixin.utils.ThirdSessionHolder;
 import com.joolun.weixin.utils.WxMaUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 微信用户
@@ -29,7 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/weixin/api/ma/wxuser")
-@Api(value = "wxuser", tags = "小程序用户API")
 public class WxUserApi {
 
 	private final WxUserService wxUserService;
@@ -39,7 +35,6 @@ public class WxUserApi {
 	 * @param loginMaDTO
 	 * @return
 	 */
-	@ApiOperation(value = "小程序用户登录")
 	@PostMapping("/login")
 	public AjaxResult login(HttpServletRequest request, @RequestBody LoginMaDTO loginMaDTO){
 		try {
@@ -56,7 +51,6 @@ public class WxUserApi {
 	 * @param
 	 * @return
 	 */
-	@ApiOperation(value = "获取用户信息")
 	@GetMapping
 	public AjaxResult get(){
 		String id = ThirdSessionHolder.getThirdSession().getWxUserId();
@@ -68,7 +62,6 @@ public class WxUserApi {
 	 * @param wxOpenDataDTO
 	 * @return
 	 */
-	@ApiOperation(value = "保存用户信息")
 	@PostMapping
 	public AjaxResult saveOrUptateWxUser(@RequestBody WxOpenDataDTO wxOpenDataDTO){
 		wxOpenDataDTO.setAppId(ThirdSessionHolder.getThirdSession().getAppId());

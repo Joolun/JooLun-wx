@@ -13,7 +13,13 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.binarywang.wxpay.bean.notify.WxPayRefundNotifyResult;
+import com.github.binarywang.wxpay.bean.request.WxPayRefundRequest;
+import com.github.binarywang.wxpay.bean.result.WxPayRefundResult;
+import com.github.binarywang.wxpay.exception.WxPayException;
+import com.github.binarywang.wxpay.service.WxPayService;
 import com.joolun.mall.config.CommonConstants;
+import com.joolun.mall.config.MallConfigProperties;
 import com.joolun.mall.constant.MallConstants;
 import com.joolun.mall.dto.PlaceOrderDTO;
 import com.joolun.mall.entity.*;
@@ -21,6 +27,7 @@ import com.joolun.mall.enums.OrderInfoEnum;
 import com.joolun.mall.enums.OrderLogisticsEnum;
 import com.joolun.mall.mapper.OrderInfoMapper;
 import com.joolun.mall.service.*;
+import com.joolun.weixin.config.WxPayConfiguration;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -51,6 +58,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 
 	private final OrderItemService orderItemService;
 	private final OrderLogisticsService orderLogisticsService;
+	private final MallConfigProperties mallConfigProperties;
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -231,6 +239,61 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 				goodsSpuService.updateById(goodsSpu);
 				baseMapper.updateById(orderInfo);//更新订单
 			});
+		}
+	}
+
+	@Override
+	public void saveRefunds(OrderItem orderItem) {
+		orderItem = orderItemService.getById(orderItem.getId());
+		if(orderItem != null
+				&& CommonConstants.NO.equals(orderItem.getIsRefund())
+				&& ("0".equals(orderItem.getStatus()) || "2".equals(orderItem.getStatus()))){//只有未退款的订单才能发起退款
+			//修改订单详情状态为退款中
+			orderItem.setStatus("1");
+			orderItemService.updateById(orderItem);
+		}
+	}
+
+	@Override
+	public void doOrderRefunds(OrderItem orderItem) {
+		OrderItem orderItem2 = orderItemService.getById(orderItem.getId());
+		OrderInfo orderInfo = baseMapper.selectById(orderItem2.getOrderId());
+		if(orderItem2 != null){
+			if("3".equals(orderItem.getStatus())){//同意退款
+				//发起微信退款申请
+				WxPayRefundRequest request = new WxPayRefundRequest();
+				request.setTransactionId(orderInfo.getTransactionId());
+				request.setOutRefundNo(orderItem2.getId());
+				request.setTotalFee(orderItem2.getPaymentPrice().multiply(new BigDecimal(100)).intValue());
+				request.setRefundFee(orderItem2.getPaymentPrice().multiply(new BigDecimal(100)).intValue());
+				request.setNotifyUrl(mallConfigProperties.getNotifyHost()+"/weixin/api/ma/orderinfo/notify-refunds");
+				WxPayService wxPayService = WxPayConfiguration.getPayService();
+				try {
+					wxPayService.refund(request);
+					orderItem2.setStatus(orderItem.getStatus());
+					orderItemService.updateById(orderItem2);
+				} catch (WxPayException e) {
+					e.printStackTrace();
+					throw new RuntimeException(e.getReturnMsg() + "" + e.getCustomErrorMsg() + "" + e.getErrCodeDes());
+				}
+			}else if("2".equals(orderItem.getStatus())){//拒绝退款
+				orderItem2.setStatus(orderItem.getStatus());
+				orderItemService.updateById(orderItem2);
+			}
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void notifyRefunds(WxPayRefundNotifyResult notifyResult) {
+		OrderItem orderItem = orderItemService.getById(notifyResult.getReqInfo().getOutRefundNo());
+		OrderInfo orderInfo = baseMapper.selectById(orderItem.getOrderId());
+		if("3".equals(orderItem.getStatus())){
+			//更新订单状态
+			orderItem.setIsRefund(CommonConstants.YES);
+			orderInfo.setStatus(OrderInfoEnum.STATUS_5.getValue());
+			orderItemService.updateById(orderItem);
+			baseMapper.updateById(orderInfo);
 		}
 	}
 

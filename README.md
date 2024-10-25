@@ -1,12 +1,22 @@
-### [![输入图片说明](https://images.gitee.com/uploads/images/2021/0622/110750_59b42ced_5079715.jpeg "n_community_0l.jpg")](https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=wnw8gle1)<br>[阿里云领取￥2000红包，服务器低至￥91.80/年](https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=wnw8gle1)
-### 如果对您有帮助，记得点右上角 "Star" ❤️ 支持一下哦 谢谢！
-#### 该项目已实时托管置Gitee，了解项目最新动态请移步https://gitee.com/joolun/JooLun-wx ；遇到问题或发现bug请统一到Gitee发[Issues](https://gitee.com/joolun/JooLun-wx/issues)提出来，我们会定期处理
+<img alt="JooLun" src="https://img.shields.io/badge/Java-17-brightgreen.svg"/>
+<img alt="JooLun" src="https://img.shields.io/badge/SpringBoot-3.3.4-green.svg"/>
+<a href="https://gitee.com/joolun/JooLun-wx" target="_blank">
+    <img alt="JooLun" src="https://gitee.com/joolun/JooLun-wx/badge/star.svg"/>
+</a>
+<img alt="JooLun" src="https://img.shields.io/badge/license-MIT-blue.svg"/>
+<a href="https://www.joolun.com/" target="_blank">
+    <img alt="JooLun" src="https://img.shields.io/badge/Author-JooLun-orange.svg"/>
+</a>
+
+### [阿里云领取￥2000红包，服务器低至￥91.80/年](https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=wnw8gle1)
+### MIT真开源！！！如果对您有帮助，记得点右上角 "Star" ❤️ 支持一下哦 谢谢！
+#### 该项目已实时托管置Gitee，请直接使用boot3分支；遇到问题或发现bug请统一到Gitee发[Issues](https://gitee.com/joolun/JooLun-wx/issues)提出来，我们会定期处理
 ### 平台简介
-* 基于[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue)二开，集成了[MybatisPlus](https://github.com/baomidou/mybatis-plus)、[Avue](https://gitee.com/smallweigit/avue)、[WxJava](https://gitee.com/binary/weixin-java-tools) SDK
-* MIT开源的微信二开利器，放心使用
+* 基于[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue) SpringBoot3版本二开，集成了[MybatisPlus](https://github.com/baomidou/mybatis-plus)、[Avue](https://gitee.com/smallweigit/avue)、[WxJava](https://gitee.com/binary/weixin-java-tools) SDK
+* MIT开源的小程序商城二开利器，放心使用
 * 专业的微信管理框架并加入小程序商城，是用来学习和实际项目的不二选择
-* 前端采用Vue、Element UI、Avue。
-* 后端采用Spring Boot、Spring Security、Redis & Jwt、Mybatis Plus、WxJava。
+* 前端采用Vue3、Element-Plus、Avue3。
+* 后端采用Spring Boot3、Spring Security、Redis & Jwt、Mybatis Plus、WxJava。
 * 小程序端采用原生框架+Color UI。
 * 权限认证使用Jwt，支持多终端认证系统。
 * 支持加载动态权限菜单，多方式轻松权限控制。
@@ -14,34 +24,19 @@
 * 开源版不提供人工服务，遇到问题或发现bug请统一到码云gitee发[Issues](https://gitee.com/joolun/JooLun-wx/issues)提出来，我们会定期处理
 * 请按照自己业务需求进行测试后再使用，因框架问题造成的任何损失JooLun概不负责
 * 阿里云优惠券：[点我领取](https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=wnw8gle1)
+### 项目说明
+* joolun-wx：java后端
+* joolun-wx-ui：后台管理页面
+* joolun-wx-ma：小程序商城端
+### 演示环境
+* 管理后台：https://demo2.joolun.com/
+* 演示小程序：
 
-### 开源版（MIT开源，可以免费使用，保留代码头部版权和代码原始作者即可），在线体验
-|  后台演示地址  |  商城演示二维码  |  包含终端  |
-|---|---|---|
-|  http://demo2.joolun.com （账号/密码：test/123456）  |  ![输入图片说明](https://images.gitee.com/uploads/images/2020/0305/171054_0a84eb49_5079715.jpeg "qrcode_for_gh_e18eb0ef9a2d_258.jpg")  |  微信小程序  |
-
-### [商业版](https://www.joolun.com/)（全新微服务架构、代码更规范、设计更合理、功能更强大），在线体验
-|  产品名  |  后台演示地址  |  商城演示二维码  |  包含终端  |
-|---|---|---|---|
-|  小程序商城单店版  |  http://demo.joolun.com  |  ![输入图片说明](https://images.gitee.com/uploads/images/2021/0206/114507_937fd986_5079715.jpeg "qrcode_for_gh_6999ad5cfb2f_258.jpg")  |  微信小程序  |
-|  uniapp多店版  |  http://demo1.joolun.com  |  ![输入图片说明](https://images.gitee.com/uploads/images/2021/0206/114525_cefaeb06_5079715.jpeg "qrcode_for_gh_ae23ad0d32af_258.jpg")  |  微信小程序、H5、安卓、ios App、PC端  |
-
-### 开源版和商业版的区别
-|  版本  |  基本框架  |  相应功能  |  包含终端  |  了解更多  |
-|---|---|---|---|---|
-|  开源版  |  RuoYi SpringBoot单应用   |  功能简单，单租户（单商城）、单公众号、单小程序  |  只有小程序  |  https://gitee.com/joolun/JooLun-wx  |
-|  商业版  |  SpringCloud微服务、Nacos、Sentinel、vue前后端分离、uniapp等  |  功能强大、模块完善，多样化的营销工具，商城自定义拖拽装修，支付宝、微信服务商支付，支持阿里oss、七牛云、腾讯cos、minio多种存储方式，多租户（多商城）、多店铺、多公众号、多小程序等等  |  小程序、公众号h5、PC-h5、安卓、ios、商户端app等  |  https://www.joolun.com/  |
-
-### QQ群：
-* 没有QQ群，有问题可以直接发[Issues](https://gitee.com/joolun/JooLun-wx/issues)
-
+![输入图片说明](joolun-wx/doc/Joolun_Plus_11.png)
 ### 系统需求
-
-JDK >= 1.8
-
-MySQL >= 5.8
-
-Maven >= 3.0
+* JDK = 17
+* MySQL >= 5.8
+* Maven >= 3.0
 
 ### [运行系统](https://gitee.com/joolun/JooLun-wx/wikis/A%20%E6%9C%AC%E5%9C%B0%E8%BF%90%E8%A1%8C?sort_id=2235756)
 
@@ -82,43 +77,59 @@ Maven >= 3.0
 17. 在线构建器：拖动表单元素生成相应的HTML代码。
 18. 连接池监视：监视当前系统数据库连接池状态，可进行分析SQL找出系统性能瓶颈。
 
-### 演示图
-### 开源版截图
-![输入图片说明](https://images.gitee.com/uploads/images/2021/0206/113219_bd774cf3_5079715.png "QQ截图20210206113004.png")
-![输入图片说明](https://images.gitee.com/uploads/images/2021/0206/113232_e3bcb374_5079715.png "QQ截图20210206113046.png")
-![输入图片说明](https://images.gitee.com/uploads/images/2021/0206/113243_3f8c1ec2_5079715.png "QQ截图20210206113140.png")
-![输入图片说明](https://images.gitee.com/uploads/images/2021/0206/113256_cf5bb28b_5079715.png "QQ截图20210206113121.png")
-![输入图片说明](https://images.gitee.com/uploads/images/2020/0305/161111_71e7f26a_5079715.png "QQ截图20200305161005.png")
-![输入图片说明](https://images.gitee.com/uploads/images/2020/0305/161314_7f067064_5079715.png "QQ截图20200305160938.png")
-![输入图片说明](https://images.gitee.com/uploads/images/2020/0305/161331_bae82a4f_5079715.png "QQ截图20200305160904.png")
-![输入图片说明](https://images.gitee.com/uploads/images/2020/0305/161342_d8e42604_5079715.png "QQ截图20200305160731.png")
+![输入图片说明](https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-pro/2.jpg)
+![输入图片说明](https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-pro/3.jpg)
+![输入图片说明](https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-pro/4.jpg)
+![输入图片说明](https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-pro/5.jpg)
+![输入图片说明](https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-pro/6.jpg)
+![输入图片说明](https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-pro/7.jpg)
+![输入图片说明](https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-pro/8.jpg)
+![输入图片说明](https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-pro/9.jpg)
+![输入图片说明](https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-pro/10.jpg)
+![输入图片说明](https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-pro/11.jpg)
+![输入图片说明](https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-pro/12.jpg)
+![输入图片说明](https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-pro/13.jpg)
+![输入图片说明](https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-pro/14.jpg)
+![输入图片说明](https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-pro/15.jpg)
+![输入图片说明](https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-pro/16.jpg)
+![输入图片说明](https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-pro/17.jpg)
+![输入图片说明](https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-pro/18.jpg)
+![输入图片说明](https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-pro/19.jpg)
+![输入图片说明](https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-pro/20.jpg)
 <table>
     <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/cd1f90be5f2684f4560c9519c0f2a232ee8.jpg"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/1cbcf0e6f257c7d3a063c0e3f2ff989e4b3.jpg"/></td>
+        <td><img src="https://23592599.s21i.faiusr.com/4/ABUIABAEGAAg2s7hmAYo_sam-wMw6Ac42AQ.png.webp"/></td>
+        <td><img src="https://23592599.s21i.faiusr.com/4/ABUIABAEGAAg2s7hmAYoisCngQYw6Ac42AQ.png.webp"/></td>
     </tr>
     <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-8074972883b5ba0622e13246738ebba237a.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-9f88719cdfca9af2e58b352a20e23d43b12.png"/></td>
+        <td><img src="https://23592599.s21i.faiusr.com/4/ABUIABAEGAAg2c7hmAYo6PLorQcw6Ac42AQ.png.webp"/></td>
+        <td><img src="https://23592599.s21i.faiusr.com/4/ABUIABAEGAAg2s7hmAYo-duw0gQw6Ac42AQ.png.webp"/></td>
     </tr>
     <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-39bf2584ec3a529b0d5a3b70d15c9b37646.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-936ec82d1f4872e1bc980927654b6007307.png"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-b2d62ceb95d2dd9b3fbe157bb70d26001e9.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-d67451d308b7a79ad6819723396f7c3d77a.png"/></td>
-    </tr>	 
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/5e8c387724954459291aafd5eb52b456f53.jpg"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/644e78da53c2e92a95dfda4f76e6d117c4b.jpg"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-8370a0d02977eebf6dbf854c8450293c937.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-49003ed83f60f633e7153609a53a2b644f7.png"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-d4fe726319ece268d4746602c39cffc0621.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-c195234bbcd30be6927f037a6755e6ab69c.png"/></td>
+        <td><img src="https://23592599.s21i.faiusr.com/4/ABUIABAEGAAguc-hmAYopdHjxQUw6Ac42AQ.png.webp"/></td>
+        <td><img src="https://23592599.s21i.faiusr.com/4/ABUIABAEGAAg2s7hmAYowPiB2AIw6Ac42AQ.png.webp"/></td>
     </tr>
 </table>
+
+### 项目截图
+<table>
+    <tr>
+        <td><img src="https://images.gitee.com/uploads/images/2021/0206/113219_bd774cf3_5079715.png"/></td>
+        <td><img src="https://images.gitee.com/uploads/images/2021/0206/113232_e3bcb374_5079715.png"/></td>
+    </tr>
+    <tr>
+        <td><img src="https://images.gitee.com/uploads/images/2021/0206/113243_3f8c1ec2_5079715.png"/></td>
+        <td><img src="https://images.gitee.com/uploads/images/2021/0206/113256_cf5bb28b_5079715.png"/></td>
+    </tr>
+    <tr>
+        <td><img src="https://images.gitee.com/uploads/images/2020/0305/161111_71e7f26a_5079715.png"/></td>
+        <td><img src="https://images.gitee.com/uploads/images/2020/0305/161331_bae82a4f_5079715.png"/></td>
+    </tr>
+</table>
+
+### 区别
+|  版本  |  基本框架  |  相应功能  |  包含终端  |  了解更多  |
+|---|---|---|---|---|
+|  开源版  |  RuoYi SpringBoot单应用   |  功能简单，单租户（单商城）、单公众号、单小程序  |  只有小程序  |  https://gitee.com/joolun/JooLun-wx  |
+|  其他产品  |  SpringCloud微服务、Nacos、Sentinel、vue前后端分离、uniapp等  |  功能强大、模块完善，多样化的营销工具，商城自定义拖拽装修，支付宝、微信服务商支付，支持阿里oss、七牛云、腾讯cos、minio多种存储方式，多租户（多商城）、多店铺、多公众号、多小程序等等  |  小程序、公众号h5、PC-h5、安卓、ios、商户端app等  |  https://www.joolun.com/  |
+

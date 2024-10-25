@@ -131,6 +131,9 @@ module.exports = {
   orderCancel: (id) => {//订单确认取消
     return request('/weixin/api/ma/orderinfo/cancel/' + id, 'put', null, true)
   },
+  orderRefunds: (data) => {//订单申请退款
+    return request('/weixin/api/ma/orderinfo/refunds', 'post', data, true)
+  },
   orderReceive: (id) => {//订单确认收货
     return request('/weixin/api/ma/orderinfo/receive/' + id, 'put', null, true)
   },

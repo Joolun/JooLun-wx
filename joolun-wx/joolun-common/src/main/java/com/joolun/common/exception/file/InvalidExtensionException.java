@@ -1,7 +1,6 @@
 package com.joolun.common.exception.file;
 
 import java.util.Arrays;
-import org.apache.commons.fileupload.FileUploadException;
 
 /**
  * 文件上传 误异常类
@@ -18,7 +17,7 @@ public class InvalidExtensionException extends FileUploadException
 
     public InvalidExtensionException(String[] allowedExtension, String extension, String filename)
     {
-        super("filename : [" + filename + "], extension : [" + extension + "], allowed extension : [" + Arrays.toString(allowedExtension) + "]");
+        super("文件[" + filename + "]后缀[" + extension + "]不正确，请上传" + Arrays.toString(allowedExtension) + "格式");
         this.allowedExtension = allowedExtension;
         this.extension = extension;
         this.filename = filename;
@@ -64,6 +63,16 @@ public class InvalidExtensionException extends FileUploadException
         private static final long serialVersionUID = 1L;
 
         public InvalidMediaExtensionException(String[] allowedExtension, String extension, String filename)
+        {
+            super(allowedExtension, extension, filename);
+        }
+    }
+
+    public static class InvalidVideoExtensionException extends InvalidExtensionException
+    {
+        private static final long serialVersionUID = 1L;
+
+        public InvalidVideoExtensionException(String[] allowedExtension, String extension, String filename)
         {
             super(allowedExtension, extension, filename);
         }

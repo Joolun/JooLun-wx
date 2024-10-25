@@ -1,6 +1,6 @@
 package com.joolun.common.exception.user;
 
-import com.joolun.common.exception.BaseException;
+import com.joolun.common.exception.base.BaseException;
 
 /**
  * 用户信息异常类

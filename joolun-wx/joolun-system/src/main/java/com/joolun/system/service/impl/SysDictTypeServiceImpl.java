@@ -1,14 +1,17 @@
 package com.joolun.system.service.impl;
 
+import java.util.Comparator;
 import java.util.List;
-import javax.annotation.PostConstruct;
+import java.util.Map;
+import java.util.stream.Collectors;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.joolun.common.constant.UserConstants;
 import com.joolun.common.core.domain.entity.SysDictData;
 import com.joolun.common.core.domain.entity.SysDictType;
-import com.joolun.common.exception.CustomException;
+import com.joolun.common.exception.ServiceException;
 import com.joolun.common.utils.DictUtils;
 import com.joolun.common.utils.StringUtils;
 import com.joolun.system.mapper.SysDictDataMapper;
@@ -35,12 +38,7 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService
     @PostConstruct
     public void init()
     {
-        List<SysDictType> dictTypeList = dictTypeMapper.selectDictTypeAll();
-        for (SysDictType dictType : dictTypeList)
-        {
-            List<SysDictData> dictDatas = dictDataMapper.selectDictDataByType(dictType.getDictType());
-            DictUtils.setDictCache(dictType.getDictType(), dictDatas);
-        }
+        loadingDictCache();
     }
 
     /**
@@ -117,49 +115,69 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService
      * 批量删除字典类型信息
      * 
      * @param dictIds 需要删除的字典ID
-     * @return 结果
      */
     @Override
-    public int deleteDictTypeByIds(Long[] dictIds)
+    public void deleteDictTypeByIds(Long[] dictIds)
     {
         for (Long dictId : dictIds)
         {
             SysDictType dictType = selectDictTypeById(dictId);
             if (dictDataMapper.countDictDataByType(dictType.getDictType()) > 0)
             {
-                throw new CustomException(String.format("%1$s已分配,不能删除", dictType.getDictName()));
+                throw new ServiceException(String.format("%1$s已分配,不能删除", dictType.getDictName()));
             }
+            dictTypeMapper.deleteDictTypeById(dictId);
+            DictUtils.removeDictCache(dictType.getDictType());
         }
-        int count = dictTypeMapper.deleteDictTypeByIds(dictIds);
-        if (count > 0)
-        {
-            DictUtils.clearDictCache();
-        }
-        return count;
     }
 
     /**
-     * 清空缓存数据
+     * 加载字典缓存数据
      */
     @Override
-    public void clearCache()
+    public void loadingDictCache()
+    {
+        SysDictData dictData = new SysDictData();
+        dictData.setStatus("0");
+        Map<String, List<SysDictData>> dictDataMap = dictDataMapper.selectDictDataList(dictData).stream().collect(Collectors.groupingBy(SysDictData::getDictType));
+        for (Map.Entry<String, List<SysDictData>> entry : dictDataMap.entrySet())
+        {
+            DictUtils.setDictCache(entry.getKey(), entry.getValue().stream().sorted(Comparator.comparing(SysDictData::getDictSort)).collect(Collectors.toList()));
+        }
+    }
+
+    /**
+     * 清空字典缓存数据
+     */
+    @Override
+    public void clearDictCache()
     {
         DictUtils.clearDictCache();
     }
 
     /**
+     * 重置字典缓存数据
+     */
+    @Override
+    public void resetDictCache()
+    {
+        clearDictCache();
+        loadingDictCache();
+    }
+
+    /**
      * 新增保存字典类型信息
      * 
-     * @param dictType 字典类型信息
+     * @param dict 字典类型信息
      * @return 结果
      */
     @Override
-    public int insertDictType(SysDictType dictType)
+    public int insertDictType(SysDictType dict)
     {
-        int row = dictTypeMapper.insertDictType(dictType);
+        int row = dictTypeMapper.insertDictType(dict);
         if (row > 0)
         {
-            DictUtils.clearDictCache();
+            DictUtils.setDictCache(dict.getDictType(), null);
         }
         return row;
     }
@@ -167,19 +185,20 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService
     /**
      * 修改保存字典类型信息
      * 
-     * @param dictType 字典类型信息
+     * @param dict 字典类型信息
      * @return 结果
      */
     @Override
     @Transactional
-    public int updateDictType(SysDictType dictType)
+    public int updateDictType(SysDictType dict)
     {
-        SysDictType oldDict = dictTypeMapper.selectDictTypeById(dictType.getDictId());
-        dictDataMapper.updateDictDataType(oldDict.getDictType(), dictType.getDictType());
-        int row = dictTypeMapper.updateDictType(dictType);
+        SysDictType oldDict = dictTypeMapper.selectDictTypeById(dict.getDictId());
+        dictDataMapper.updateDictDataType(oldDict.getDictType(), dict.getDictType());
+        int row = dictTypeMapper.updateDictType(dict);
         if (row > 0)
         {
-            DictUtils.clearDictCache();
+            List<SysDictData> dictDatas = dictDataMapper.selectDictDataByType(dict.getDictType());
+            DictUtils.setDictCache(dict.getDictType(), dictDatas);
         }
         return row;
     }
@@ -191,7 +210,7 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService
      * @return 结果
      */
     @Override
-    public String checkDictTypeUnique(SysDictType dict)
+    public boolean checkDictTypeUnique(SysDictType dict)
     {
         Long dictId = StringUtils.isNull(dict.getDictId()) ? -1L : dict.getDictId();
         SysDictType dictType = dictTypeMapper.checkDictTypeUnique(dict.getDictType());

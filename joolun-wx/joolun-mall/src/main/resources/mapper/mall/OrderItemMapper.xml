@@ -23,6 +23,8 @@
 		<result property="freightPrice" column="freight_price"/>
 		<result property="paymentPrice" column="payment_price"/>
 		<result property="remark" column="remark"/>
+		<result property="status" column="status"/>
+		<result property="isRefund" column="is_refund"/>
 	</resultMap>
 
 	<sql id="orderItemSql">
@@ -38,7 +40,9 @@
 		order_item.`sales_price`,
 		order_item.`freight_price`,
 		order_item.`payment_price`,
-		order_item.`remark`
+		order_item.`remark`,
+		order_item.`status`,
+		order_item.`is_refund`
 	</sql>
 
 	<select id="selectList2" resultMap="orderItemMap">

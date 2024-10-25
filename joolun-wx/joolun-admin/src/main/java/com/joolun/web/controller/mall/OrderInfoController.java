@@ -11,22 +11,17 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.joolun.common.core.controller.BaseController;
 import com.joolun.common.core.domain.AjaxResult;
 import com.joolun.mall.config.CommonConstants;
-import com.joolun.mall.constant.MallConstants;
 import com.joolun.mall.entity.OrderInfo;
+import com.joolun.mall.entity.OrderItem;
 import com.joolun.mall.entity.OrderLogistics;
-import com.joolun.mall.enums.OrderInfoEnum;
 import com.joolun.mall.service.OrderInfoService;
 import com.joolun.mall.service.OrderLogisticsService;
 import com.joolun.weixin.constant.MyReturnCode;
 import com.joolun.weixin.service.WxUserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 /**
  * 商城订单
@@ -38,7 +33,6 @@ import java.util.Map;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/orderinfo")
-@Api(value = "orderinfo", tags = "商城订单管理")
 public class OrderInfoController extends BaseController {
 
     private final OrderInfoService orderInfoService;
@@ -51,7 +45,6 @@ public class OrderInfoController extends BaseController {
     * @param orderInfo 商城订单
     * @return
     */
-	@ApiOperation(value = "分页查询")
     @GetMapping("/page")
     @PreAuthorize("@ss.hasPermi('mall:orderinfo:index')")
     public AjaxResult getOrderInfoPage(Page page, OrderInfo orderInfo) {
@@ -63,7 +56,6 @@ public class OrderInfoController extends BaseController {
 	 * @param orderInfo
 	 * @return
 	 */
-	@ApiOperation(value = "查询数量")
 	@GetMapping("/count")
 	public AjaxResult getCount(OrderInfo orderInfo) {
 		return AjaxResult.success(orderInfoService.count(Wrappers.query(orderInfo)));
@@ -74,7 +66,6 @@ public class OrderInfoController extends BaseController {
     * @param id
     * @return R
     */
-	@ApiOperation(value = "通过id查询商城订单")
     @GetMapping("/{id}")
     @PreAuthorize("@ss.hasPermi('mall:orderinfo:get')")
     public AjaxResult getById(@PathVariable("id") String id){
@@ -90,7 +81,6 @@ public class OrderInfoController extends BaseController {
     * @param orderInfo 商城订单
     * @return R
     */
-	@ApiOperation(value = "新增商城订单")
     @PostMapping
     @PreAuthorize("@ss.hasPermi('mall:orderinfo:add')")
     public AjaxResult save(@RequestBody OrderInfo orderInfo){
@@ -102,7 +92,6 @@ public class OrderInfoController extends BaseController {
     * @param orderInfo 商城订单
     * @return R
     */
-	@ApiOperation(value = "修改商城订单")
     @PutMapping
     @PreAuthorize("@ss.hasPermi('mall:orderinfo:edit')")
     public AjaxResult updateById(@RequestBody OrderInfo orderInfo){
@@ -114,7 +103,6 @@ public class OrderInfoController extends BaseController {
     * @param id
     * @return R
     */
-	@ApiOperation(value = "通过id删除商城订单")
     @DeleteMapping("/{id}")
     @PreAuthorize("@ss.hasPermi('mall:orderinfo:del')")
     public AjaxResult removeById(@PathVariable String id){
@@ -126,7 +114,6 @@ public class OrderInfoController extends BaseController {
 	 * @param id 商城订单
 	 * @return R
 	 */
-	@ApiOperation(value = "取消商城订单")
 	@PutMapping("/cancel/{id}")
 	@PreAuthorize("@ss.hasPermi('mall:orderinfo:edit')")
 	public AjaxResult orderCancel(@PathVariable String id){
@@ -141,4 +128,15 @@ public class OrderInfoController extends BaseController {
 		return AjaxResult.success();
 	}
 
+	/**
+	 * 操作退款
+	 * @param orderItem
+	 * @return R
+	 */
+	@PutMapping("/doOrderRefunds")
+	@PreAuthorize("@ss.hasPermi('mall:orderinfo:edit')")
+	public AjaxResult doOrderRefunds(@RequestBody OrderItem orderItem) {
+		orderInfoService.doOrderRefunds(orderItem);
+		return AjaxResult.success();
+	}
 }

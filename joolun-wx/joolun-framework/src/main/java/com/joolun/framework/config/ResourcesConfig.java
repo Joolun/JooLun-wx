@@ -1,8 +1,10 @@
 package com.joolun.framework.config;
 
+import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.CacheControl;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -28,11 +30,13 @@ public class ResourcesConfig implements WebMvcConfigurer
     public void addResourceHandlers(ResourceHandlerRegistry registry)
     {
         /** 本地文件上传路径 */
-        registry.addResourceHandler(Constants.RESOURCE_PREFIX + "/**").addResourceLocations("file:" + JooLunConfig.getProfile() + "/");
+        registry.addResourceHandler(Constants.RESOURCE_PREFIX + "/**")
+                .addResourceLocations("file:" + JooLunConfig.getProfile() + "/");
 
         /** swagger配置 */
-        registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
-        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+        registry.addResourceHandler("/swagger-ui/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/")
+                .setCacheControl(CacheControl.maxAge(5, TimeUnit.HOURS).cachePublic());;
     }
 
     /**
@@ -50,17 +54,20 @@ public class ResourcesConfig implements WebMvcConfigurer
     @Bean
     public CorsFilter corsFilter()
     {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         // 设置访问源地址
-        config.addAllowedOrigin("*");
+        config.addAllowedOriginPattern("*");
         // 设置访问源请求头
         config.addAllowedHeader("*");
         // 设置访问源请求方法
         config.addAllowedMethod("*");
-        // 对接口配置跨域设置
+        // 有效期 1800秒
+        config.setMaxAge(1800L);
+        // 添加映射路径，拦截一切请求
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
+        // 返回新的CorsFilter
         return new CorsFilter(source);
     }
 }

@@ -1,7 +1,6 @@
 package com.joolun.common.utils.file;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
@@ -59,13 +58,12 @@ public class ImageUtils
     /**
      * 读取文件为字节数据
      * 
-     * @param key 地址
+     * @param url 地址
      * @return 字节数据
      */
     public static byte[] readFile(String url)
     {
         InputStream in = null;
-        ByteArrayOutputStream baos = null;
         try
         {
             if (url.startsWith("http"))
@@ -94,7 +92,7 @@ public class ImageUtils
         }
         finally
         {
-            IOUtils.closeQuietly(baos);
+            IOUtils.closeQuietly(in);
         }
     }
 }

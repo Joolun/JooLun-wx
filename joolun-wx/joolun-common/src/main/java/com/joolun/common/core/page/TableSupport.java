@@ -1,5 +1,6 @@
 package com.joolun.common.core.page;
 
+import com.joolun.common.core.text.Convert;
 import com.joolun.common.utils.ServletUtils;
 
 /**
@@ -30,15 +31,21 @@ public class TableSupport
     public static final String IS_ASC = "isAsc";
 
     /**
+     * 分页参数合理化
+     */
+    public static final String REASONABLE = "reasonable";
+
+    /**
      * 封装分页对象
      */
     public static PageDomain getPageDomain()
     {
         PageDomain pageDomain = new PageDomain();
-        pageDomain.setPageNum(ServletUtils.getParameterToInt(PAGE_NUM));
-        pageDomain.setPageSize(ServletUtils.getParameterToInt(PAGE_SIZE));
+        pageDomain.setPageNum(Convert.toInt(ServletUtils.getParameter(PAGE_NUM), 1));
+        pageDomain.setPageSize(Convert.toInt(ServletUtils.getParameter(PAGE_SIZE), 10));
         pageDomain.setOrderByColumn(ServletUtils.getParameter(ORDER_BY_COLUMN));
         pageDomain.setIsAsc(ServletUtils.getParameter(IS_ASC));
+        pageDomain.setReasonable(ServletUtils.getParameterToBool(REASONABLE));
         return pageDomain;
     }
 

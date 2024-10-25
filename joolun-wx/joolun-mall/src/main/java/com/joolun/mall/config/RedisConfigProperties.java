@@ -17,12 +17,12 @@ import org.springframework.context.annotation.Configuration;
  */
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "spring.redis")
+@ConfigurationProperties(prefix = "spring.data.redis")
 public class RedisConfigProperties {
 
-	private String host = "host";
-	private String port = "port";
-	private String password = "password";
-	private String database = "database";
+	private String host;
+	private String port;
+	private String password;
+	private String database;
 
 }

@@ -31,11 +31,4 @@ public interface GoodsSpuMapper extends BaseMapper<GoodsSpu> {
 
 	GoodsSpu selectOneByShoppingCart(String id);
 
-	/**
-	 * 查询电子券的关联商品
-	 * @param couponId
-	 * @return
-	 */
-	List<GoodsSpu> selectListByCouponId(String couponId);
-
 }

@@ -12,8 +12,6 @@ import com.joolun.common.core.controller.BaseController;
 import com.joolun.common.core.domain.AjaxResult;
 import com.joolun.mall.entity.ShoppingCart;
 import com.joolun.mall.service.ShoppingCartService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,7 +27,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/shoppingcart")
-@Api(value = "shoppingcart", tags = "购物车管理")
 public class ShoppingCartController extends BaseController {
 
 	private final ShoppingCartService shoppingCartService;
@@ -40,7 +37,6 @@ public class ShoppingCartController extends BaseController {
 	 * @param shoppingCart 购物车
 	 * @return
 	 */
-	@ApiOperation(value = "分页查询")
 	@GetMapping("/page")
 	@PreAuthorize("@ss.hasPermi('mall:shoppingcart:index')")
 	public AjaxResult getShoppingCartPage(Page page, ShoppingCart shoppingCart) {
@@ -52,7 +48,6 @@ public class ShoppingCartController extends BaseController {
 	 * @param id
 	 * @return R
 	 */
-	@ApiOperation(value = "通过id查询购物车")
 	@GetMapping("/{id}")
 	@PreAuthorize("@ss.hasPermi('mall:shoppingcart:get')")
 	public AjaxResult getById(@PathVariable("id") String id){
@@ -64,7 +59,6 @@ public class ShoppingCartController extends BaseController {
 	 * @param shoppingCart 购物车
 	 * @return R
 	 */
-	@ApiOperation(value = "新增购物车")
 	@PostMapping
 	@PreAuthorize("@ss.hasPermi('mall:shoppingcart:add')")
 	public AjaxResult save(@RequestBody ShoppingCart shoppingCart){
@@ -76,7 +70,6 @@ public class ShoppingCartController extends BaseController {
 	 * @param shoppingCart 购物车
 	 * @return R
 	 */
-	@ApiOperation(value = "修改购物车")
 	@PutMapping
 	@PreAuthorize("@ss.hasPermi('mall:shoppingcart:edit')")
 	public AjaxResult updateById(@RequestBody ShoppingCart shoppingCart){
@@ -88,7 +81,6 @@ public class ShoppingCartController extends BaseController {
 	 * @param id
 	 * @return R
 	 */
-	@ApiOperation(value = "通过id删除购物车")
 	@DeleteMapping("/{id}")
 	@PreAuthorize("@ss.hasPermi('mall:shoppingcart:del')")
 	public AjaxResult removeById(@PathVariable String id){

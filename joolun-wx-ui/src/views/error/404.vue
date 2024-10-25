@@ -17,7 +17,7 @@
         <div class="bullshit__info">
           对不起，您正在寻找的页面不存在。尝试检查URL的错误，然后按浏览器上的刷新按钮或尝试在我们的应用程序中找到其他内容。
         </div>
-        <router-link to="/" class="bullshit__return-home">
+        <router-link to="/index" class="bullshit__return-home">
           返回首页
         </router-link>
       </div>
@@ -25,16 +25,10 @@
   </div>
 </template>
 
-<script>
-
-export default {
-  name: 'Page404',
-  computed: {
-    message() {
-      return '找不到网页！'
-    }
-  }
-}
+<script setup>
+let message = computed(() => {
+  return '找不到网页！'
+})
 </script>
 
 <style lang="scss" scoped>

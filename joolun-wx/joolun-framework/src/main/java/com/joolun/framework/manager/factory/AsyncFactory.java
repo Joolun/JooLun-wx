@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.joolun.common.constant.Constants;
 import com.joolun.common.utils.LogUtils;
 import com.joolun.common.utils.ServletUtils;
+import com.joolun.common.utils.StringUtils;
 import com.joolun.common.utils.ip.AddressUtils;
 import com.joolun.common.utils.ip.IpUtils;
 import com.joolun.common.utils.spring.SpringUtils;
@@ -37,7 +38,7 @@ public class AsyncFactory
             final Object... args)
     {
         final UserAgent userAgent = UserAgent.parseUserAgentString(ServletUtils.getRequest().getHeader("User-Agent"));
-        final String ip = IpUtils.getIpAddr(ServletUtils.getRequest());
+        final String ip = IpUtils.getIpAddr();
         return new TimerTask()
         {
             @Override
@@ -65,7 +66,7 @@ public class AsyncFactory
                 logininfor.setOs(os);
                 logininfor.setMsg(message);
                 // 日志状态
-                if (Constants.LOGIN_SUCCESS.equals(status) || Constants.LOGOUT.equals(status))
+                if (StringUtils.equalsAny(status, Constants.LOGIN_SUCCESS, Constants.LOGOUT, Constants.REGISTER))
                 {
                     logininfor.setStatus(Constants.SUCCESS);
                 }

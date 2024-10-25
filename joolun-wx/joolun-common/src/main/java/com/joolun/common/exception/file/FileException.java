@@ -1,6 +1,6 @@
 package com.joolun.common.exception.file;
 
-import com.joolun.common.exception.BaseException;
+import com.joolun.common.exception.base.BaseException;
 
 /**
  * 文件信息异常类

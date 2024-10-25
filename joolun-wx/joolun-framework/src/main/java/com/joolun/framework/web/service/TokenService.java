@@ -3,10 +3,13 @@ package com.joolun.framework.web.service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import com.joolun.common.constant.CacheConstants;
 import com.joolun.common.constant.Constants;
 import com.joolun.common.core.domain.model.LoginUser;
 import com.joolun.common.core.redis.RedisCache;
@@ -28,6 +31,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class TokenService
 {
+    private static final Logger log = LoggerFactory.getLogger(TokenService.class);
+
     // 令牌自定义标识
     @Value("${token.header}")
     private String header;
@@ -60,12 +65,19 @@ public class TokenService
         String token = getToken(request);
         if (StringUtils.isNotEmpty(token))
         {
-            Claims claims = parseToken(token);
-            // 解析对应的权限以及用户信息
-            String uuid = (String) claims.get(Constants.LOGIN_USER_KEY);
-            String userKey = getTokenKey(uuid);
-            LoginUser user = redisCache.getCacheObject(userKey);
-            return user;
+            try
+            {
+                Claims claims = parseToken(token);
+                // 解析对应的权限以及用户信息
+                String uuid = (String) claims.get(Constants.LOGIN_USER_KEY);
+                String userKey = getTokenKey(uuid);
+                LoginUser user = redisCache.getCacheObject(userKey);
+                return user;
+            }
+            catch (Exception e)
+            {
+                log.error("获取用户信息异常'{}'", e.getMessage());
+            }
         }
         return null;
     }
@@ -149,7 +161,7 @@ public class TokenService
     public void setUserAgent(LoginUser loginUser)
     {
         UserAgent userAgent = UserAgent.parseUserAgentString(ServletUtils.getRequest().getHeader("User-Agent"));
-        String ip = IpUtils.getIpAddr(ServletUtils.getRequest());
+        String ip = IpUtils.getIpAddr();
         loginUser.setIpaddr(ip);
         loginUser.setLoginLocation(AddressUtils.getRealAddressByIP(ip));
         loginUser.setBrowser(userAgent.getBrowser().getName());
@@ -214,6 +226,6 @@ public class TokenService
 
     private String getTokenKey(String uuid)
     {
-        return Constants.LOGIN_TOKEN_KEY + uuid;
+        return CacheConstants.LOGIN_TOKEN_KEY + uuid;
     }
 }

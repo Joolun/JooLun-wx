@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 import com.joolun.common.core.domain.entity.SysUser;
 import com.joolun.common.core.domain.model.LoginUser;
 import com.joolun.common.enums.UserStatus;
-import com.joolun.common.exception.BaseException;
+import com.joolun.common.exception.ServiceException;
+import com.joolun.common.utils.MessageUtils;
 import com.joolun.common.utils.StringUtils;
 import com.joolun.system.service.ISysUserService;
 
@@ -26,6 +27,9 @@ public class UserDetailsServiceImpl implements UserDetailsService
 
     @Autowired
     private ISysUserService userService;
+    
+    @Autowired
+    private SysPasswordService passwordService;
 
     @Autowired
     private SysPermissionService permissionService;
@@ -37,24 +41,26 @@ public class UserDetailsServiceImpl implements UserDetailsService
         if (StringUtils.isNull(user))
         {
             log.info("登录用户：{} 不存在.", username);
-            throw new UsernameNotFoundException("登录用户：" + username + " 不存在");
+            throw new ServiceException(MessageUtils.message("user.not.exists"));
         }
         else if (UserStatus.DELETED.getCode().equals(user.getDelFlag()))
         {
             log.info("登录用户：{} 已被删除.", username);
-            throw new BaseException("对不起，您的账号：" + username + " 已被删除");
+            throw new ServiceException(MessageUtils.message("user.password.delete"));
         }
         else if (UserStatus.DISABLE.getCode().equals(user.getStatus()))
         {
             log.info("登录用户：{} 已被停用.", username);
-            throw new BaseException("对不起，您的账号：" + username + " 已停用");
+            throw new ServiceException(MessageUtils.message("user.blocked"));
         }
+
+        passwordService.validate(user);
 
         return createLoginUser(user);
     }
 
     public UserDetails createLoginUser(SysUser user)
     {
-        return new LoginUser(user, permissionService.getMenuPermission(user));
+        return new LoginUser(user.getUserId(), user.getDeptId(), user, permissionService.getMenuPermission(user));
     }
 }

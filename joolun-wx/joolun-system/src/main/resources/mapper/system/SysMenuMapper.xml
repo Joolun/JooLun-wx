@@ -4,7 +4,7 @@
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.joolun.system.mapper.SysMenuMapper">
 
-	<resultMap type="com.joolun.common.core.domain.entity.SysMenu" id="SysMenuResult">
+	<resultMap type="SysMenu" id="SysMenuResult">
 		<id     property="menuId"         column="menu_id"        />
 		<result property="menuName"       column="menu_name"      />
 		<result property="parentName"     column="parent_name"    />
@@ -12,6 +12,8 @@
 		<result property="orderNum"       column="order_num"      />
 		<result property="path"           column="path"           />
 		<result property="component"      column="component"      />
+		<result property="query"          column="query"          />
+		<result property="routeName"      column="route_name"     />
 		<result property="isFrame"        column="is_frame"       />
 		<result property="isCache"        column="is_cache"       />
 		<result property="menuType"       column="menu_type"      />
@@ -27,11 +29,11 @@
 	</resultMap>
 
 	<sql id="selectMenuVo">
-        select menu_id, menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, ifnull(perms,'') as perms, icon, create_time 
+        select menu_id, menu_name, parent_id, order_num, path, component, `query`, route_name, is_frame, is_cache, menu_type, visible, status, ifnull(perms,'') as perms, icon, create_time 
 		from sys_menu
     </sql>
     
-    <select id="selectMenuList" parameterType="com.joolun.common.core.domain.entity.SysMenu" resultMap="SysMenuResult">
+    <select id="selectMenuList" parameterType="SysMenu" resultMap="SysMenuResult">
 		<include refid="selectMenuVo"/>
 		<where>
 			<if test="menuName != null and menuName != ''">
@@ -48,32 +50,32 @@
 	</select>
 	
 	<select id="selectMenuTreeAll" resultMap="SysMenuResult">
-		select distinct m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.visible, m.status, ifnull(m.perms,'') as perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num, m.create_time
+		select distinct m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.`query`, m.route_name, m.visible, m.status, ifnull(m.perms,'') as perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num, m.create_time
 		from sys_menu m where m.menu_type in ('M', 'C') and m.status = 0
 		order by m.parent_id, m.order_num
 	</select>
 	
-	<select id="selectMenuListByUserId" parameterType="com.joolun.common.core.domain.entity.SysMenu" resultMap="SysMenuResult">
-		select distinct m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.visible, m.status, ifnull(m.perms,'') as perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num, m.create_time
+	<select id="selectMenuListByUserId" parameterType="SysMenu" resultMap="SysMenuResult">
+		select distinct m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.`query`, m.route_name, m.visible, m.status, ifnull(m.perms,'') as perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num, m.create_time
 		from sys_menu m
 		left join sys_role_menu rm on m.menu_id = rm.menu_id
 		left join sys_user_role ur on rm.role_id = ur.role_id
 		left join sys_role ro on ur.role_id = ro.role_id
 		where ur.user_id = #{params.userId}
 		<if test="menuName != null and menuName != ''">
-            AND menu_name like concat('%', #{menuName}, '%')
+            AND m.menu_name like concat('%', #{menuName}, '%')
 		</if>
 		<if test="visible != null and visible != ''">
-            AND visible = #{visible}
+            AND m.visible = #{visible}
 		</if>
 		<if test="status != null and status != ''">
-            AND status = #{status}
+            AND m.status = #{status}
 		</if>
 		order by m.parent_id, m.order_num
 	</select>
     
-    <select id="selectMenuTreeByUserId" parameterType="java.lang.Long" resultMap="SysMenuResult">
-		select distinct m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.visible, m.status, ifnull(m.perms,'') as perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num, m.create_time
+    <select id="selectMenuTreeByUserId" parameterType="Long" resultMap="SysMenuResult">
+		select distinct m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.`query`, m.route_name, m.visible, m.status, ifnull(m.perms,'') as perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num, m.create_time
 		from sys_menu m
 			 left join sys_role_menu rm on m.menu_id = rm.menu_id
 			 left join sys_user_role ur on rm.role_id = ur.role_id
@@ -83,7 +85,7 @@
 		order by m.parent_id, m.order_num
 	</select>
 	
-	<select id="selectMenuListByRoleId" resultType="java.lang.Integer">
+	<select id="selectMenuListByRoleId" resultType="Long">
 		select m.menu_id
 		from sys_menu m
             left join sys_role_menu rm on m.menu_id = rm.menu_id
@@ -94,14 +96,14 @@
 		order by m.parent_id, m.order_num
 	</select>
 	
-	<select id="selectMenuPerms" resultType="java.lang.String">
+	<select id="selectMenuPerms" resultType="String">
 		select distinct m.perms
 		from sys_menu m
 			 left join sys_role_menu rm on m.menu_id = rm.menu_id
 			 left join sys_user_role ur on rm.role_id = ur.role_id
 	</select>
 
-	<select id="selectMenuPermsByUserId" parameterType="java.lang.Long" resultType="java.lang.String">
+	<select id="selectMenuPermsByUserId" parameterType="Long" resultType="String">
 		select distinct m.perms
 		from sys_menu m
 			 left join sys_role_menu rm on m.menu_id = rm.menu_id
@@ -110,28 +112,37 @@
 		where m.status = '0' and r.status = '0' and ur.user_id = #{userId}
 	</select>
 	
-	<select id="selectMenuById" parameterType="java.lang.Long" resultMap="SysMenuResult">
+	<select id="selectMenuPermsByRoleId" parameterType="Long" resultType="String">
+		select distinct m.perms
+		from sys_menu m
+			 left join sys_role_menu rm on m.menu_id = rm.menu_id
+		where m.status = '0' and rm.role_id = #{roleId}
+	</select>
+	
+	<select id="selectMenuById" parameterType="Long" resultMap="SysMenuResult">
 		<include refid="selectMenuVo"/>
 		where menu_id = #{menuId}
 	</select>
 	
-	<select id="hasChildByMenuId" resultType="java.lang.Integer">
+	<select id="hasChildByMenuId" resultType="Integer">
 	    select count(1) from sys_menu where parent_id = #{menuId}  
 	</select>
 	
-	<select id="checkMenuNameUnique" parameterType="com.joolun.common.core.domain.entity.SysMenu" resultMap="SysMenuResult">
+	<select id="checkMenuNameUnique" parameterType="SysMenu" resultMap="SysMenuResult">
 		<include refid="selectMenuVo"/>
 		where menu_name=#{menuName} and parent_id = #{parentId} limit 1
 	</select>
 	
-	<update id="updateMenu" parameterType="com.joolun.common.core.domain.entity.SysMenu">
+	<update id="updateMenu" parameterType="SysMenu">
 		update sys_menu
 		<set>
 			<if test="menuName != null and menuName != ''">menu_name = #{menuName},</if>
 			<if test="parentId != null">parent_id = #{parentId},</if>
-			<if test="orderNum != null and orderNum != ''">order_num = #{orderNum},</if>
+			<if test="orderNum != null">order_num = #{orderNum},</if>
 			<if test="path != null and path != ''">path = #{path},</if>
 			<if test="component != null">component = #{component},</if>
+			<if test="query != null">`query` = #{query},</if>
+			<if test="routeName != null">route_name = #{routeName},</if>
 			<if test="isFrame != null and isFrame != ''">is_frame = #{isFrame},</if>
 			<if test="isCache != null and isCache != ''">is_cache = #{isCache},</if>
 			<if test="menuType != null and menuType != ''">menu_type = #{menuType},</if>
@@ -146,14 +157,16 @@
 		where menu_id = #{menuId}
 	</update>
 
-	<insert id="insertMenu" parameterType="com.joolun.common.core.domain.entity.SysMenu">
+	<insert id="insertMenu" parameterType="SysMenu">
 		insert into sys_menu(
 		<if test="menuId != null and menuId != 0">menu_id,</if>
 		<if test="parentId != null and parentId != 0">parent_id,</if>
 		<if test="menuName != null and menuName != ''">menu_name,</if>
-		<if test="orderNum != null and orderNum != ''">order_num,</if>
+		<if test="orderNum != null">order_num,</if>
 		<if test="path != null and path != ''">path,</if>
 		<if test="component != null and component != ''">component,</if>
+		<if test="query != null and query != ''">`query`,</if>
+		<if test="routeName != null">route_name,</if>
 		<if test="isFrame != null and isFrame != ''">is_frame,</if>
 		<if test="isCache != null and isCache != ''">is_cache,</if>
 		<if test="menuType != null and menuType != ''">menu_type,</if>
@@ -168,9 +181,11 @@
 		<if test="menuId != null and menuId != 0">#{menuId},</if>
 		<if test="parentId != null and parentId != 0">#{parentId},</if>
 		<if test="menuName != null and menuName != ''">#{menuName},</if>
-		<if test="orderNum != null and orderNum != ''">#{orderNum},</if>
+		<if test="orderNum != null">#{orderNum},</if>
 		<if test="path != null and path != ''">#{path},</if>
 		<if test="component != null and component != ''">#{component},</if>
+		<if test="query != null and query != ''">#{query},</if>
+		<if test="routeName != null">#{routeName},</if>
 		<if test="isFrame != null and isFrame != ''">#{isFrame},</if>
 		<if test="isCache != null and isCache != ''">#{isCache},</if>
 		<if test="menuType != null and menuType != ''">#{menuType},</if>
@@ -184,7 +199,7 @@
 		)
 	</insert>
 	
-	<delete id="deleteMenuById" parameterType="java.lang.Long">
+	<delete id="deleteMenuById" parameterType="Long">
 	    delete from sys_menu where menu_id = #{menuId}
 	</delete>
 

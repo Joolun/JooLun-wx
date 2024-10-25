@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * @author ruoyi
  */
 @Component
-@ConfigurationProperties(prefix = "ruoyi")
+@ConfigurationProperties(prefix = "joolun")
 public class JooLunConfig
 {
     /** 项目名称 */
@@ -21,14 +21,17 @@ public class JooLunConfig
     /** 版权年份 */
     private String copyrightYear;
 
-    /** 实例演示开关 */
-    private static boolean demoEnabled;
-
     /** 上传路径 */
     private static String profile;
 
     /** 获取地址开关 */
     private static boolean addressEnabled;
+
+    /** 验证码类型 */
+    private static String captchaType;
+
+    /** 实例演示开关 */
+    private static boolean demoEnabled;
 
     public String getName()
     {
@@ -60,16 +63,6 @@ public class JooLunConfig
         this.copyrightYear = copyrightYear;
     }
 
-    public static boolean isDemoEnabled()
-    {
-        return demoEnabled;
-    }
-
-    public  void setDemoEnabled(boolean demoEnabled)
-    {
-        JooLunConfig.demoEnabled = demoEnabled;
-    }
-
     public static String getProfile()
     {
         return profile;
@@ -88,6 +81,22 @@ public class JooLunConfig
     public void setAddressEnabled(boolean addressEnabled)
     {
         JooLunConfig.addressEnabled = addressEnabled;
+    }
+
+    public static String getCaptchaType() {
+        return captchaType;
+    }
+
+    public void setCaptchaType(String captchaType) {
+        JooLunConfig.captchaType = captchaType;
+    }
+
+    /**
+     * 获取导入上传路径
+     */
+    public static String getImportPath()
+    {
+        return getProfile() + "/import";
     }
 
     /**
@@ -112,5 +121,15 @@ public class JooLunConfig
     public static String getUploadPath()
     {
         return getProfile() + "/upload";
+    }
+
+    public static boolean isDemoEnabled()
+    {
+        return demoEnabled;
+    }
+
+    public  void setDemoEnabled(boolean demoEnabled)
+    {
+        JooLunConfig.demoEnabled = demoEnabled;
     }
 }

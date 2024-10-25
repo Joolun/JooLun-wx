@@ -3,20 +3,22 @@ package com.joolun.web.controller.common;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.FastByteArrayOutputStream;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.google.code.kaptcha.Producer;
+import com.joolun.common.config.JooLunConfig;
+import com.joolun.common.constant.CacheConstants;
 import com.joolun.common.constant.Constants;
 import com.joolun.common.core.domain.AjaxResult;
 import com.joolun.common.core.redis.RedisCache;
 import com.joolun.common.utils.sign.Base64;
 import com.joolun.common.utils.uuid.IdUtils;
+import com.joolun.system.service.ISysConfigService;
 
 /**
  * 验证码操作处理
@@ -35,24 +37,31 @@ public class CaptchaController
     @Autowired
     private RedisCache redisCache;
     
-    // 验证码类型
-    @Value("${ruoyi.captchaType}")
-    private String captchaType;
-
+    @Autowired
+    private ISysConfigService configService;
     /**
      * 生成验证码
      */
     @GetMapping("/captchaImage")
     public AjaxResult getCode(HttpServletResponse response) throws IOException
     {
+        AjaxResult ajax = AjaxResult.success();
+        boolean captchaEnabled = configService.selectCaptchaEnabled();
+        ajax.put("captchaEnabled", captchaEnabled);
+        if (!captchaEnabled)
+        {
+            return ajax;
+        }
+
         // 保存验证码信息
         String uuid = IdUtils.simpleUUID();
-        String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid;
+        String verifyKey = CacheConstants.CAPTCHA_CODE_KEY + uuid;
 
         String capStr = null, code = null;
         BufferedImage image = null;
 
         // 生成验证码
+        String captchaType = JooLunConfig.getCaptchaType();
         if ("math".equals(captchaType))
         {
             String capText = captchaProducerMath.createText();
@@ -78,7 +87,6 @@ public class CaptchaController
             return AjaxResult.error(e.getMessage());
         }
 
-        AjaxResult ajax = AjaxResult.success();
         ajax.put("uuid", uuid);
         ajax.put("img", Base64.encode(os.toByteArray()));
         return ajax;

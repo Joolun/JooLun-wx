@@ -6,13 +6,13 @@
  */
 package com.joolun.mall.service;
 
-import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
+import com.github.binarywang.wxpay.bean.notify.WxPayRefundNotifyResult;
 import com.joolun.mall.dto.PlaceOrderDTO;
 import com.joolun.mall.entity.OrderInfo;
+import com.joolun.mall.entity.OrderItem;
 
 import java.io.Serializable;
 
@@ -53,4 +53,21 @@ public interface OrderInfoService extends IService<OrderInfo> {
 	 */
 	void notifyOrder(OrderInfo orderInfo);
 
+	/**
+	 * 发起退款
+	 * @param orderItem
+	 */
+	void saveRefunds(OrderItem orderItem);
+
+	/**
+	 * 操作退款
+	 * @param orderItem
+	 */
+	void doOrderRefunds(OrderItem orderItem);
+
+	/**
+	 * 退款回调
+	 * @param notifyResult
+	 */
+	void notifyRefunds(WxPayRefundNotifyResult notifyResult);
 }

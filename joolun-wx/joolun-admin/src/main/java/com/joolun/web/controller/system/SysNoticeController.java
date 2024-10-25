@@ -17,7 +17,6 @@ import com.joolun.common.core.controller.BaseController;
 import com.joolun.common.core.domain.AjaxResult;
 import com.joolun.common.core.page.TableDataInfo;
 import com.joolun.common.enums.BusinessType;
-import com.joolun.common.utils.SecurityUtils;
 import com.joolun.system.domain.SysNotice;
 import com.joolun.system.service.ISysNoticeService;
 
@@ -52,7 +51,7 @@ public class SysNoticeController extends BaseController
     @GetMapping(value = "/{noticeId}")
     public AjaxResult getInfo(@PathVariable Long noticeId)
     {
-        return AjaxResult.success(noticeService.selectNoticeById(noticeId));
+        return success(noticeService.selectNoticeById(noticeId));
     }
 
     /**
@@ -63,7 +62,7 @@ public class SysNoticeController extends BaseController
     @PostMapping
     public AjaxResult add(@Validated @RequestBody SysNotice notice)
     {
-        notice.setCreateBy(SecurityUtils.getUsername());
+        notice.setCreateBy(getUsername());
         return toAjax(noticeService.insertNotice(notice));
     }
 
@@ -75,7 +74,7 @@ public class SysNoticeController extends BaseController
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody SysNotice notice)
     {
-        notice.setUpdateBy(SecurityUtils.getUsername());
+        notice.setUpdateBy(getUsername());
         return toAjax(noticeService.updateNotice(notice));
     }
 

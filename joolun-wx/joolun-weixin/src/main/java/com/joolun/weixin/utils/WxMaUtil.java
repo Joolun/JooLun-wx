@@ -1,8 +1,8 @@
 package com.joolun.weixin.utils;
 
 import com.joolun.weixin.constant.ConfigConstant;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author www.joolun.com

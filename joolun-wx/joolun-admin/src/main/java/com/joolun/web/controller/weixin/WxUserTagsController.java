@@ -27,9 +27,9 @@ import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.joolun.common.core.controller.BaseController;
 import com.joolun.common.core.domain.AjaxResult;
-import com.joolun.weixin.service.WxUserService;
 import com.joolun.weixin.entity.WxUser;
 import com.joolun.weixin.entity.WxUserTagsDict;
+import com.joolun.weixin.service.WxUserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -150,7 +150,7 @@ public class WxUserTagsController extends BaseController {
 	@PreAuthorize("@ss.hasPermi('wxmp:wxusertags:del')")
 	@DeleteMapping
 	public AjaxResult removeById(Long id,String appId){
-		int count = wxUserService.count(Wrappers.<WxUser>lambdaQuery()
+		long count = wxUserService.count(Wrappers.<WxUser>lambdaQuery()
 				.and(wrapper -> wrapper
 						.eq(WxUser::getTagidList,"["+id+"]")
 						.or()

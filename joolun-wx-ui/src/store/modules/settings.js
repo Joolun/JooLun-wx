@@ -1,35 +1,38 @@
-import variables from '@/assets/styles/element-variables.scss'
 import defaultSettings from '@/settings'
+import { useDynamicTitle } from '@/utils/dynamicTitle'
 
-const { sideTheme, showSettings, tagsView, fixedHeader, sidebarLogo } = defaultSettings
+const { sideTheme, showSettings, topNav, tagsView, fixedHeader, sidebarLogo, dynamicTitle } = defaultSettings
 
-const state = {
-  theme: variables.theme,
-  sideTheme: sideTheme,
-  showSettings: showSettings,
-  tagsView: tagsView,
-  fixedHeader: fixedHeader,
-  sidebarLogo: sidebarLogo
-}
+const storageSetting = JSON.parse(localStorage.getItem('layout-setting')) || ''
 
-const mutations = {
-  CHANGE_SETTING: (state, { key, value }) => {
-    if (state.hasOwnProperty(key)) {
-      state[key] = value
+const useSettingsStore = defineStore(
+  'settings',
+  {
+    state: () => ({
+      title: '',
+      theme: storageSetting.theme || '#409EFF',
+      sideTheme: storageSetting.sideTheme || sideTheme,
+      showSettings: showSettings,
+      topNav: storageSetting.topNav === undefined ? topNav : storageSetting.topNav,
+      tagsView: storageSetting.tagsView === undefined ? tagsView : storageSetting.tagsView,
+      fixedHeader: storageSetting.fixedHeader === undefined ? fixedHeader : storageSetting.fixedHeader,
+      sidebarLogo: storageSetting.sidebarLogo === undefined ? sidebarLogo : storageSetting.sidebarLogo,
+      dynamicTitle: storageSetting.dynamicTitle === undefined ? dynamicTitle : storageSetting.dynamicTitle
+    }),
+    actions: {
+      // 修改布局设置
+      changeSetting(data) {
+        const { key, value } = data
+        if (this.hasOwnProperty(key)) {
+          this[key] = value
+        }
+      },
+      // 设置网页标题
+      setTitle(title) {
+        this.title = title
+        useDynamicTitle();
+      }
     }
-  }
-}
+  })
 
-const actions = {
-  changeSetting({ commit }, data) {
-    commit('CHANGE_SETTING', data)
-  }
-}
-
-export default {
-  namespaced: true,
-  state,
-  mutations,
-  actions
-}
-
+export default useSettingsStore

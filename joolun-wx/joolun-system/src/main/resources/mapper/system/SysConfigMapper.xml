@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.joolun.system.mapper.SysConfigMapper">
     
-    <resultMap type="com.joolun.system.domain.SysConfig" id="SysConfigResult">
+    <resultMap type="SysConfig" id="SysConfigResult">
     	<id     property="configId"      column="config_id"      />
         <result property="configName"    column="config_name"    />
         <result property="configKey"     column="config_key"     />
@@ -33,12 +33,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</where>
 	</sql>
     
-    <select id="selectConfig" parameterType="com.joolun.system.domain.SysConfig" resultMap="SysConfigResult">
+    <select id="selectConfig" parameterType="SysConfig" resultMap="SysConfigResult">
         <include refid="selectConfigVo"/>
         <include refid="sqlwhereSearch"/>
     </select>
     
-    <select id="selectConfigList" parameterType="com.joolun.system.domain.SysConfig" resultMap="SysConfigResult">
+    <select id="selectConfigList" parameterType="SysConfig" resultMap="SysConfigResult">
         <include refid="selectConfigVo"/>
         <where>
 			<if test="configName != null and configName != ''">
@@ -51,20 +51,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				AND config_key like concat('%', #{configKey}, '%')
 			</if>
 			<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
-				and date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+				and date_format(create_time,'%Y%m%d') &gt;= date_format(#{params.beginTime},'%Y%m%d')
 			</if>
 			<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
-				and date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+				and date_format(create_time,'%Y%m%d') &lt;= date_format(#{params.endTime},'%Y%m%d')
 			</if>
 		</where>
     </select>
     
-    <select id="checkConfigKeyUnique" parameterType="java.lang.String" resultMap="SysConfigResult">
+    <select id="selectConfigById" parameterType="Long" resultMap="SysConfigResult">
+        <include refid="selectConfigVo"/>
+        where config_id = #{configId}
+    </select>
+	
+    <select id="checkConfigKeyUnique" parameterType="String" resultMap="SysConfigResult">
         <include refid="selectConfigVo"/>
         where config_key = #{configKey} limit 1
     </select>
     
-    <insert id="insertConfig" parameterType="com.joolun.system.domain.SysConfig">
+    <insert id="insertConfig" parameterType="SysConfig">
         insert into sys_config (
 			<if test="configName != null and configName != '' ">config_name,</if>
 			<if test="configKey != null and configKey != '' ">config_key,</if>
@@ -84,7 +89,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		)
     </insert>
 	 
-    <update id="updateConfig" parameterType="com.joolun.system.domain.SysConfig">
+    <update id="updateConfig" parameterType="SysConfig">
         update sys_config 
         <set>
             <if test="configName != null and configName != ''">config_name = #{configName},</if>
@@ -98,11 +103,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where config_id = #{configId}
     </update>
 	
-    <delete id="deleteConfigById" parameterType="java.lang.Long">
+    <delete id="deleteConfigById" parameterType="Long">
         delete from sys_config where config_id = #{configId}
     </delete>
     
-    <delete id="deleteConfigByIds" parameterType="java.lang.Long">
+    <delete id="deleteConfigByIds" parameterType="Long">
         delete from sys_config where config_id in 
         <foreach item="configId" collection="array" open="(" separator="," close=")">
         	#{configId}

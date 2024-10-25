@@ -13,8 +13,6 @@ import com.joolun.common.core.controller.BaseController;
 import com.joolun.common.core.domain.AjaxResult;
 import com.joolun.mall.entity.GoodsSpu;
 import com.joolun.mall.service.GoodsSpuService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,7 +30,6 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/goodsspu")
-@Api(value = "goodsspu", tags = "spu商品管理")
 public class GoodsSpuController extends BaseController {
 
     private final GoodsSpuService goodsSpuService;
@@ -43,7 +40,6 @@ public class GoodsSpuController extends BaseController {
     * @param goodsSpu spu商品
     * @return
     */
-	@ApiOperation(value = "分页查询")
     @GetMapping("/page")
     @PreAuthorize("@ss.hasPermi('mall:goodsspu:index')")
     public AjaxResult getGoodsSpuPage(Page page, GoodsSpu goodsSpu) {
@@ -55,7 +51,6 @@ public class GoodsSpuController extends BaseController {
 	 * @param goodsSpu
 	 * @return
 	 */
-	@ApiOperation(value = "list查询")
 	@GetMapping("/list")
 	public List<GoodsSpu> getList(GoodsSpu goodsSpu) {
 		return goodsSpuService.list(Wrappers.query(goodsSpu).lambda()
@@ -69,7 +64,6 @@ public class GoodsSpuController extends BaseController {
 	 * @param goodsSpu
 	 * @return
 	 */
-	@ApiOperation(value = "查询数量")
 	@GetMapping("/count")
 	public AjaxResult getCount(GoodsSpu goodsSpu) {
 		return AjaxResult.success(goodsSpuService.count(Wrappers.query(goodsSpu)));
@@ -80,7 +74,6 @@ public class GoodsSpuController extends BaseController {
     * @param id
     * @return AjaxResult
     */
-	@ApiOperation(value = "通过id查询spu商品")
     @GetMapping("/{id}")
     @PreAuthorize("@ss.hasPermi('mall:goodsspu:get')")
     public AjaxResult getById(@PathVariable("id") String id){
@@ -92,7 +85,6 @@ public class GoodsSpuController extends BaseController {
     * @param goodsSpu spu商品
     * @return AjaxResult
     */
-	@ApiOperation(value = "新增spu商品")
     @PostMapping
     @PreAuthorize("@ss.hasPermi('mall:goodsspu:add')")
     public AjaxResult save(@RequestBody GoodsSpu goodsSpu){
@@ -104,7 +96,6 @@ public class GoodsSpuController extends BaseController {
     * @param goodsSpu spu商品
     * @return AjaxResult
     */
-	@ApiOperation(value = "修改spu商品")
     @PutMapping
     @PreAuthorize("@ss.hasPermi('mall:goodsspu:edit')")
     public AjaxResult updateById(@RequestBody GoodsSpu goodsSpu){
@@ -117,7 +108,6 @@ public class GoodsSpuController extends BaseController {
 	 * @param ids
 	 * @return AjaxResult
 	 */
-	@ApiOperation(value = "商品上下架操作")
 	@PutMapping("/shelf")
 	@PreAuthorize("@ss.hasPermi('mall:goodsspu:edit')")
 	public AjaxResult updateById(@RequestParam(value = "shelf") String shelf, @RequestParam(value = "ids") String ids){
@@ -132,7 +122,6 @@ public class GoodsSpuController extends BaseController {
     * @param id
     * @return AjaxResult
     */
-	@ApiOperation(value = "通过id删除spu商品")
     @DeleteMapping("/{id}")
     @PreAuthorize("@ss.hasPermi('mall:goodsspu:del')")
     public AjaxResult removeById(@PathVariable String id){

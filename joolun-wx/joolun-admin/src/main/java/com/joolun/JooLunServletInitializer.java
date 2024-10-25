@@ -13,6 +13,6 @@ public class JooLunServletInitializer extends SpringBootServletInitializer
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application)
     {
-        return application.sources(JooLunWxApplication.class);
+        return application.sources(JooLunApplication.class);
     }
 }

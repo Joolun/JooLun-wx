@@ -1,7 +1,6 @@
 package com.joolun.system.mapper;
 
 import java.util.List;
-import org.apache.ibatis.annotations.Mapper;
 import com.joolun.common.core.domain.entity.SysDictType;
 
 /**
@@ -9,7 +8,6 @@ import com.joolun.common.core.domain.entity.SysDictType;
  * 
  * @author ruoyi
  */
-@Mapper
 public interface SysDictTypeMapper
 {
     /**

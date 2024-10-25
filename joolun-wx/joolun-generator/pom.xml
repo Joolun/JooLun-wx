@@ -5,7 +5,7 @@
     <parent>
         <artifactId>joolun-wx</artifactId>
         <groupId>com.joolun</groupId>
-        <version>3.3.2</version>
+        <version>3.8.8</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -17,16 +17,22 @@
 
     <dependencies>
 
-        <!--velocity代码生成使用模板 -->
+        <!-- velocity代码生成使用模板 -->
         <dependency>
             <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity</artifactId>
+            <artifactId>velocity-engine-core</artifactId>
         </dependency>
 
         <!-- 通用工具-->
         <dependency>
             <groupId>com.joolun</groupId>
             <artifactId>joolun-common</artifactId>
+        </dependency>
+
+        <!-- 阿里数据库连接池 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-3-starter</artifactId>
         </dependency>
 
     </dependencies>

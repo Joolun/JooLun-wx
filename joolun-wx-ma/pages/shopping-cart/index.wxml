@@ -20,7 +20,7 @@
     <button class="cu-btn line-gray sm" bindtap="operation">{{operation ? '管理' : '完成'}}</button>
   </view>
 </view>
-<view class="bg-white" style="margin-top:160rpx;margin-bottom:100rpx;padding-top:40rpx;">
+<view class="bg-white" style="margin-top:160rpx;margin-bottom:100rpx;padding-top:40rpx;padding-bottom: 50px;">
   <checkbox-group bindchange="checkboxChange">
     <view class="cu-card article no-card solid-bottom">
       <view class="cu-item padding-top-xs" wx:for="{{ shoppingCartData }}" wx:key="index">

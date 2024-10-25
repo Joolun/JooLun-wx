@@ -27,6 +27,7 @@
 		<result property="createTime" column="create_time"/>
 		<result property="updateTime" column="update_time"/>
 		<result property="delFlag" column="del_flag"/>
+		<result property="version" column="version"/>
 	</resultMap>
 
 	<resultMap id="goodsSpuMap1" extends="goodsSpuMap" type="com.joolun.mall.entity.GoodsSpu">
@@ -63,7 +64,8 @@
 		goods_spu.`sale_num`,
 		goods_spu.`create_time`,
 		goods_spu.`update_time`,
-		goods_spu.`del_flag`
+		goods_spu.`del_flag`,
+		goods_spu.`version`
 	</sql>
 
 	<sql id="goodsSpuSql2">
@@ -84,7 +86,8 @@
 		goods_spu.`sale_num`,
 		goods_spu.`create_time`,
 		goods_spu.`update_time`,
-		goods_spu.`del_flag`
+		goods_spu.`del_flag`,
+		goods_spu.`version`
 	</sql>
 
 	<select id="selectPage1" resultMap="goodsSpuMap">
@@ -126,24 +129,6 @@
 			<include refid="goodsSpuSql2"/>
 		FROM goods_spu goods_spu
 		WHERE goods_spu.`id` = #{id}
-	</select>
-
-
-	<select id="selectPage2" resultMap="goodsSpuMap3">
-		SELECT
-		<include refid="goodsSpuSql2"/>
-		FROM goods_spu goods_spu
-		<where>
-			<if test="query.shelf != null">
-				AND goods_spu.`shelf` = #{query.shelf}
-			</if>
-			<if test="query.categorySecond != null">
-				AND goods_spu.`category_second` = #{query.categorySecond}
-			</if>
-			<if test="query.name != null">
-				AND goods_spu.`name` LIKE CONCAT('%',#{query.name},'%')
-			</if>
-		</where>
 	</select>
 
 	<select id="selectById4" resultMap="goodsSpuMap4">

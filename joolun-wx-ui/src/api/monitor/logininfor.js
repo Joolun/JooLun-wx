@@ -17,19 +17,18 @@ export function delLogininfor(infoId) {
   })
 }
 
+// 解锁用户登录状态
+export function unlockLogininfor(userName) {
+  return request({
+    url: '/monitor/logininfor/unlock/' + userName,
+    method: 'get'
+  })
+}
+
 // 清空登录日志
 export function cleanLogininfor() {
   return request({
     url: '/monitor/logininfor/clean',
     method: 'delete'
-  })
-}
-
-// 导出登录日志
-export function exportLogininfor(query) {
-  return request({
-    url: '/monitor/logininfor/export',
-    method: 'get',
-    params: query
   })
 }

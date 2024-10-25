@@ -1,0 +1,30 @@
+/**
+$base-menu-color:hsla(0,0%,100%,.65);
+$base-menu-color-active:#fff;
+$base-menu-background:#001529;
+$base-logo-title-color: #ffffff;
+
+$base-menu-light-color:rgba(0,0,0,.70);
+$base-menu-light-background:#ffffff;
+$base-logo-light-title-color: #001529;
+
+$base-sub-menu-background:#000c17;
+$base-sub-menu-hover:#001528;
+*/
+:export {
+  menuColor: #bfcbd9;
+  menuLightColor: rgba(0, 0, 0, 0.7);
+  menuColorActive: #f4f4f5;
+  menuBackground: #304156;
+  menuLightBackground: #ffffff;
+  subMenuBackground: #1f2d3d;
+  subMenuHover: #001528;
+  sideBarWidth: 200px;
+  logoTitleColor: #ffffff;
+  logoLightTitleColor: #001529;
+  primaryColor: #409EFF;
+  successColor: #67C23A;
+  dangerColor: #F56C6C;
+  infoColor: #909399;
+  warningColor: #E6A23C;
+}/*# sourceMappingURL=variables.module.css.map */

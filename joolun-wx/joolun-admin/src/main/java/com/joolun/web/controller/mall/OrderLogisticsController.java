@@ -13,8 +13,6 @@ import com.joolun.common.core.domain.AjaxResult;
 import com.joolun.mall.entity.OrderLogistics;
 import com.joolun.mall.enums.OrderLogisticsEnum;
 import com.joolun.mall.service.OrderLogisticsService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/orderlogistics")
-@Api(value = "orderlogistics", tags = "订单物流管理")
 public class OrderLogisticsController extends BaseController {
 
     private final OrderLogisticsService orderLogisticsService;
@@ -41,7 +38,6 @@ public class OrderLogisticsController extends BaseController {
     * @param orderLogistics 订单物流
     * @return
     */
-	@ApiOperation(value = "分页查询")
     @GetMapping("/page")
     @PreAuthorize("@ato.hasAuthority('mall:orderlogistics:index')")
     public AjaxResult getOrderLogisticsPage(Page page, OrderLogistics orderLogistics) {
@@ -53,7 +49,6 @@ public class OrderLogisticsController extends BaseController {
     * @param id
     * @return R
     */
-	@ApiOperation(value = "通过id查询订单物流")
     @GetMapping("/{id}")
     @PreAuthorize("@ato.hasAuthority('mall:orderlogistics:get')")
     public AjaxResult getById(@PathVariable("id") String id){
@@ -65,7 +60,6 @@ public class OrderLogisticsController extends BaseController {
     * @param orderLogistics 订单物流
     * @return R
     */
-	@ApiOperation(value = "新增订单物流")
     @PostMapping
     @PreAuthorize("@ato.hasAuthority('mall:orderlogistics:add')")
     public AjaxResult save(@RequestBody OrderLogistics orderLogistics){
@@ -77,7 +71,6 @@ public class OrderLogisticsController extends BaseController {
     * @param orderLogistics 订单物流
     * @return R
     */
-	@ApiOperation(value = "修改订单物流")
     @PutMapping
     @PreAuthorize("@ato.hasAuthority('mall:orderlogistics:edit')")
     public AjaxResult updateById(@RequestBody OrderLogistics orderLogistics){
@@ -89,7 +82,6 @@ public class OrderLogisticsController extends BaseController {
     * @param id
     * @return R
     */
-	@ApiOperation(value = "通过id删除订单物流")
     @DeleteMapping("/{id}")
     @PreAuthorize("@ato.hasAuthority('mall:orderlogistics:del')")
     public AjaxResult removeById(@PathVariable String id){
@@ -101,7 +93,6 @@ public class OrderLogisticsController extends BaseController {
 	 * @param type
 	 * @return
 	 */
-	@ApiOperation(value = "获取相关枚举数据的字典")
 	@GetMapping("/dict/{type}")
 	public AjaxResult getDictByType(@PathVariable String type) {
 		return AjaxResult.success(OrderLogisticsEnum.queryAll(type));

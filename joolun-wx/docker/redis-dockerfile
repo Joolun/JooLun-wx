@@ -1,0 +1,12 @@
+FROM redis
+# author
+MAINTAINER www.joolun.com
+
+# 挂载目录
+VOLUME /home/joolun/redis
+# 创建目录
+RUN mkdir -p /home/joolun/redis
+# 指定路径
+WORKDIR /home/joolun/redis
+# 复制conf文件到路径
+COPY ./conf/redis.conf /home/joolun/redis/redis.conf

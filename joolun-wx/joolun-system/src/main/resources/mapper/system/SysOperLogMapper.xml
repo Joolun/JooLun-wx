@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.joolun.system.mapper.SysOperLogMapper">
 
-	<resultMap type="com.joolun.system.domain.SysOperLog" id="SysOperLogResult">
+	<resultMap type="SysOperLog" id="SysOperLogResult">
 		<id     property="operId"         column="oper_id"        />
 		<result property="title"          column="title"          />
 		<result property="businessType"   column="business_type"  />
@@ -21,25 +21,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="status"         column="status"         />
 		<result property="errorMsg"       column="error_msg"      />
 		<result property="operTime"       column="oper_time"      />
+		<result property="costTime"       column="cost_time"      />
 	</resultMap>
 
 	<sql id="selectOperLogVo">
-        select oper_id, title, business_type, method, request_method, operator_type, oper_name, dept_name, oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time
+        select oper_id, title, business_type, method, request_method, operator_type, oper_name, dept_name, oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time, cost_time
         from sys_oper_log
     </sql>
     
-	<insert id="insertOperlog" parameterType="com.joolun.system.domain.SysOperLog">
-		insert into sys_oper_log(title, business_type, method, request_method, operator_type, oper_name, dept_name, oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time)
-        values (#{title}, #{businessType}, #{method}, #{requestMethod}, #{operatorType}, #{operName}, #{deptName}, #{operUrl}, #{operIp}, #{operLocation}, #{operParam}, #{jsonResult}, #{status}, #{errorMsg}, sysdate())
+	<insert id="insertOperlog" parameterType="SysOperLog">
+		insert into sys_oper_log(title, business_type, method, request_method, operator_type, oper_name, dept_name, oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, cost_time, oper_time)
+        values (#{title}, #{businessType}, #{method}, #{requestMethod}, #{operatorType}, #{operName}, #{deptName}, #{operUrl}, #{operIp}, #{operLocation}, #{operParam}, #{jsonResult}, #{status}, #{errorMsg}, #{costTime}, sysdate())
 	</insert>
 	
-	<select id="selectOperLogList" parameterType="com.joolun.system.domain.SysOperLog" resultMap="SysOperLogResult">
+	<select id="selectOperLogList" parameterType="SysOperLog" resultMap="SysOperLogResult">
 		<include refid="selectOperLogVo"/>
 		<where>
+			<if test="operIp != null and operIp != ''">
+				AND oper_ip like concat('%', #{operIp}, '%')
+			</if>
 			<if test="title != null and title != ''">
 				AND title like concat('%', #{title}, '%')
 			</if>
-			<if test="businessType != null and businessType != ''">
+			<if test="businessType != null">
 				AND business_type = #{businessType}
 			</if>
 			<if test="businessTypes != null and businessTypes.length > 0">
@@ -55,23 +59,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				AND oper_name like concat('%', #{operName}, '%')
 			</if>
 			<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
-				and date_format(oper_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+				AND oper_time &gt;= #{params.beginTime}
 			</if>
 			<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
-				and date_format(oper_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+				AND oper_time &lt;= #{params.endTime}
 			</if>
 		</where>
 		order by oper_id desc
 	</select>
 	
-	<delete id="deleteOperLogByIds" parameterType="java.lang.Long">
+	<delete id="deleteOperLogByIds" parameterType="Long">
  		delete from sys_oper_log where oper_id in
  		<foreach collection="array" item="operId" open="(" separator="," close=")">
  			#{operId}
         </foreach> 
  	</delete>
  	
- 	<select id="selectOperLogById" parameterType="java.lang.Long" resultMap="SysOperLogResult">
+ 	<select id="selectOperLogById" parameterType="Long" resultMap="SysOperLogResult">
 		<include refid="selectOperLogVo"/>
 		where oper_id = #{operId}
 	</select>

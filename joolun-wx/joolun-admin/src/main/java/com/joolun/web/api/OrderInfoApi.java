@@ -9,10 +9,10 @@ package com.joolun.web.api;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.binarywang.wxpay.bean.notify.WxPayNotifyResponse;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
+import com.github.binarywang.wxpay.bean.notify.WxPayRefundNotifyResult;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
@@ -22,6 +22,7 @@ import com.joolun.mall.config.MallConfigProperties;
 import com.joolun.mall.constant.MallConstants;
 import com.joolun.mall.dto.PlaceOrderDTO;
 import com.joolun.mall.entity.OrderInfo;
+import com.joolun.mall.entity.OrderItem;
 import com.joolun.mall.enums.OrderInfoEnum;
 import com.joolun.mall.service.OrderInfoService;
 import com.joolun.weixin.config.WxPayConfiguration;
@@ -30,13 +31,11 @@ import com.joolun.weixin.entity.WxUser;
 import com.joolun.weixin.utils.LocalDateTimeUtils;
 import com.joolun.weixin.utils.ThirdSessionHolder;
 import com.joolun.weixin.utils.WxMaUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -52,7 +51,6 @@ import java.util.Map;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/weixin/api/ma/orderinfo")
-@Api(value = "orderinfo", tags = "商城订单API")
 public class OrderInfoApi {
 
     private final OrderInfoService orderInfoService;
@@ -64,7 +62,6 @@ public class OrderInfoApi {
 	* @param orderInfo 商城订单
 	* @return
 	*/
-	@ApiOperation(value = "分页查询")
     @GetMapping("/page")
     public AjaxResult getOrderInfoPage(Page page, OrderInfo orderInfo) {
 		orderInfo.setUserId(ThirdSessionHolder.getWxUserId());
@@ -76,9 +73,8 @@ public class OrderInfoApi {
     * @param id
     * @return R
     */
-	@ApiOperation(value = "通过id查询商城订单")
     @GetMapping("/{id}")
-    public AjaxResult getById(HttpServletRequest request, @PathVariable("id") String id){
+    public AjaxResult getById(@PathVariable("id") String id){
 		return AjaxResult.success(orderInfoService.getById2(id));
     }
 
@@ -87,7 +83,6 @@ public class OrderInfoApi {
     * @param placeOrderDTO 商城订单
     * @return R
     */
-	@ApiOperation(value = "新增商城订单")
     @PostMapping
     public AjaxResult save(@RequestBody PlaceOrderDTO placeOrderDTO){
 		placeOrderDTO.setUserId(ThirdSessionHolder.getWxUserId());
@@ -104,7 +99,6 @@ public class OrderInfoApi {
     * @param id
     * @return R
     */
-	@ApiOperation(value = "通过id删除商城订单")
     @DeleteMapping("/{id}")
     public AjaxResult removeById(@PathVariable String id){
 		OrderInfo orderInfo = orderInfoService.getById(id);
@@ -122,7 +116,6 @@ public class OrderInfoApi {
 	 * @param id 商城订单
 	 * @return R
 	 */
-	@ApiOperation(value = "取消商城订单")
 	@PutMapping("/cancel/{id}")
 	public AjaxResult orderCancel(@PathVariable String id){
 		OrderInfo orderInfo = orderInfoService.getById(id);
@@ -141,7 +134,6 @@ public class OrderInfoApi {
 	 * @param id 商城订单
 	 * @return R
 	 */
-	@ApiOperation(value = "商城订单确认收货")
 	@PutMapping("/receive/{id}")
 	public AjaxResult orderReceive(@PathVariable String id){
 		OrderInfo orderInfo = orderInfoService.getById(id);
@@ -161,7 +153,6 @@ public class OrderInfoApi {
 	 * @param orderInfo 统一下单请求参数
 	 * @return 返回 {@link com.github.binarywang.wxpay.bean.order}包下的类对象
 	 */
-	@ApiOperation(value = "调用统一下单接口")
 	@PostMapping("/unifiedOrder")
 	public AjaxResult unifiedOrder(HttpServletRequest request, @RequestBody OrderInfo orderInfo) throws WxPayException {
 		//检验用户session登录
@@ -203,7 +194,6 @@ public class OrderInfoApi {
 	 * @return
 	 * @throws WxPayException
 	 */
-	@ApiOperation(value = "支付回调")
 	@PostMapping("/notify-order")
 	public String notifyOrder(@RequestBody String xmlData) throws WxPayException {
 		log.info("支付回调:"+xmlData);
@@ -232,7 +222,6 @@ public class OrderInfoApi {
 	 * @param request
 	 * @return
 	 */
-	@ApiOperation(value = "物流信息回调")
 	@PostMapping("/notify-logisticsr")
 	public String notifyLogisticsr(HttpServletRequest request, HttpServletResponse response) {
 		String param = request.getParameter("param");
@@ -268,11 +257,10 @@ public class OrderInfoApi {
 	 * @param orderInfo
 	 * @return R
 	 */
-	@ApiOperation(value = "统计各个状态订单计数")
 	@GetMapping("/countAll")
 	public AjaxResult count(OrderInfo orderInfo){
 		orderInfo.setUserId(ThirdSessionHolder.getWxUserId());
-		Map<String, Integer> countAll = new HashMap<>();
+		Map<String, Long> countAll = new HashMap<>();
 		countAll.put(OrderInfoEnum.STATUS_0.getValue(),orderInfoService.count(Wrappers.query(orderInfo).lambda()
 				.isNull(OrderInfo::getStatus)
 				.eq(OrderInfo::getIsPay,CommonConstants.NO)));
@@ -289,5 +277,36 @@ public class OrderInfoApi {
 				.eq(OrderInfo::getStatus,OrderInfoEnum.STATUS_3.getValue())
 				.eq(OrderInfo::getIsPay,CommonConstants.YES)));
 		return AjaxResult.success(countAll);
+	}
+
+	/**
+	 * 发起退款申请
+	 * @param orderItem
+	 * @return R
+	 */
+	@PostMapping("/refunds")
+	public AjaxResult saveRefunds(@RequestBody OrderItem orderItem) {
+		orderInfoService.saveRefunds(orderItem);
+		return AjaxResult.success();
+	}
+
+	/**
+	 * 退款回调
+	 * @param xmlData
+	 * @return
+	 * @throws WxPayException
+	 */
+	@PostMapping("/notify-refunds")
+	public String notifyRefunds(@RequestBody String xmlData) {
+		log.info("退款回调:"+xmlData);
+		WxPayService wxPayService = WxPayConfiguration.getPayService();
+		try {
+			WxPayRefundNotifyResult notifyResult = wxPayService.parseRefundNotifyResult(xmlData);
+			orderInfoService.notifyRefunds(notifyResult);
+			return WxPayNotifyResponse.success("成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return WxPayNotifyResponse.fail(e.getMessage());
+		}
 	}
 }

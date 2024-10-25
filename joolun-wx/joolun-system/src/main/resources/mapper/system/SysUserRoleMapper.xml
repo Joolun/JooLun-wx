@@ -4,20 +4,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.joolun.system.mapper.SysUserRoleMapper">
 
-	<resultMap type="com.joolun.system.domain.SysUserRole" id="SysUserRoleResult">
+	<resultMap type="SysUserRole" id="SysUserRoleResult">
 		<result property="userId"     column="user_id"      />
 		<result property="roleId"     column="role_id"      />
 	</resultMap>
 
-	<delete id="deleteUserRoleByUserId" parameterType="java.lang.Long">
+	<delete id="deleteUserRoleByUserId" parameterType="Long">
 		delete from sys_user_role where user_id=#{userId}
 	</delete>
 	
-	<select id="countUserRoleByRoleId" resultType="java.lang.Integer">
+	<select id="countUserRoleByRoleId" resultType="Integer">
 	    select count(1) from sys_user_role where role_id=#{roleId}  
 	</select>
 	
-	<delete id="deleteUserRole" parameterType="java.lang.Long">
+	<delete id="deleteUserRole" parameterType="Long">
  		delete from sys_user_role where user_id in
  		<foreach collection="array" item="userId" open="(" separator="," close=")">
  			#{userId}
@@ -31,7 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</foreach>
 	</insert>
 	
-	<delete id="deleteUserRoleInfo" parameterType="com.joolun.system.domain.SysUserRole">
+	<delete id="deleteUserRoleInfo" parameterType="SysUserRole">
 		delete from sys_user_role where user_id=#{userId} and role_id=#{roleId}
 	</delete>
 	

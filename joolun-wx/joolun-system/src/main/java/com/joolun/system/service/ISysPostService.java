@@ -39,7 +39,7 @@ public interface ISysPostService
      * @param userId 用户ID
      * @return 选中岗位ID列表
      */
-    public List<Integer> selectPostListByUserId(Long userId);
+    public List<Long> selectPostListByUserId(Long userId);
 
     /**
      * 校验岗位名称
@@ -47,7 +47,7 @@ public interface ISysPostService
      * @param post 岗位信息
      * @return 结果
      */
-    public String checkPostNameUnique(SysPost post);
+    public boolean checkPostNameUnique(SysPost post);
 
     /**
      * 校验岗位编码
@@ -55,7 +55,7 @@ public interface ISysPostService
      * @param post 岗位信息
      * @return 结果
      */
-    public String checkPostCodeUnique(SysPost post);
+    public boolean checkPostCodeUnique(SysPost post);
 
     /**
      * 通过岗位ID查询岗位使用数量
@@ -78,7 +78,6 @@ public interface ISysPostService
      * 
      * @param postIds 需要删除的岗位ID
      * @return 结果
-     * @throws Exception 异常
      */
     public int deletePostByIds(Long[] postIds);
 

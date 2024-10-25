@@ -12,11 +12,10 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.joolun.common.annotation.Excel;
 import com.joolun.common.sensitive.Sensitive;
 import com.joolun.common.sensitive.SensitiveTypeEnum;
 import com.joolun.mall.enums.OrderLogisticsEnum;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -31,56 +30,55 @@ import java.time.LocalDateTime;
 @Data
 @TableName("order_logistics")
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(description = "订单物流")
 public class OrderLogistics extends Model<OrderLogistics> {
   private static final long serialVersionUID = 1L;
 
     /**
    * PK
    */
-	@ApiModelProperty(value = "PK")
+	@Excel(name = "PK")
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
     /**
    * 逻辑删除标记（0：显示；1：隐藏）
    */
-	@ApiModelProperty(value = "逻辑删除标记")
+	@Excel(name = "逻辑删除标记")
     private String delFlag;
     /**
    * 创建时间
    */
-	@ApiModelProperty(value = "创建时间")
+	@Excel(name = "创建时间")
     private LocalDateTime createTime;
     /**
    * 最后更新时间
    */
-	@ApiModelProperty(value = "最后更新时间")
+	@Excel(name = "最后更新时间")
     private LocalDateTime updateTime;
     /**
    * 邮编
    */
-	@ApiModelProperty(value = "邮编")
+	@Excel(name = "邮编")
     private String postalCode;
     /**
    * 收货人名字
    */
-	@ApiModelProperty(value = "收货人名字")
+	@Excel(name = "收货人名字")
     private String userName;
     /**
    * 电话号码
    */
-	@ApiModelProperty(value = "电话号码")
+	@Excel(name = "电话号码")
 	@Sensitive(type = SensitiveTypeEnum.MOBILE_PHONE)
     private String telNum;
     /**
    * 详细地址
    */
-	@ApiModelProperty(value = "详细地址")
+	@Excel(name = "详细地址")
     private String address;
     /**
    * 物流商家
    */
-	@ApiModelProperty(value = "物流商家")
+	@Excel(name = "物流商家")
     private String logistics;
 	/**
 	 * 物流商家

@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2020 www.joolun.com
+Copyright (c) 2024 www.joolun.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,30 +22,31 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 SOFTWARE.
 */
 export const tableOptionVideo = {
-  dialogDrag:true,
+  dialogDrag: true,
   border: true,
   index: true,
-  indexLabel: '序号',
+  indexLabel: "序号",
+  indexWidth: 70,
   stripe: true,
-  menuAlign: 'center',
-  align: 'center',
+  menuAlign: "center",
+  align: "center",
   editBtn: false,
   delBtn: false,
   addBtn: false,
   viewBtn: true,
   searchMenuSpan: 6,
   column: [
-	  {
-      label: 'media_id',
-      prop: 'mediaId'
+    {
+      label: "media_id",
+      prop: "mediaId",
     },
-	  {
-      label: '名称',
-      prop: 'name'
+    {
+      label: "名称",
+      prop: "name",
     },
-	  {
-      label: '更新时间',
-      prop: 'updateTime'
-    }
-  ]
-}
+    {
+      label: "更新时间",
+      prop: "updateTime",
+    },
+  ],
+};

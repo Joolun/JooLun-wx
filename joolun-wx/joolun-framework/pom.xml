@@ -5,7 +5,7 @@
     <parent>
         <artifactId>joolun-wx</artifactId>
         <groupId>com.joolun</groupId>
-        <version>3.3.2</version>
+        <version>3.8.8</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -32,16 +32,16 @@
         <!-- 阿里数据库连接池 -->
         <dependency>
             <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
+            <artifactId>druid-spring-boot-3-starter</artifactId>
         </dependency>
 
         <!-- 验证码 -->
         <dependency>
-            <groupId>com.github.penggle</groupId>
+            <groupId>pro.fessional</groupId>
             <artifactId>kaptcha</artifactId>
             <exclusions>
                 <exclusion>
-                    <artifactId>javax.servlet-api</artifactId>
+                    <artifactId>servlet-api</artifactId>
                     <groupId>javax.servlet</groupId>
                 </exclusion>
             </exclusions>
@@ -63,6 +63,11 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
+        </dependency>
+        <!--mybatis plus extension,包含了mybatis plus core-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-extension</artifactId>
         </dependency>
     </dependencies>
 

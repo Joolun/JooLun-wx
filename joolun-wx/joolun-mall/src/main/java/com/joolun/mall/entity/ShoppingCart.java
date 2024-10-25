@@ -11,14 +11,12 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import com.joolun.common.annotation.Excel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * 购物车
@@ -29,60 +27,59 @@ import java.util.List;
 @Data
 @TableName("shopping_cart")
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(description = "购物车")
 public class ShoppingCart extends Model<ShoppingCart> {
   private static final long serialVersionUID = 1L;
 
     /**
    * PK
    */
-	@ApiModelProperty(value = "PK")
+	@Excel(name = "PK")
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
     /**
    * 逻辑删除标记（0：显示；1：隐藏）
    */
-	@ApiModelProperty(value = "逻辑删除标记")
+	@Excel(name = "逻辑删除标记")
     private String delFlag;
     /**
    * 创建时间
    */
-	@ApiModelProperty(value = "创建时间")
+	@Excel(name = "创建时间")
     private LocalDateTime createTime;
     /**
    * 最后更新时间
    */
-	@ApiModelProperty(value = "最后更新时间")
+	@Excel(name = "最后更新时间")
     private LocalDateTime updateTime;
     /**
    * 用户编号
    */
-	@ApiModelProperty(value = "用户编号")
+	@Excel(name = "用户编号")
     private String userId;
     /**
    * 商品 SPU 编号
    */
-	@ApiModelProperty(value = "spuId")
+	@Excel(name = "spuId")
     private String spuId;
 	/**
 	 * 加入时价格
 	 */
-	@ApiModelProperty(value = "加入时价格")
+	@Excel(name = "加入时价格")
 	private BigDecimal addPrice;
     /**
    * 商品购买数量
    */
-	@ApiModelProperty(value = "商品购买数量")
+	@Excel(name = "商品购买数量")
     private Integer quantity;
 	/**
 	 * 加入时的spu名字
 	 */
-	@ApiModelProperty(value = "加入时的spu名字")
+	@Excel(name = "加入时的spu名字")
 	private String spuName;
 	/**
 	 * 图片
 	 */
-	@ApiModelProperty(value = "图片")
+	@Excel(name = "图片")
 	private String picUrl;
 
 	@TableField(exist = false)

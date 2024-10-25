@@ -26,8 +26,6 @@ package com.joolun.web.controller.weixin;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.joolun.common.core.controller.BaseController;
 import com.joolun.common.core.domain.AjaxResult;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.mp.api.WxMpFreePublishService;
@@ -48,7 +46,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/freepublish")
-@Api(value = "freepublish", tags = "微信发布")
 public class WxFreePublishController extends BaseController {
 	private final WxMpService wxService;
 
@@ -58,7 +55,6 @@ public class WxFreePublishController extends BaseController {
 	 * @param
 	 * @return R
 	 */
-	@ApiOperation(value = "删除发布")
 	@DeleteMapping
 	@PreAuthorize("@ss.hasPermi('wxmp:wxfreepublish:del')")
 	public AjaxResult del(String id) throws Exception {
@@ -73,7 +69,6 @@ public class WxFreePublishController extends BaseController {
 	 * @param
 	 * @return
 	 */
-	@ApiOperation(value = "获取成功发布列表")
 	@GetMapping("/page")
 	@PreAuthorize("@ss.hasPermi('wxmp:wxfreepublish:index')")
 	public AjaxResult getPage(Page page) throws Exception {

@@ -1,0 +1,16 @@
+FROM openjdk:17
+# author
+MAINTAINER www.joolun.com
+
+# 挂载目录
+VOLUME /home/joolun
+# 创建目录
+RUN mkdir -p /home/joolun
+# 指定路径
+WORKDIR /home/joolun
+# 复制jar文件和配置文件到路径
+COPY ./jar/*.jar /home/joolun/joolun.jar
+COPY ./jar/application.yml /home/joolun/application.yml
+COPY ./jar/application-druid.yml /home/joolun/application-druid.yml
+# 启动应用
+ENTRYPOINT ["java","-jar","joolun.jar"]

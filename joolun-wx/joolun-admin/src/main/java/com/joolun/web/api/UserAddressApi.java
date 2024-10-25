@@ -12,8 +12,6 @@ import com.joolun.common.core.domain.AjaxResult;
 import com.joolun.mall.entity.UserAddress;
 import com.joolun.mall.service.UserAddressService;
 import com.joolun.weixin.utils.ThirdSessionHolder;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/weixin/api/ma/useraddress")
-@Api(value = "useraddress", tags = "用户收货地址API")
 public class UserAddressApi {
 
     private final UserAddressService userAddressService;
@@ -39,7 +36,6 @@ public class UserAddressApi {
     * @param userAddress 用户收货地址
     * @return
     */
-	@ApiOperation(value = "分页查询")
     @GetMapping("/page")
     public AjaxResult getUserAddressPage(Page page, UserAddress userAddress) {
 		userAddress.setUserId(ThirdSessionHolder.getWxUserId());
@@ -51,7 +47,6 @@ public class UserAddressApi {
     * @param userAddress 用户收货地址
     * @return AjaxResult
     */
-	@ApiOperation(value = "新增、修改用户收货地址")
     @PostMapping
     public AjaxResult save(@RequestBody UserAddress userAddress){
 		userAddress.setUserId(ThirdSessionHolder.getWxUserId());
@@ -63,7 +58,6 @@ public class UserAddressApi {
     * @param id
     * @return AjaxResult
     */
-	@ApiOperation(value = "通过id删除用户收货地址")
     @DeleteMapping("/{id}")
     public AjaxResult removeById(@PathVariable String id){
 		return AjaxResult.success(userAddressService.removeById(id));

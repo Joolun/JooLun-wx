@@ -1,7 +1,9 @@
 package com.joolun.common.core.domain.entity;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import java.util.Set;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.joolun.common.annotation.Excel;
@@ -31,10 +33,10 @@ public class SysRole extends BaseEntity
 
     /** 角色排序 */
     @Excel(name = "角色排序")
-    private String roleSort;
+    private Integer roleSort;
 
-    /** 数据范围（1：所有数据权限；2：自定义数据权限；3：本部门数据权限；4：本部门及以下数据权限） */
-    @Excel(name = "数据范围", readConverterExp = "1=所有数据权限,2=自定义数据权限,3=本部门数据权限,4=本部门及以下数据权限")
+    /** 数据范围（1：所有数据权限；2：自定义数据权限；3：本部门数据权限；4：本部门及以下数据权限；5：仅本人数据权限） */
+    @Excel(name = "数据范围", readConverterExp = "1=所有数据权限,2=自定义数据权限,3=本部门数据权限,4=本部门及以下数据权限,5=仅本人数据权限")
     private String dataScope;
 
     /** 菜单树选择项是否关联显示（ 0：父子不互相关联显示 1：父子互相关联显示） */
@@ -58,6 +60,9 @@ public class SysRole extends BaseEntity
 
     /** 部门组（数据权限） */
     private Long[] deptIds;
+
+    /** 角色菜单权限 */
+    private Set<String> permissions;
 
     public SysRole()
     {
@@ -113,13 +118,13 @@ public class SysRole extends BaseEntity
         this.roleKey = roleKey;
     }
 
-    @NotBlank(message = "显示顺序不能为空")
-    public String getRoleSort()
+    @NotNull(message = "显示顺序不能为空")
+    public Integer getRoleSort()
     {
         return roleSort;
     }
 
-    public void setRoleSort(String roleSort)
+    public void setRoleSort(Integer roleSort)
     {
         this.roleSort = roleSort;
     }
@@ -203,7 +208,17 @@ public class SysRole extends BaseEntity
     {
         this.deptIds = deptIds;
     }
-    
+
+    public Set<String> getPermissions()
+    {
+        return permissions;
+    }
+
+    public void setPermissions(Set<String> permissions)
+    {
+        this.permissions = permissions;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

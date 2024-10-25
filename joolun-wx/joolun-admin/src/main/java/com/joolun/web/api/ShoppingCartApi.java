@@ -12,8 +12,6 @@ import com.joolun.common.core.domain.AjaxResult;
 import com.joolun.mall.entity.ShoppingCart;
 import com.joolun.mall.service.ShoppingCartService;
 import com.joolun.weixin.utils.ThirdSessionHolder;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +28,6 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/weixin/api/ma/shoppingcart")
-@Api(value = "shoppingcart", tags = "购物车API")
 public class ShoppingCartApi {
 
     private final ShoppingCartService shoppingCartService;
@@ -41,7 +38,6 @@ public class ShoppingCartApi {
 	 * @param shoppingCart 购物车
 	 * @return
 	 */
-	@ApiOperation(value = "分页查询")
     @GetMapping("/page")
     public AjaxResult getShoppingCartPage(Page page, ShoppingCart shoppingCart) {
 		shoppingCart.setUserId(ThirdSessionHolder.getWxUserId());
@@ -53,7 +49,6 @@ public class ShoppingCartApi {
 	 * @param shoppingCart
 	 * @return
 	 */
-	@ApiOperation(value = "查询数量")
 	@GetMapping("/count")
 	public AjaxResult getShoppingCartCount(ShoppingCart shoppingCart) {
 		shoppingCart.setUserId(ThirdSessionHolder.getWxUserId());
@@ -65,7 +60,6 @@ public class ShoppingCartApi {
 	 * @param shoppingCart
 	 * @return
 	 */
-	@ApiOperation(value = "加入购物车")
 	@PostMapping
 	public AjaxResult save(@RequestBody ShoppingCart shoppingCart){
 		shoppingCart.setUserId(ThirdSessionHolder.getWxUserId());
@@ -77,7 +71,6 @@ public class ShoppingCartApi {
 	 * @param shoppingCart
 	 * @return
 	 */
-	@ApiOperation(value = "修改购物车商品")
 	@PutMapping
 	public AjaxResult edit(@RequestBody ShoppingCart shoppingCart){
 		shoppingCart.setUserId(ThirdSessionHolder.getWxUserId());
@@ -89,7 +82,6 @@ public class ShoppingCartApi {
 	 * @param ids
 	 * @return
 	 */
-	@ApiOperation(value = "删除购物车商品数量")
 	@PostMapping("/del")
 	public AjaxResult del(@RequestBody List<String> ids){
 		return AjaxResult.success(shoppingCartService.removeByIds(ids));

@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.joolun.system.mapper.SysDictTypeMapper">
 
-	<resultMap type="com.joolun.common.core.domain.entity.SysDictType" id="SysDictTypeResult">
+	<resultMap type="SysDictType" id="SysDictTypeResult">
 		<id     property="dictId"     column="dict_id"     />
 		<result property="dictName"   column="dict_name"   />
 		<result property="dictType"   column="dict_type"   />
@@ -20,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from sys_dict_type
     </sql>
 
-	<select id="selectDictTypeList" parameterType="com.joolun.common.core.domain.entity.SysDictType" resultMap="SysDictTypeResult">
+	<select id="selectDictTypeList" parameterType="SysDictType" resultMap="SysDictTypeResult">
 	    <include refid="selectDictTypeVo"/>
 		<where>
 		    <if test="dictName != null and dictName != ''">
@@ -33,10 +33,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				AND dict_type like concat('%', #{dictType}, '%')
 			</if>
 			<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
-				and date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+				and date_format(create_time,'%Y%m%d') &gt;= date_format(#{params.beginTime},'%Y%m%d')
 			</if>
 			<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
-				and date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+				and date_format(create_time,'%Y%m%d') &lt;= date_format(#{params.endTime},'%Y%m%d')
 			</if>
 	    </where>
 	</select>
@@ -45,33 +45,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<include refid="selectDictTypeVo"/>
 	</select>
 	
-	<select id="selectDictTypeById" parameterType="java.lang.Long" resultMap="SysDictTypeResult">
+	<select id="selectDictTypeById" parameterType="Long" resultMap="SysDictTypeResult">
 		<include refid="selectDictTypeVo"/>
 		where dict_id = #{dictId}
 	</select>
 	
-	<select id="selectDictTypeByType" parameterType="java.lang.String" resultMap="SysDictTypeResult">
+	<select id="selectDictTypeByType" parameterType="String" resultMap="SysDictTypeResult">
 		<include refid="selectDictTypeVo"/>
 		where dict_type = #{dictType}
 	</select>
 	
-	<select id="checkDictTypeUnique" parameterType="java.lang.String" resultMap="SysDictTypeResult">
+	<select id="checkDictTypeUnique" parameterType="String" resultMap="SysDictTypeResult">
 		<include refid="selectDictTypeVo"/>
 		where dict_type = #{dictType} limit 1
 	</select>
 	
-	<delete id="deleteDictTypeById" parameterType="java.lang.Long">
+	<delete id="deleteDictTypeById" parameterType="Long">
  		delete from sys_dict_type where dict_id = #{dictId}
  	</delete>
  	
- 	<delete id="deleteDictTypeByIds" parameterType="java.lang.Long">
+ 	<delete id="deleteDictTypeByIds" parameterType="Long">
  		delete from sys_dict_type where dict_id in
  		<foreach collection="array" item="dictId" open="(" separator="," close=")">
  			#{dictId}
         </foreach> 
  	</delete>
 
- 	<update id="updateDictType" parameterType="com.joolun.common.core.domain.entity.SysDictType">
+ 	<update id="updateDictType" parameterType="SysDictType">
  		update sys_dict_type
  		<set>
  			<if test="dictName != null and dictName != ''">dict_name = #{dictName},</if>
@@ -84,7 +84,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		where dict_id = #{dictId}
 	</update>
  	
- 	<insert id="insertDictType" parameterType="com.joolun.common.core.domain.entity.SysDictType">
+ 	<insert id="insertDictType" parameterType="SysDictType">
  		insert into sys_dict_type(
  			<if test="dictName != null and dictName != ''">dict_name,</if>
  			<if test="dictType != null and dictType != ''">dict_type,</if>

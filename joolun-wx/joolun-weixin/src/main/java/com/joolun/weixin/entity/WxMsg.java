@@ -30,7 +30,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.joolun.framework.config.typehandler.JsonTypeHandler;
-import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.ibatis.type.JdbcType;
@@ -46,7 +45,6 @@ import java.time.LocalDateTime;
 @Data
 @TableName("wx_msg")
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(description = "微信消息")
 public class WxMsg extends Model<WxMsg> {
 private static final long serialVersionUID = 1L;
 

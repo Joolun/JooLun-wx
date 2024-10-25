@@ -1,6 +1,6 @@
 package com.joolun.generator.domain;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 import com.joolun.common.core.domain.BaseEntity;
 import com.joolun.common.utils.StringUtils;
 
