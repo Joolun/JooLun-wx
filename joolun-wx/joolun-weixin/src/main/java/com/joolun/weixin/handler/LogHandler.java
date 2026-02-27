@@ -51,7 +51,7 @@ public class LogHandler extends AbstractHandler {
                     wxMessage.getEvent().equals(WxConsts.EventType.SCAN)){
                 if(wxMessage.getEventKey().contains("jl-wiki")){
                     String openId = wxMessage.getFromUser();
-                    String sceneStr = StrUtil.split(wxMessage.getEventKey(), ":")[1];
+                    String sceneStr = StrUtil.split(wxMessage.getEventKey(), ":").get(1);
                     String rs = HttpUtils.sendPost("http://127.0.0.1:8083/joolun-open/user",StrUtil.format("openId={}&sceneStr={}", openId, sceneStr));
                 }
             }

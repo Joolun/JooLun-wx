@@ -86,12 +86,20 @@ public class MsgHandler extends AbstractHandler {
                 listWxAutoReply = wxAutoReplyService.list(Wrappers
                         .<WxAutoReply>query().lambda()
                         .eq(WxAutoReply::getType, ConfigConstant.WX_AUTO_REPLY_TYPE_3)
-                        .eq(WxAutoReply::getRepMate, ConfigConstant.WX_REP_MATE_2)
-                        .like(WxAutoReply::getReqKey, wxMessage.getContent()));
-                if(listWxAutoReply!=null && listWxAutoReply.size()>0) {
-                    rs = this.getWxMpXmlOutMessage(wxMessage, listWxAutoReply, wxUser,wxMsgService);
-                    if (rs != null) {
-                        return rs;
+                        .eq(WxAutoReply::getRepMate, ConfigConstant.WX_REP_MATE_2));
+                //.like(WxAutoReply::getReqKey, wxMessage.getContent()));错误做法
+                if (listWxAutoReply != null && listWxAutoReply.size() > 0) {
+                    List<WxAutoReply> listWxAutoReplyNew = new ArrayList<>();
+                    for (WxAutoReply wxAutoReply : listWxAutoReply) {
+                        if (wxMessage.getContent().contains(wxAutoReply.getReqKey())) {
+                            listWxAutoReplyNew.add(wxAutoReply);
+                        }
+                    }
+                    if (listWxAutoReplyNew != null && listWxAutoReplyNew.size() > 0) {
+                        rs = this.getWxMpXmlOutMessage(wxMessage, listWxAutoReplyNew, wxUser, wxMsgService);
+                        if (rs != null) {
+                            return rs;
+                        }
                     }
                 }
             }

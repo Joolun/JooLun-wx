@@ -1,8 +1,6 @@
 <template>
   <div class="app-container">
-    <div
-      class="public-account-management clearfix"
-      v-loading="saveLoading">
+    <div class="public-account-management clearfix" v-loading="saveLoading">
       <!--左边配置菜单-->
       <div class="left">
         <div class="weixin-hd">
@@ -11,31 +9,24 @@
           </div>
         </div>
         <div class="weixin-menu menu_main clearfix">
-          <div
-            class="menu_bottom"
-            v-for="(item, i) of menu.button"
-            :key="i">
+          <div class="menu_bottom" v-for="(item, i) of menu.button" :key="i">
             <!-- 一级菜单 -->
             <div
               @click="menuFun(i, item)"
               class="menu_item el-icon-s-fold"
-              :class="{ active: isActive == i }">
+              :class="{ active: isActive == i }"
+            >
               {{ item.name }}
             </div>
             <!--以下为二级菜单-->
-            <div
-              class="submenu"
-              v-if="isSubMenuFlag == i">
-              <template
-                v-for="(subItem, k) in item.sub_button"
-                :key="k">
-                <div
-                  v-if="item.sub_button"
-                  class="subtitle menu_bottom">
+            <div class="submenu" v-if="isSubMenuFlag == i">
+              <template v-for="(subItem, k) in item.sub_button" :key="k">
+                <div v-if="item.sub_button" class="subtitle menu_bottom">
                   <div
                     class="menu_subItem"
                     :class="{ active: isSubMenuActive == i + '' + k }"
-                    @click="subMenuFun(subItem, i, k)">
+                    @click="subMenuFun(subItem, i, k)"
+                  >
                     {{ subItem.name }}
                   </div>
                 </div>
@@ -44,7 +35,8 @@
               <div
                 class="menu_bottom menu_addicon"
                 v-if="!item.sub_button || item.sub_button.length < 5"
-                @click="addSubMenu(i, item)">
+                @click="addSubMenu(i, item)"
+              >
                 <el-icon><Plus /></el-icon>
               </div>
             </div>
@@ -53,7 +45,8 @@
           <div
             class="menu_bottom menu_addicon"
             v-if="menuKeyLength < 3"
-            @click="addMenu">
+            @click="addMenu"
+          >
             <el-icon><Plus /></el-icon>
           </div>
         </div>
@@ -69,9 +62,7 @@
         </div>
       </div>
       <!--右边配置-->
-      <div
-        v-if="showRightFlag"
-        class="right">
+      <div v-if="showRightFlag" class="right">
         <div class="configure_page">
           <div class="delete_btn">
             <el-button
@@ -89,7 +80,8 @@
               v-model="tempObj.name"
               placeholder="请输入菜单名称"
               :maxlength="nameMaxlength"
-              clearable></el-input>
+              clearable
+            ></el-input>
           </div>
           <div v-if="showConfigurContent">
             <div class="menu_content">
@@ -98,34 +90,34 @@
                 v-model="tempObj.type"
                 clearable
                 placeholder="请选择"
-                class="menu_option">
+                class="menu_option"
+              >
                 <el-option
                   v-for="item in menuOptions"
                   :label="item.label"
                   :value="item.value"
-                  :key="item.value"></el-option>
+                  :key="item.value"
+                ></el-option>
               </el-select>
             </div>
-            <div
-              class="configur_content"
-              v-if="tempObj.type == 'view'">
+            <div class="configur_content" v-if="tempObj.type == 'view'">
               <span>跳转链接：</span>
               <el-input
                 class="input_width"
                 v-model="tempObj.url"
                 placeholder="请输入链接"
-                clearable></el-input>
+                clearable
+              ></el-input>
             </div>
-            <div
-              class="configur_content"
-              v-if="tempObj.type == 'miniprogram'">
+            <div class="configur_content" v-if="tempObj.type == 'miniprogram'">
               <div class="applet">
                 <span>小程序的appid：</span>
                 <el-input
                   class="input_width"
                   v-model="tempObj.appid"
                   placeholder="请输入小程序的appid"
-                  clearable></el-input>
+                  clearable
+                ></el-input>
               </div>
               <div class="applet">
                 <span>小程序的页面路径：</span>
@@ -133,7 +125,8 @@
                   class="input_width"
                   v-model="tempObj.pagepath"
                   placeholder="请输入小程序的页面路径，如：pages/index"
-                  clearable></el-input>
+                  clearable
+                ></el-input>
               </div>
               <div class="applet">
                 <span>备用网页：</span>
@@ -141,35 +134,38 @@
                   class="input_width"
                   v-model="tempObj.url"
                   placeholder="不支持小程序的老版本客户端将打开本网页"
-                  clearable></el-input>
+                  clearable
+                ></el-input>
               </div>
-              <p class="blue">tips:需要和公众号进行关联才可以把小程序绑定带微信菜单上哟！</p>
+              <p class="blue">
+                tips:需要和公众号进行关联才可以把小程序绑定带微信菜单上哟！
+              </p>
             </div>
             <div
               class="configur_content"
-              v-if="tempObj.type == 'article_view_limited'">
+              v-if="tempObj.type == 'article_view_limited'"
+            >
               <el-row>
                 <div
                   class="select-item"
-                  v-if="tempObj && tempObj.content && tempObj.content.articles">
+                  v-if="tempObj && tempObj.content && tempObj.content.articles"
+                >
                   <WxNews :objData="tempObj.content.articles"></WxNews>
                   <el-row class="ope-row">
                     <el-button
                       type="danger"
                       icon="el-icon-delete"
                       circle
-                      @click="deleteTempObj"></el-button>
+                      @click="deleteTempObj"
+                    ></el-button>
                   </el-row>
                 </div>
                 <div v-if="!tempObj.content || !tempObj.content.articles">
                   <el-row>
-                    <el-col
-                      :span="24"
-                      style="text-align: center">
-                      <el-button
-                        type="success"
-                        @click="openMaterial"
-                        >素材库选择<el-icon class="el-icon--right"><CircleCheck /></el-icon
+                    <el-col :span="24" style="text-align: center">
+                      <el-button type="success" @click="openMaterial"
+                        >素材库选择<el-icon class="el-icon--right"
+                          ><CircleCheck /></el-icon
                       ></el-button>
                     </el-col>
                   </el-row>
@@ -177,27 +173,31 @@
                 <el-dialog
                   title="选择图文"
                   v-model="dialogNewsVisible"
-                  width="90%">
+                  width="90%"
+                >
                   <WxMaterialSelect
                     :objData="{ repType: 'news' }"
-                    @selectMaterial="selectMaterial"></WxMaterialSelect>
+                    @selectMaterial="selectMaterial"
+                  ></WxMaterialSelect>
                 </el-dialog>
               </el-row>
             </div>
             <div
               class="configur_content"
-              v-if="tempObj.type == 'click' || tempObj.type == 'scancode_waitmsg'">
+              v-if="
+                tempObj.type == 'click' || tempObj.type == 'scancode_waitmsg'
+              "
+            >
               <WxReplySelect
                 v-model:objData="tempObj"
-                v-if="hackResetWxReplySelect"></WxReplySelect>
+                v-if="hackResetWxReplySelect"
+              ></WxReplySelect>
             </div>
           </div>
         </div>
       </div>
       <!--一进页面就显示的默认页面，当点击左边按钮的时候，就不显示了-->
-      <div
-        v-if="!showRightFlag"
-        class="right">
+      <div v-if="!showRightFlag" class="right">
         <p>请选择菜单配置</p>
       </div>
     </div>
@@ -209,7 +209,13 @@ import { save, saveAndRelease, getList } from "@/api/wxmp/wxmenu";
 import WxReplySelect from "@/components/wx-reply/main.vue";
 import WxNews from "@/components/wx-news/main.vue";
 import WxMaterialSelect from "@/components/wx-material-select/main.vue";
-import { computed, getCurrentInstance, nextTick, onMounted, reactive } from "vue";
+import {
+  computed,
+  getCurrentInstance,
+  nextTick,
+  onMounted,
+  reactive,
+} from "vue";
 
 const { proxy } = getCurrentInstance();
 
@@ -276,7 +282,22 @@ const data = reactive({
   saveLoading: false,
   hackResetWxReplySelect: false,
 });
-const { showRightFlag, menu, isActive, isSubMenuActive, isSubMenuFlag, tempObj, tempSelfObj, menuName, showConfigurContent, nameMaxlength, menuOptions, dialogNewsVisible, saveLoading, hackResetWxReplySelect } = toRefs(data);
+const {
+  showRightFlag,
+  menu,
+  isActive,
+  isSubMenuActive,
+  isSubMenuFlag,
+  tempObj,
+  tempSelfObj,
+  menuName,
+  showConfigurContent,
+  nameMaxlength,
+  menuOptions,
+  dialogNewsVisible,
+  saveLoading,
+  hackResetWxReplySelect,
+} = toRefs(data);
 
 const menuKeyLength = computed(() => {
   return data.menu.button.length;
@@ -388,12 +409,12 @@ function subMenuFun(subItem, index, k) {
 }
 
 function addMenu() {
-  let menuKeyLength = menuKeyLength.value;
+  let menuKeyLengthTemp = menuKeyLength.value;
   let addButton = {
     name: "菜单名称",
     sub_button: [],
   };
-  data.menu.button[menuKeyLength] = addButton;
+  data.menu.button[menuKeyLengthTemp] = addButton;
   menuFun(menuKeyLength.value - 1, addButton);
 }
 
@@ -434,7 +455,10 @@ function deleteData() {
   }
   // 二级菜单的删除方法
   if (data.tempSelfObj.grand == "2") {
-    data.menu.button[data.tempSelfObj.index].sub_button.splice(data.tempSelfObj.secondIndex, 1);
+    data.menu.button[data.tempSelfObj.index].sub_button.splice(
+      data.tempSelfObj.secondIndex,
+      1
+    );
   }
   proxy.$message({
     type: "success",

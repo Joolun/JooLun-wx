@@ -17,27 +17,27 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>17</java.version>
-        <spring-boot.version>3.3.4</spring-boot.version>
+        <spring-boot.version>3.5.10</spring-boot.version>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
-        <druid.version>1.2.23</druid.version>
+        <druid.version>1.2.27</druid.version>
         <bitwalker.version>1.21</bitwalker.version>
         <swagger.version>3.0.0</swagger.version>
         <kaptcha.version>2.3.3</kaptcha.version>
-        <pagehelper.boot.version>1.4.7</pagehelper.boot.version>
-        <fastjson.version>2.0.43</fastjson.version>
-        <oshi.version>6.6.3</oshi.version>
-        <commons.io.version>2.13.0</commons.io.version>
+        <pagehelper.boot.version>2.1.1</pagehelper.boot.version>
+        <fastjson.version>2.0.52</fastjson.version>
+        <oshi.version>6.9.2</oshi.version>
+        <commons.io.version>2.21.0</commons.io.version>
         <poi.version>4.1.2</poi.version>
-        <velocity.version>2.3</velocity.version>
-        <jwt.version>0.9.1</jwt.version>
-        <mysql.version>8.2.0</mysql.version>
+        <velocity.version>2.4.1</velocity.version>
+        <jwt.version>0.13.0</jwt.version>
+        <mysql.version>8.0.33</mysql.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jakarta.version>6.0.0</jakarta.version>
-        <springdoc.version>2.5.0</springdoc.version>
-        <mybatis-plus.version>3.5.5</mybatis-plus.version>
-        <hutool.version>5.1.0</hutool.version>
-        <weixin-java.version>4.6.2.B</weixin-java.version>
-        <ttl.version>2.11.4</ttl.version>
+        <springdoc.version>2.8.15</springdoc.version>
+        <mybatis-plus.version>3.5.10.1</mybatis-plus.version>
+        <hutool.version>5.8.43</hutool.version>
+        <weixin-java.version>4.8.0</weixin-java.version>
+        <ttl.version>2.14.5</ttl.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -208,6 +208,12 @@
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <!--mybatis-plus-jsqlparser for PaginationInnerInterceptor-->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-jsqlparser</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
             <!--hutool-->

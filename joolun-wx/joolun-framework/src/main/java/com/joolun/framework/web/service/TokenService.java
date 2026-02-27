@@ -2,8 +2,10 @@ package com.joolun.framework.web.service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 import jakarta.servlet.http.HttpServletRequest;
+import javax.crypto.SecretKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,10 @@ import eu.bitwalker.useragentutils.UserAgent;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 
 /**
  * token验证处理
@@ -73,6 +79,18 @@ public class TokenService
                 String userKey = getTokenKey(uuid);
                 LoginUser user = redisCache.getCacheObject(userKey);
                 return user;
+            }
+            catch (io.jsonwebtoken.security.SecurityException e)
+            {
+                log.error("令牌验证失败'{}'", e.getMessage());
+            }
+            catch (io.jsonwebtoken.MalformedJwtException e)
+            {
+                log.error("令牌格式错误'{}'", e.getMessage());
+            }
+            catch (io.jsonwebtoken.ExpiredJwtException e)
+            {
+                log.error("令牌已过期'{}'", e.getMessage());
             }
             catch (Exception e)
             {
@@ -176,9 +194,11 @@ public class TokenService
      */
     private String createToken(Map<String, Object> claims)
     {
+        // 确保密钥长度足够，如果原始密钥长度不足则扩展它
+        SecretKey key = generateSecureKey(secret);
         String token = Jwts.builder()
                 .setClaims(claims)
-                .signWith(SignatureAlgorithm.HS512, secret).compact();
+                .signWith(key, SignatureAlgorithm.HS512).compact();
         return token;
     }
 
@@ -190,10 +210,13 @@ public class TokenService
      */
     private Claims parseToken(String token)
     {
+        // 确保密钥长度足够
+        SecretKey key = generateSecureKey(secret);
         return Jwts.parser()
-                .setSigningKey(secret)
-                .parseClaimsJws(token)
-                .getBody();
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     /**
@@ -227,5 +250,52 @@ public class TokenService
     private String getTokenKey(String uuid)
     {
         return CacheConstants.LOGIN_TOKEN_KEY + uuid;
+    }
+    
+    /**
+     * 生成安全的密钥，确保其长度满足JWT HMAC-SHA算法的要求
+     *
+     * @param originalSecret 原始密钥字符串
+     * @return 符合安全要求的密钥
+     */
+    private SecretKey generateSecureKey(String originalSecret) {
+        // 如果原始密钥是Base64编码的，则先解码
+        byte[] keyBytes;
+        try {
+            // 尝试解码Base64
+            keyBytes = Base64.getDecoder().decode(originalSecret);
+        } catch (IllegalArgumentException e) {
+            // 如果不是有效的Base64编码，则直接使用原始字符串的字节
+            keyBytes = originalSecret.getBytes();
+        }
+        
+        // 检查密钥长度，如果不足则扩展
+        // HS512算法要求至少512位（64字节）
+        if (keyBytes.length < 64) { // 512 bits = 64 bytes
+            // 使用SHA-512哈希来生成足够长的密钥
+            try {
+                java.security.MessageDigest sha512 = java.security.MessageDigest.getInstance("SHA-512");
+                byte[] hashedBytes = sha512.digest(keyBytes);
+                
+                // 如果哈希结果还不够长，扩展它
+                if (hashedBytes.length < 64) {
+                    // 创建一个64字节的数组并填充哈希值
+                    keyBytes = new byte[64];
+                    System.arraycopy(hashedBytes, 0, keyBytes, 0, Math.min(hashedBytes.length, 64));
+                } else {
+                    keyBytes = hashedBytes;
+                }
+            } catch (java.security.NoSuchAlgorithmException e) {
+                // 如果SHA-512不可用，则通过重复原密钥来扩展
+                StringBuilder extendedKey = new StringBuilder(originalSecret);
+                while (extendedKey.length() < 64) {
+                    extendedKey.append(originalSecret);
+                }
+                keyBytes = extendedKey.toString().substring(0, 64).getBytes();
+            }
+        }
+        
+        // 创建符合要求的密钥
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }

@@ -16,54 +16,65 @@
               <el-link
                 href="https://gitee.com/joolun/JooLun-wx/tree/master/"
                 target="_blank"
-                >SpringBoot2+Vue2+微信小程序开源代码<el-icon
-                  ><TopRight /></el-icon
-              ></el-link>
+                >SpringBoot2+Vue2+微信小程序开源代码
+                <el-icon>
+                  <TopRight />
+                </el-icon>
+              </el-link>
               <br />
               <el-link
                 href="https://gitee.com/joolun/JooLun-wx/tree/boot3/"
                 target="_blank"
-                >SpringBoot3+Vue3+微信小程序开源代码<el-icon
-                  ><TopRight /></el-icon
-              ></el-link>
+                >SpringBoot3+Vue3+微信小程序开源代码
+                <el-icon>
+                  <TopRight />
+                </el-icon>
+              </el-link>
               <br />
               <el-link href="https://doc.ruoyi.vip/ruoyi/" target="_blank"
-                >RuoYi框架<el-icon><TopRight /></el-icon
-              ></el-link>
+                >RuoYi框架
+                <el-icon>
+                  <TopRight />
+                </el-icon>
+              </el-link>
               <el-link
                 href="https://avuejs.com/"
                 target="_blank"
                 style="margin-left: 5px"
-                >Avue框架<el-icon><TopRight /></el-icon
-              ></el-link>
+                >Avue框架
+                <el-icon>
+                  <TopRight />
+                </el-icon>
+              </el-link>
             </p>
-            <br />
             <br />
             <p>此公众号对接了该平台，和该后台数据同步</p>
-            <img
-              class="code"
-              src="https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-uniapp-wx-ui/Joolun_Plus_11.png"
-            />
+            <img class="code" src="/wxmpjoolun.jpeg" />
             <p>
               <el-button @click="goTarget('https://gitee.com/joolun/JooLun-wx')"
-                >访问码云</el-button
-              >
+                >访问码云
+              </el-button>
               <el-button @click="goTarget('https://www.joolun.com/')"
-                >访问官网</el-button
-              >
+                >访问官网
+              </el-button>
             </p>
           </div>
-          <img
-            class="left-image"
-            src="https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-uniapp-wx-ui/Joolun_Plus_1.png"
-          />
+          <div>
+            <br />
+            <div>
+              <el-text size="large">客服微信</el-text>
+            </div>
+            <img class="left-image" src="/joolunkefu.jpeg" />
+          </div>
         </el-card>
       </el-col>
       <el-col :sm="24" :lg="18">
         <el-card class="update-log">
           <div class="clearfix">
             <span class="clearfix-title">JooLun商业版</span>
-            <p><el-text size="large">乔伦软件</el-text></p>
+            <p>
+              <el-text size="large">全源码交付</el-text>
+            </p>
             <p class="clearfix-text">
               微服务Sping Cloud + uniapp
               强强联合打造的B2B2C多商户（多店铺）商城系统,
@@ -72,11 +83,11 @@
             </p>
             <p>
               <el-button @click="goTarget('https://www.joolun.com/yshj/')"
-                >后台演示</el-button
-              >
+                >后台演示
+              </el-button>
               <el-button @click="goTarget('https://www.joolun.com/gndb.html')"
-                >功能对比</el-button
-              >
+                >功能对比
+              </el-button>
             </p>
             <a href="https://www.joolun.com" target="_blank">
               <img width="100%" src="/function_menu2.png" />
@@ -113,10 +124,6 @@
               简单的说，一个租户即为一个某宝或者某东，多租户就能同时承建和管理多个某宝或者某东！
               商城系统前端采用uniapp开发，可发布到小程序、H5、ios以及Android等多个平台，一套代码多端发行，轻松实现多终端覆盖！
             </p>
-            <img
-              class="right-image-2"
-              src="https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-uniapp-wx-ui/Joolun_Plus_3.png"
-            />
           </div>
           <div class="clearfix">
             <span class="clearfix-title">Joolun uniapp 多店版-后台管理</span>
@@ -125,20 +132,12 @@
               系统管理员——管理整个系统和所有商城 商城管理员——管理自己所属商城
               店铺管理员——管理自己所属店铺
             </p>
-            <img
-              class="right-image-2"
-              src="https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-uniapp-wx-ui/Joolun_Plus_8.png"
-            />
           </div>
           <div class="clearfix">
             <span class="clearfix-title">Joolun uniapp 多店版-商城端</span>
             <p class="clearfix-text-2">
               秒杀、拼团、砍价、电子券、积分、分销、直播等等,丰富新颖的营销功能，满足不同客户需求！支持微信和支付宝服务商收款,满足APP、H5、PC、小程序等主流支付场景！
             </p>
-            <img
-              class="right-image-2"
-              src="https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-uniapp-wx-ui/Joolun_Plus_6.png"
-            />
           </div>
           <div class="clearfix">
             <span class="clearfix-title">Joolun uniapp 多店版-商户端</span>
@@ -146,10 +145,6 @@
               JooLun Uniapp多店版商城系统拥有独立的IM客服管理系统
               客服聊天，上架商品，管理订单，实时发货，商城动态尽在掌控！
             </p>
-            <img
-              class="right-image-2"
-              src="https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-uniapp-wx-ui/Joolun_Plus_7.png"
-            />
           </div>
           <div class="clearfix">
             <span class="clearfix-title">拖拽式自定义商城装修</span>
@@ -157,10 +152,6 @@
               系统商城和店铺，无论是移动端还是pc端，均支持拖拽式的自定义装修
               丰富的基础组件，随意拖拽，装修适合自己风格的主题，让商城更多样化！
             </p>
-            <img
-              class="right-image-2"
-              src="https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-uniapp-wx-ui/Joolun_Plus_9.png"
-            />
           </div>
           <div class="clearfix">
             <span class="clearfix-title">正版授权 无域名限制</span>
@@ -168,10 +159,6 @@
               正版授权，无域名限制，多维度保障用户的权益，使用起来无后顾之忧
               购买后可获得全部源码+文档教程，前期部署提供技术协助,无需授权,全部代码“0”加密
             </p>
-            <img
-              class="right-image-2"
-              src="https://joolun-plus-1313274050.cos.ap-nanjing.myqcloud.com/joolun-uniapp-wx-ui/Joolun_Plus_5.png"
-            />
           </div>
         </el-card>
       </el-col>
@@ -208,6 +195,7 @@ const { version } = toRefs(data);
 onMounted(() => {
   onCreated();
 });
+
 function onCreated() {
   proxy.$notify({
     title: "云服务器抢购",
@@ -235,31 +223,37 @@ function goTarget(href) {
 .el-card.is-always-shadow {
   box-shadow: none !important;
 }
+
 .el-card {
   border-radius: 0px;
 }
+
 .clearfix {
   margin-top: 30px;
 }
+
 .clearfix-title {
   font-size: 24px;
   font-weight: 1000;
 }
+
 .clearfix-text {
   min-height: 60px;
   font-size: 14px;
   color: gray;
 }
+
 .clearfix-text-2 {
   font-size: 14px;
   color: gray;
 }
+
 .left-image {
-  width: 320px;
-  height: 310px;
-  margin-top: 50px;
+  width: 220px;
+  height: 220px;
   margin-bottom: 120px;
 }
+
 .code {
   width: 156px;
   height: 156px;
@@ -267,23 +261,28 @@ function goTarget(href) {
   display: flex;
   margin: auto;
 }
+
 .right-image {
   width: 720px;
   height: 360px;
   margin-top: 20px;
   margin-bottom: 20px;
 }
+
 .right-image-2 {
   width: 680px;
 }
+
 .advertising {
   position: fixed;
   top: 130px;
   right: 30px;
 }
+
 .app-container {
   padding: 0;
 }
+
 .home {
   blockquote {
     padding: 10px 20px;
@@ -312,6 +311,7 @@ function goTarget(href) {
   font-size: 13px;
   color: #676a6c;
   overflow-x: hidden;
+
   ul {
     list-style-type: none;
   }
