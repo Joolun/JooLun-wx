@@ -1,11 +1,15 @@
 /**
- * Copyright (C) 2024
+ * Copyright (C) 2026
  * All rights reserved, Designed By www.joolun.com
  * 注意：
  * 本软件为www.joolun.com开发研制，项目使用请保留此说明
  */
+
+/**
+ * 商城订单后台表格配置。
+ * 订单流转由业务动作驱动，因此列表页仅提供查询、查看和发货等动作，不开放手工新增删除。
+ */
 export const tableOption = {
-  // dateBtn:true,
   dialogType: "drawer",
   dialogWidth: "80%",
   border: true,
@@ -16,7 +20,7 @@ export const tableOption = {
   align: "center",
   menuWidth: 150,
   menuType: "text",
-  searchShow: false,
+  searchShow: true,
   excelBtn: true,
   printBtn: true,
   editBtn: false,
@@ -28,9 +32,44 @@ export const tableOption = {
   dateBtn: true,
   column: [
     {
-      label: "用户id",
+      label: "订单ID",
+      prop: "id",
+      hide: true,
+      display: false,
+    },
+    {
+      label: "会员ID",
       prop: "userId",
       sortable: true,
+      hide: true,
+      display: false,
+    },
+    {
+      label: "会员编号",
+      prop: "userNo",
+      search: true,
+      hide: true,
+      display: false,
+    },
+    {
+      label: "会员昵称",
+      prop: "userNickName",
+      search: true,
+      slot: true,
+      minWidth: 220,
+      display: false,
+    },
+    {
+      label: "真实姓名",
+      prop: "userRealName",
+      search: true,
+      hide: true,
+      display: false,
+    },
+    {
+      label: "手机号",
+      prop: "userMobile",
+      search: true,
       hide: true,
       display: false,
     },
@@ -43,11 +82,11 @@ export const tableOption = {
       display: false,
       dicData: [
         {
-          label: "是",
+          label: "已支付",
           value: "1",
         },
         {
-          label: "否",
+          label: "未支付",
           value: "0",
         },
       ],
@@ -58,6 +97,32 @@ export const tableOption = {
       search: true,
       hide: true,
       display: false,
+    },
+    {
+      label: "售后状态",
+      prop: "afterSaleStatus",
+      type: "radio",
+      search: true,
+      hide: true,
+      display: false,
+      dicData: [
+        {
+          label: "退款申请中",
+          value: "1",
+        },
+        {
+          label: "拒绝退款",
+          value: "2",
+        },
+        {
+          label: "退款待回调",
+          value: "3",
+        },
+        {
+          label: "已退款",
+          value: "4",
+        },
+      ],
     },
     {
       label: "商品信息",
@@ -96,7 +161,7 @@ export const tableOption = {
       prop: "paymentTime",
       sortable: "custom",
       display: false,
-      width: 130,
+      width: 160,
     },
     {
       label: "发货时间",
@@ -177,6 +242,30 @@ export const tableOption = {
       column: [
         {
           prop: "orderLogistics",
+          formslot: true,
+          span: 24,
+        },
+      ],
+    },
+    {
+      icon: "el-icon-refresh-left",
+      label: "售后轨迹",
+      prop: "group5",
+      column: [
+        {
+          prop: "afterSaleInfo",
+          formslot: true,
+          span: 24,
+        },
+      ],
+    },
+    {
+      icon: "el-icon-time",
+      label: "订单轨迹",
+      prop: "group6",
+      column: [
+        {
+          prop: "orderTimeline",
           formslot: true,
           span: 24,
         },

@@ -1,8 +1,19 @@
 <!--
-  - Copyright (C) 2018-2019
-  - All rights reserved, Designed By www.joolun.com
+  Copyright (C) 2026
+  All rights reserved, Designed By www.joolun.com
+  注意：
+  本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
+
+<!--
+  - 版权所有 (C) 2018-2019 www.joolun.com
+  - 保留所有权利
   - 注意：
-  - 本软件为www.joolun.com开发研制，项目使用请保留此说明
+  - 本软件为 www.joolun.com 开发研制，项目使用请保留此说明
+  -
+  - 多规格改造说明：
+  - 1. 订单详情页通过 spuId + skuId 回跳商品详情。
+  - 2. 历史订单展示以订单快照里的 specInfo 为准，不受商品后续改动影响。
 -->
 <view class="margin-bottom-bar">
   <view class="bg-white padding">
@@ -48,8 +59,9 @@
   <view class="cu-card article mar-top-30">
     <view class="cu-item">
       <view class="cu-list menu">
+        <!-- 订单商品列表直接渲染下单时冻结的 SKU 快照。 -->
         <view wx:for="{{ orderInfo.listOrderItem }}" wx:key="index">
-          <navigator hover-class='none' url='/pages/goods/goods-detail/index?id={{item.spuId}}' class="cu-item">
+          <navigator hover-class='none' url='/pages/goods/goods-detail/index?id={{item.spuId}}&skuId={{item.skuId}}' class="cu-item">
             <view class="align-center">
               <view class="flex align-center">
                 <image src="{{item.picUrl ? item.picUrl : '/public/img/no_pic.png'}}" mode="aspectFill" class="row-img margin-top-xs"></image>
@@ -67,13 +79,44 @@
                   </view>
                   <view class="flex justify-between">
                     <view class="text-bold text-gray margin-top-sm margin-left-xs padding-lr-sm font-weight">状态</view>
-                    <view class="text-black text-sm margin-top-sm margin-right-xs padding-lr-sm">{{item.status == '0' ? '正常' : item.status == '1' ? '申请退款中' : item.status == '2' ? '拒绝退款' : item.status == '3' ? '同意退款' : ''}}</view>
+                    <view class="text-black text-sm margin-top-sm margin-right-xs padding-lr-sm">{{item.afterSaleStatusText}}</view>
+                  </view>
+                  <view class="after-sale-panel" wx:if="{{item.afterSaleVisible}}">
+                    <view class="after-sale-panel-header">
+                      <view class="after-sale-panel-title">售后进度</view>
+                      <view class="after-sale-panel-status">{{item.afterSaleStatusText}}</view>
+                    </view>
+                    <view class="after-sale-panel-line" wx:if="{{item.refundReason}}">
+                      申请原因：{{item.refundReason}}
+                    </view>
+                    <view class="after-sale-panel-line" wx:if="{{item.refundAuditRemark}}">
+                      审核备注：{{item.refundAuditRemark}}
+                    </view>
+                    <view class="after-sale-timeline" wx:if="{{item.afterSaleTimeline.length > 0}}">
+                      <view class="after-sale-timeline-item" wx:for="{{item.afterSaleTimeline}}" wx:for-item="timelineItem" wx:key="title">
+                        <view class="after-sale-timeline-dot"></view>
+                        <view class="after-sale-timeline-content">
+                          <view class="after-sale-timeline-title">{{timelineItem.title}}</view>
+                          <view class="after-sale-timeline-time">{{timelineItem.time}}</view>
+                          <view class="after-sale-timeline-desc">{{timelineItem.desc}}</view>
+                        </view>
+                      </view>
+                    </view>
                   </view>
                 </view>
             </view>
           </navigator>
-          <view class="cu-item margin" wx:if="{{orderInfo.isPay == '1' && item.isRefund == '0' && (item.status == '0' || item.status == '2')}}" >
-            <button class="cu-btn sm" bindtap="refunds" data-data="{{item.id}}">申请退款</button>
+          <view class="cu-item margin" wx:if="{{item.canApplyRefund}}" >
+            <button
+              class="cu-btn sm"
+              bindtap="openRefundPopup"
+              data-id="{{item.id}}"
+              data-spu-name="{{item.spuName}}"
+              data-spec-info="{{item.specInfo}}"
+              data-payment-price="{{item.paymentPrice}}"
+            >
+              {{item.status == '2' ? '重新申请退款' : '申请退款'}}
+            </button>
           </view>
         </view>
         <view class="cu-item margin-top-xs">
@@ -150,6 +193,21 @@
       <textarea readonly value="{{orderInfo.userMessage}}"></textarea>
     </view>
 	</view>
+  <view class="service-board">
+    <view class="service-board__title">订单服务支持</view>
+    <view class="service-board__desc">发货、物流、退款审核等问题，建议优先带着当前订单发起咨询，客服处理会更快。</view>
+    <button
+      class="service-board__button"
+      open-type="contact"
+      bindcontact="handleContact"
+      send-message-title="订单 {{orderInfo.orderNo}} 咨询"
+      send-message-path="/pages/order/order-detail/index?id={{orderInfo.id}}"
+      send-message-img="{{orderInfo.listOrderItem[0].picUrl ? orderInfo.listOrderItem[0].picUrl : '/public/img/no_pic.png'}}"
+      show-message-card="true"
+    >
+      联系订单客服
+    </button>
+  </view>
   <view style="padding-bottom: 60px;">
 	</view>
 </view>
@@ -164,4 +222,33 @@
     bind:orderDel="orderDel"
     bind:unifiedOrder="unifiedOrder"
   />
+</view>
+<view wx:if="{{refundPopupVisible}}" class="refund-popup-mask" bindtap="closeRefundPopup"></view>
+<view wx:if="{{refundPopupVisible}}" class="refund-popup-panel" catchtap="preventTouchMove">
+  <view class="refund-popup-header">
+    <view class="refund-popup-title">申请退款</view>
+    <view class="refund-popup-close cuIcon-close" bindtap="closeRefundPopup"></view>
+  </view>
+  <view class="refund-popup-content">
+    <view class="refund-goods-card">
+      <view class="refund-goods-name">{{refundTarget.spuName || '未命名商品'}}</view>
+      <view class="refund-goods-spec">{{refundTarget.specInfo || '默认规格'}}</view>
+      <view class="refund-goods-price">退款金额：¥{{refundTarget.paymentPrice || '0.00'}}</view>
+    </view>
+    <view class="refund-form-label">退款原因</view>
+    <textarea
+      class="refund-textarea"
+      maxlength="120"
+      placeholder="请填写退款原因，方便商家更快审核"
+      value="{{refundReason}}"
+      bindinput="handleRefundReasonInput"
+    ></textarea>
+    <view class="refund-form-tip">请尽量描述清楚问题，例如商品有误、重复下单、暂不需要等。</view>
+  </view>
+  <view class="refund-popup-actions">
+    <button class="cu-btn line-black round" bindtap="closeRefundPopup" disabled="{{refundSubmitting}}">取消</button>
+    <button class="cu-btn bg-red round" bindtap="submitRefundApply" loading="{{refundSubmitting}}" disabled="{{refundSubmitting}}">
+      提交申请
+    </button>
+  </view>
 </view>

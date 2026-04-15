@@ -1,17 +1,26 @@
 <!--
-  - Copyright (C) 2018-2019
-  - All rights reserved, Designed By www.joolun.com
-  - 注意：
-  - 本软件为www.joolun.com开发研制，项目使用请保留此说明
+  Copyright (C) 2026
+  All rights reserved, Designed By www.joolun.com
+  注意：
+  本软件为www.joolun.com开发研制，项目使用请保留此说明
 -->
-<view class="cu-modal show" wx:if="{{switchOn && wxUser && !wxUser.headimgUrl}}">
+<view class="cu-modal show" wx:if="{{switchOn && mallUser && (!mallUser.avatarUrl || mallUser.memberFlag !== '1')}}">
   <view class="cu-dialog">
     <view class="cu-bar bg-red justify-end">
       <view class="content">登录授权</view>
     </view>
     <view class="padding-xl">
-      <view class="text-left">需要获取您的头像等信息，以便为您提供更好的服务</view>
-      <button class="cu-btn text-green cuIcon-weixin lg" open-type="getUserInfo" bind:getuserinfo="agreeGetUser" lang="zh_CN">点击授权</button>
+      <view class="text-left">为了完成下单和会员服务，请先补充必要的授权信息。</view>
+      <view class="auth-block" wx:if="{{!mallUser.avatarUrl}}">
+        <view class="auth-title">1. 获取头像昵称</view>
+        <view class="auth-desc">用于完善商城用户档案和个人中心展示。</view>
+        <button class="cu-btn text-green cuIcon-weixin lg" open-type="getUserInfo" bind:getuserinfo="agreeGetUser" lang="zh_CN">点击授权</button>
+      </view>
+      <view class="auth-block" wx:if="{{mallUser.memberFlag !== '1'}}">
+        <view class="auth-title">{{!mallUser.avatarUrl ? '2' : '1'}}. 绑定手机号</view>
+        <view class="auth-desc">绑定成功后自动转成会员，后续下单、售后和会员运营都会按会员身份处理。</view>
+        <button class="cu-btn bg-red lg" open-type="getPhoneNumber" bind:getphonenumber="bindPhoneNumber">绑定手机号</button>
+      </view>
     </view>
   </view>
 </view>

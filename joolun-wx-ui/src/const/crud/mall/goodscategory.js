@@ -88,6 +88,7 @@ export const tableOption = {
     {
       label: "图片",
       prop: "picUrl",
+      slot: true,
       type: "upload",
       listType: "picture-img",
       width: 250,

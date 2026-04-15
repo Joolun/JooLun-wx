@@ -1,0 +1,283 @@
+/**
+ * Copyright (C) 2026
+ * All rights reserved, Designed By www.joolun.com
+ * 注意：
+ * 本软件为www.joolun.com开发研制，项目使用请保留此说明
+ */
+
+page {
+  background: #f3f4f7;
+}
+
+.after-sale-page {
+  padding: 120rpx 24rpx 36rpx;
+}
+
+.summary-board {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18rpx;
+  margin-bottom: 24rpx;
+}
+
+.summary-card {
+  padding: 24rpx;
+  border-radius: 26rpx;
+  background: linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
+  box-shadow: 0 16rpx 36rpx rgba(17, 24, 39, 0.05);
+}
+
+.summary-label {
+  color: #6b7280;
+  font-size: 24rpx;
+}
+
+.summary-value {
+  margin-top: 10rpx;
+  font-size: 36rpx;
+  font-weight: 700;
+}
+
+.summary-tip {
+  margin-top: 8rpx;
+  color: #9aa1ac;
+  font-size: 22rpx;
+  line-height: 1.6;
+}
+
+.filter-tip-board {
+  margin-bottom: 24rpx;
+  padding: 22rpx 24rpx;
+  border-radius: 24rpx;
+  background: #ffffff;
+  box-shadow: 0 16rpx 36rpx rgba(17, 24, 39, 0.05);
+}
+
+.filter-tip-title {
+  color: #1f2937;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.filter-tip-desc {
+  margin-top: 10rpx;
+  color: #6b7280;
+  font-size: 24rpx;
+  line-height: 1.8;
+}
+
+.after-sale-card {
+  margin-bottom: 24rpx;
+  padding: 24rpx;
+  border-radius: 28rpx;
+  background: #ffffff;
+  box-shadow: 0 16rpx 36rpx rgba(17, 24, 39, 0.05);
+}
+
+.after-sale-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.after-sale-order-no {
+  flex: 1;
+  color: #4b5563;
+  font-size: 24rpx;
+  word-break: break-all;
+}
+
+.after-sale-status {
+  padding: 8rpx 18rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.after-sale-status.is-warning {
+  background: rgba(199, 134, 63, 0.14);
+  color: #9a5a19;
+}
+
+.after-sale-status.is-danger {
+  background: rgba(220, 38, 38, 0.12);
+  color: #dc2626;
+}
+
+.after-sale-status.is-success {
+  background: rgba(31, 157, 85, 0.14);
+  color: #1f9d55;
+}
+
+.after-sale-status.is-info {
+  background: rgba(41, 103, 255, 0.12);
+  color: #2967ff;
+}
+
+.after-sale-body {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 22rpx;
+}
+
+.after-sale-image {
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 20rpx;
+  background: #f5f5f5;
+}
+
+.after-sale-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.after-sale-name {
+  color: #111827;
+  font-size: 30rpx;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.after-sale-spec,
+.after-sale-meta {
+  margin-top: 8rpx;
+  color: #6b7280;
+  font-size: 24rpx;
+  line-height: 1.7;
+  word-break: break-all;
+}
+
+.after-sale-price {
+  margin-top: 10rpx;
+  color: #d4380d;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.after-sale-stage-board {
+  margin-top: 16rpx;
+  padding: 18rpx 20rpx;
+  border-radius: 20rpx;
+  background: #f8fafc;
+}
+
+.after-sale-stage-title {
+  color: #111827;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.after-sale-stage-desc {
+  margin-top: 8rpx;
+  color: #6b7280;
+  font-size: 24rpx;
+  line-height: 1.7;
+}
+
+.after-sale-tip-board {
+  margin-top: 14rpx;
+  padding: 16rpx 18rpx;
+  border-radius: 18rpx;
+  background: linear-gradient(180deg, #fff8ef 0%, #fffdf9 100%);
+  color: #8b5e33;
+  font-size: 24rpx;
+  line-height: 1.7;
+}
+
+.after-sale-timeline {
+  margin-top: 16rpx;
+}
+
+.after-sale-timeline-item {
+  position: relative;
+  display: flex;
+  gap: 18rpx;
+  padding-top: 12rpx;
+}
+
+.after-sale-timeline-item::after {
+  content: '';
+  position: absolute;
+  left: 9rpx;
+  top: 38rpx;
+  bottom: -6rpx;
+  width: 2rpx;
+  background: rgba(41, 103, 255, 0.18);
+}
+
+.after-sale-timeline-item:last-child::after {
+  display: none;
+}
+
+.after-sale-timeline-dot {
+  position: relative;
+  z-index: 1;
+  width: 20rpx;
+  height: 20rpx;
+  margin-top: 10rpx;
+  border-radius: 50%;
+  background: #2967ff;
+  box-shadow: 0 0 0 8rpx rgba(41, 103, 255, 0.12);
+}
+
+.after-sale-timeline-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.after-sale-timeline-title {
+  color: #111827;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.after-sale-timeline-time,
+.after-sale-timeline-desc {
+  margin-top: 6rpx;
+  color: #6b7280;
+  font-size: 22rpx;
+  line-height: 1.7;
+}
+
+.after-sale-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16rpx;
+  margin-top: 24rpx;
+}
+
+.after-sale-empty {
+  padding: 120rpx 36rpx;
+  text-align: center;
+  color: #6b7280;
+}
+
+.after-sale-empty-title {
+  color: #111827;
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.after-sale-empty-desc {
+  margin-top: 18rpx;
+  font-size: 26rpx;
+  line-height: 1.8;
+}
+
+.is-primary {
+  color: #2967ff;
+}
+
+.is-warning {
+  color: #c17f00;
+}
+
+.is-success {
+  color: #1f9d55;
+}
+
+.is-danger {
+  color: #d4380d;
+}

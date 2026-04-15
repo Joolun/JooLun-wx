@@ -1,10 +1,17 @@
 <!--
-  - Copyright (C) 2018-2019
-  - All rights reserved, Designed By www.joolun.com
-  - 注意：
-  - 本软件为www.joolun.com开发研制，项目使用请保留此说明
+  Copyright (C) 2026
+  All rights reserved, Designed By www.joolun.com
+  注意：
+  本软件为www.joolun.com开发研制，项目使用请保留此说明
 -->
-<view class='product-bg bg-white padding-top'>
+
+<!--
+  商品详情页规格弹窗说明：
+  1. 详情主体只展示规格摘要，真正的规格选择在底部弹窗完成。
+  2. 弹窗内的规格值会根据当前组合动态高亮或置灰。
+  3. 普通购买和购物车改规格都会复用这套弹窗结构。
+-->
+<view class='product-bg bg-white padding-top' wx:if="{{goodsSpu}}">
   <swiper class="screen-swiper square-dot screen" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500" bindchange="change">
     <swiper-item wx:for="{{goodsSpu.picUrls}}" wx:key="index">
       <image class="screen-image" src="{{item}}" mode="aspectFill"></image>
@@ -12,75 +19,106 @@
   </swiper>
   <view class='page-index cu-tag round'>{{currents}}/{{goodsSpu.picUrls.length || 1}}</view>
 </view>
-<view class="cu-bar bg-white padding-top-xl">
-  <view class="text-xxl padding-tb-xs padding-lr-sm">
-    <text class="text-price text-blue text-bold">{{goodsSpu.salesPrice}}</text>
-  </view>
-  <button class="cu-btn icon margin-right" bindtap="shareShow">
-    <text class="cuIcon-share text-green"></text>
-  </button>
-</view>
-<view class="cu-bar bg-white">
-  <view class="text-lg text-bold padding-lr-sm">
-    <text class="text-black">{{goodsSpu.name}}</text>
-  </view>
-</view>
-<view class="cu-bar bg-white">
-  <view class="text-sm padding-lr-sm">
-    <text class="text-gray">{{goodsSpu.sellPoint}}</text>
-  </view>
-</view>
-<view class="cu-bar bg-white solid-bottom">
-  <view class="text-sm padding-lr-sm text-gray">
-    <text wx:if="{{goodsSpu.marketPrice}}">市场价：</text>
-    <text class="text-price text-gray">{{goodsSpu.marketPrice}}</text>
-  </view>
-  <view class="text-sm margin-right text-gray">
-    <text>库存：{{goodsSpu.stock}}</text>
-  </view>
-</view>
 
-<view class="cu-bar bg-white solid-bottom">
-  <view class="flex response">
-    <view class="flex-sub text-sm">
-      <view class="text-gray margin-left-sm">深圳发货</view>
+<view wx:if="{{goodsSpu && selectedSku}}">
+  <view class="cu-bar bg-white padding-top-xl">
+    <view class="text-xxl padding-tb-xs padding-lr-sm">
+      <text class="text-price text-blue text-bold">{{selectedSku.salesPrice}}</text>
     </view>
-    <view class="flex-treble text-sm">
-      <text class="cuIcon-location text-black" wx:if="{{goodsSpu.deliveryPlace}}">{{goodsSpu.deliveryPlace.place}} | </text>
-      <text class="text-black" wx:if="{{goodsSpu.freightTemplat}}">运费：全国包邮</text>
-    </view>
-    <view class="flex-sub text-sm text-gray text-right margin-right-sm">销量{{goodsSpu.saleNum}}</view>
+    <button class="cu-btn icon margin-right" bindtap="shareShow">
+      <text class="cuIcon-share text-green"></text>
+    </button>
   </view>
-</view>
+  <view class="cu-bar bg-white">
+    <view class="text-lg text-bold padding-lr-sm">
+      <text class="text-black">{{goodsSpu.name}}</text>
+    </view>
+  </view>
+  <view class="cu-bar bg-white">
+    <view class="text-sm padding-lr-sm">
+      <text class="text-gray">{{goodsSpu.sellPoint}}</text>
+    </view>
+  </view>
+  <view class="cu-bar bg-white solid-bottom">
+    <view class="text-sm padding-lr-sm text-gray">
+      <text wx:if="{{selectedSku.marketPrice}}">市场价：</text>
+      <text class="text-price text-gray">{{selectedSku.marketPrice}}</text>
+    </view>
+    <view class="text-sm margin-right text-gray">
+      <text>库存：{{selectedSku.stock}}</text>
+    </view>
+  </view>
 
-<view class="cu-bar bg-white">
-  <view class="flex response" bindtap="showModalService">
+  <view class="cu-bar bg-white solid-bottom sku-entry" bindtap="showSkuPopup">
+    <view class="action text-gray">已选</view>
+    <view class="content sku-entry__content">
+      <view class="sku-entry__summary">{{selectedSpecSummary}}</view>
+    </view>
+    <view class="action text-gray">
+      <text class="cuIcon-right"></text>
+    </view>
+  </view>
+
+  <view class="cu-bar bg-white solid-bottom">
+    <view class="flex response">
+      <view class="flex-sub text-sm">
+        <view class="text-gray margin-left-sm">深圳发货</view>
+      </view>
+      <view class="flex-treble text-sm">
+        <text class="cuIcon-location text-black" wx:if="{{goodsSpu.deliveryPlace}}">{{goodsSpu.deliveryPlace.place}} | </text>
+        <text class="text-black" wx:if="{{goodsSpu.freightTemplat}}">运费：全国包邮</text>
+      </view>
+      <view class="flex-sub text-sm text-gray text-right margin-right-sm">销量{{goodsSpu.saleNum}}</view>
+    </view>
+  </view>
+
+  <view class="cu-bar bg-white">
+    <view class="flex response" bindtap="showModalService">
       <view class="flex-sub text-sm">
         <view class="text-gray margin-left-sm">服务</view>
       </view>
       <view class="flex-sub text-sm text-gray text-right margin-right-sm">假一赔十 | 七天无理由退款</view>
     </view>
-</view>
+  </view>
 
-<ad unit-id="{{config.adBannerID}}" wx:if="{{config.adEnable}}"></ad>
+  <view class="policy-board bg-white">
+    <view class="policy-board__title">购买保障</view>
+    <view class="policy-board__list">
+      <view class="policy-board__item" wx:for="{{serviceGuarantees}}" wx:key="*this">
+        <text class="policy-board__dot"></text>
+        <text class="policy-board__text">{{item}}</text>
+      </view>
+    </view>
+  </view>
 
-<view class="cu-bar bg-white margin-top-sm">
-  <view class="content">商品信息</view>
-</view>
+  <view class="policy-board bg-white margin-top-sm">
+    <view class="policy-board__title">售后说明</view>
+    <view class="policy-board__list">
+      <view class="policy-board__item" wx:for="{{purchaseNotes}}" wx:key="*this">
+        <text class="policy-board__dot policy-board__dot--warm"></text>
+        <text class="policy-board__text">{{item}}</text>
+      </view>
+    </view>
+  </view>
 
-<view class="bg-white">
-  <template is="wxParse" data="{{wxParseData:description.nodes}}"/>
+  <view class="cu-bar bg-white margin-top-sm">
+    <view class="content">商品信息</view>
+  </view>
+
+  <view class="bg-white">
+    <template is="wxParse" data="{{wxParseData:description.nodes}}"/>
+  </view>
 </view>
 
 <view class="cu-load bg-gray to-down">已经到底啦...</view>
 
-<view class="cu-bar bg-white tabbar border shop foot">
+<view class="cu-bar bg-white tabbar border shop foot" wx:if="{{goodsSpu && selectedSku}}">
   <button open-type="contact" bindcontact="handleContact" class="action bg-white"
           send-message-title="{{goodsSpu.name}}--咨询"
           send-message-img="{{goodsSpu.picUrls[0] ? goodsSpu.picUrls[0] : '/public/img/no_pic.png'}}"
-          show-message-card="true" 
+          show-message-card="true"
           send-message-path="/pages/goods/goods-detail/index?id={{goodsSpu.id}}">
-    <view class="cuIcon-servicefill"></view> 
+    <view class="cuIcon-servicefill"></view>
     客服
   </button>
   <navigator class="action" open-type='switchTab' url='/pages/shopping-cart/index'>
@@ -89,20 +127,95 @@
     </view>
     购物车
   </navigator>
-  <view class="btn-group">
-    <button class="cu-btn shadow-blur margin-left-sm shopping-cart" bindtap="toDo" data-type="1"><text class="text-white">加入购物车</text></button>
-    <button class="cu-btn shadow-blur buy-now" bindtap="toDo" data-type="2"><text class="text-white">立即购买</text></button>
+  <view class="btn-group" wx:if="{{!shoppingCartId}}">
+    <button class="cu-btn shadow-blur margin-left-sm shopping-cart" bindtap="showSkuPopup" data-type="1">
+      <text class="text-white">加入购物车</text>
+    </button>
+    <button class="cu-btn shadow-blur buy-now" bindtap="showSkuPopup" data-type="2">
+      <text class="text-white">立即购买</text>
+    </button>
+  </view>
+  <view class="btn-group btn-group--single" wx:else>
+    <button class="cu-btn shadow-blur buy-now buy-now--single" bindtap="showSkuPopup" data-type="cart">
+      <text class="text-white">确认修改</text>
+    </button>
   </view>
 </view>
-<!-- html转wxml -->
+
 <import src="/public/wxParse/wxParse.wxml"/>
-<view class="cu-modal {{goodsSpu.shelf=='0'?'show':''}}">
+
+<view class="cu-modal {{goodsSpu && goodsSpu.shelf=='0' ? 'show' : ''}}">
   <view class="cu-dialog">
     <view class="cu-bar bg-white justify-end">
       <view class="content">提示</view>
     </view>
     <view class="padding-xl">
       抱歉，该商品已下架
+    </view>
+  </view>
+</view>
+
+<view class="cu-modal bottom-modal {{skuPopupVisible ? 'show' : ''}}" bindtap="hideSkuPopup">
+  <view class="cu-dialog sku-popup" catchtap="noop">
+    <view class="sku-popup__header">
+      <image class="sku-popup__image" src="{{selectedSkuPicUrl}}" mode="aspectFill"></image>
+      <view class="sku-popup__meta">
+        <view class="text-price text-blue text-bold text-xxl">{{selectedSku.salesPrice}}</view>
+        <view class="sku-popup__market" wx:if="{{selectedSku.marketPrice}}">市场价 {{selectedSku.marketPrice}}</view>
+        <view class="sku-popup__stock">库存 {{selectedSku.stock}}</view>
+        <view class="sku-popup__selected">已选：{{selectedSpecSummary}}</view>
+      </view>
+      <view class="sku-popup__close" bindtap="hideSkuPopup">
+        <text class="cuIcon-close text-gray"></text>
+      </view>
+    </view>
+
+    <scroll-view scroll-y="true" class="sku-popup__body">
+      <view class="sku-group" wx:for="{{skuSpecGroups}}" wx:for-item="specItem" wx:key="name">
+        <view class="sku-group__name">{{specItem.name}}</view>
+        <view class="sku-group__values">
+          <view
+            class="sku-tag {{valueItem.selected ? 'sku-tag--active' : ''}} {{valueItem.disabled ? 'sku-tag--disabled' : ''}}"
+            wx:for="{{specItem.values}}"
+            wx:for-item="valueItem"
+            wx:key="name"
+            data-specname="{{specItem.name}}"
+            data-valuename="{{valueItem.name}}"
+            data-disabled="{{valueItem.disabled ? '1' : '0'}}"
+            bindtap="selectSpecValue"
+          >
+            {{valueItem.name}}
+          </view>
+        </view>
+      </view>
+
+      <view class="sku-group sku-group--quantity">
+        <view class="sku-group__name">数量</view>
+        <base-stepper
+          stNum="{{cartNum}}"
+          min="1"
+          max="{{selectedSku.stock > 0 ? selectedSku.stock : 1}}"
+          bind:numChange="changeCartNum"
+        />
+      </view>
+    </scroll-view>
+
+    <view class="sku-popup__tips" wx:if="{{selectedSku.stock <= 0}}">
+      当前规格暂时缺货，请重新选择其它规格
+    </view>
+
+    <view class="sku-popup__footer" wx:if="{{shoppingCartId}}">
+      <button class="sku-popup__button sku-popup__button--buy sku-popup__button--single" bindtap="confirmSkuAction" data-type="cart" disabled="{{selectedSku.stock <= 0}}">
+        确认修改
+      </button>
+    </view>
+    <view class="sku-popup__footer" wx:else>
+      <button class="sku-popup__button sku-popup__button--cart" bindtap="confirmSkuAction" data-type="1" disabled="{{selectedSku.stock <= 0}}">
+        加入购物车
+      </button>
+      <button class="sku-popup__button sku-popup__button--buy" bindtap="confirmSkuAction" data-type="2" disabled="{{selectedSku.stock <= 0}}">
+        立即购买
+      </button>
     </view>
   </view>
 </view>
@@ -116,6 +229,19 @@
     </view>
     <view class="padding flex flex-direction">
       <button class="cu-btn bg-green lg" open-type='share'>发送给朋友</button>
+    </view>
+  </view>
+</view>
+
+<view class="cu-modal bottom-modal {{modalService}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white">
+      <view class="action text-black">服务说明</view>
+      <view class="action text-red" bindtap="hideModalService">关闭</view>
+    </view>
+    <view class="padding text-left">
+      <view class="margin-bottom-sm" wx:for="{{serviceGuarantees}}" wx:key="*this">{{index + 1}}. {{item}}</view>
+      <view class="margin-bottom-sm" wx:for="{{purchaseNotes}}" wx:key="*this">售后{{index + 1}}. {{item}}</view>
     </view>
   </view>
 </view>

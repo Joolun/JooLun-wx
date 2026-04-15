@@ -1,3 +1,9 @@
+/**
+ * Copyright (C) 2026
+ * All rights reserved, Designed By www.joolun.com
+ * 注意：
+ * 本软件为www.joolun.com开发研制，项目使用请保留此说明
+ */
 package com.joolun.weixin.config;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
@@ -22,7 +28,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * @author <a href="https://github.com/binarywang">Binary Wang</a>
+ * @author www.joolun.com
  */
 @Slf4j
 @Configuration

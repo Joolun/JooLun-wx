@@ -1,6 +1,74 @@
+/**
+ * Copyright (C) 2026
+ * All rights reserved, Designed By www.joolun.com
+ * 注意：
+ * 本软件为www.joolun.com开发研制，项目使用请保留此说明
+ */
+
 .bar-rt{
   text-align: right!important;
   margin-right: 10rpx!important
+}
+.member-alert{
+  margin: 24rpx 24rpx 0;
+  padding: 24rpx 28rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(135deg, #fff3e2 0%, #fff9f2 100%);
+  border: 1rpx solid rgba(199, 134, 63, 0.2);
+}
+.member-alert-title{
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #9a5a19;
+}
+.member-alert-desc{
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: #8d7765;
+}
+.notice-board{
+  margin: 24rpx 24rpx 0;
+  padding: 24rpx 28rpx;
+  border-radius: 24rpx;
+  background: #ffffff;
+  box-shadow: 0 16rpx 36rpx rgba(17, 24, 39, 0.05);
+}
+.notice-board--warm{
+  background: linear-gradient(180deg, #fffaf3 0%, #ffffff 100%);
+}
+.notice-board__title{
+  color: #1f2937;
+  font-size: 30rpx;
+  font-weight: 700;
+}
+.notice-board__list{
+  margin-top: 16rpx;
+}
+.notice-board__item{
+  display: flex;
+  align-items: flex-start;
+  gap: 14rpx;
+  margin-top: 14rpx;
+}
+.notice-board__item:first-child{
+  margin-top: 0;
+}
+.notice-board__dot{
+  width: 12rpx;
+  height: 12rpx;
+  margin-top: 12rpx;
+  border-radius: 50%;
+  background: #2967ff;
+  flex-shrink: 0;
+}
+.notice-board__dot--warm{
+  background: #c7863f;
+}
+.notice-board__text{
+  color: #606266;
+  font-size: 24rpx;
+  line-height: 1.8;
 }
 .row-img{
   width: 600rpx!important;

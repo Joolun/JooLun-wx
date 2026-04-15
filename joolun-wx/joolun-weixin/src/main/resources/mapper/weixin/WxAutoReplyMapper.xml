@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (C) 2018-2019
-  ~ All rights reserved, Designed By www.joolun.com
-  -->
+  Copyright (C) 2026
+  All rights reserved, Designed By www.joolun.com
+  注意：
+  本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.joolun.cloud.weixin.admin.mapper.WxAutoReplyMapper">

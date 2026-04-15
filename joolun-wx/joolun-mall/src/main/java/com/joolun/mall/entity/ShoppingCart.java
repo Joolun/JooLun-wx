@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2018-2019
+ * Copyright (C) 2026
  * All rights reserved, Designed By www.joolun.com
  * 注意：
  * 本软件为www.joolun.com开发研制，项目使用请保留此说明
@@ -18,70 +18,63 @@ import lombok.EqualsAndHashCode;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/**
- * 购物车
- *
- * @author JL
- * @date 2019-08-29 21:27:33
- */
 @Data
-@TableName("shopping_cart")
+@TableName("mall_shopping_cart")
 @EqualsAndHashCode(callSuper = true)
+/**
+ * 购物车明细行。
+ *
+ * 每一条记录都绑定一个用户和一个 SKU，
+ * 同时保留轻量快照，避免商品主数据变化后购物车无法正确展示。
+ *
+ * @author www.joolun.com
+ */
 public class ShoppingCart extends Model<ShoppingCart> {
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    /**
-   * PK
-   */
 	@Excel(name = "PK")
-    @TableId(type = IdType.ASSIGN_ID)
-    private String id;
-    /**
-   * 逻辑删除标记（0：显示；1：隐藏）
-   */
-	@Excel(name = "逻辑删除标记")
-    private String delFlag;
-    /**
-   * 创建时间
-   */
-	@Excel(name = "创建时间")
-    private LocalDateTime createTime;
-    /**
-   * 最后更新时间
-   */
-	@Excel(name = "最后更新时间")
-    private LocalDateTime updateTime;
-    /**
-   * 用户编号
-   */
-	@Excel(name = "用户编号")
-    private String userId;
-    /**
-   * 商品 SPU 编号
-   */
+	@TableId(type = IdType.ASSIGN_ID)
+	private String id;
+
+	@Excel(name = "delFlag")
+	private String delFlag;
+
+	@Excel(name = "createTime")
+	private LocalDateTime createTime;
+
+	@Excel(name = "updateTime")
+	private LocalDateTime updateTime;
+
+	@Excel(name = "userId")
+	private String userId;
+
 	@Excel(name = "spuId")
-    private String spuId;
-	/**
-	 * 加入时价格
-	 */
-	@Excel(name = "加入时价格")
+	/** 所属 SPU 主键，供商品跳转和兼容旧查询逻辑使用。 */
+	private String spuId;
+
+	@Excel(name = "skuId")
+	/** 当前购物车选中的具体 SKU 主键。 */
+	private String skuId;
+
+	@Excel(name = "addPrice")
+	/** 加入或修改购物车时记录的 SKU 销售价快照。 */
 	private BigDecimal addPrice;
-    /**
-   * 商品购买数量
-   */
-	@Excel(name = "商品购买数量")
-    private Integer quantity;
-	/**
-	 * 加入时的spu名字
-	 */
-	@Excel(name = "加入时的spu名字")
+
+	@Excel(name = "quantity")
+	private Integer quantity;
+
+	@Excel(name = "spuName")
 	private String spuName;
-	/**
-	 * 图片
-	 */
-	@Excel(name = "图片")
+
+	@Excel(name = "picUrl")
+	/** SKU 图片快照，SKU 未单独配置图片时回退到商品主图首张。 */
 	private String picUrl;
 
+	@Excel(name = "specInfo")
+	/** 规格展示文案，购物车页和确认订单页直接使用。 */
+	private String specInfo;
+
 	@TableField(exist = false)
+	/** 关联查询出的商品信息，页面渲染时会再补齐当前 SKU 的展示字段。 */
 	private GoodsSpu goodsSpu;
 }

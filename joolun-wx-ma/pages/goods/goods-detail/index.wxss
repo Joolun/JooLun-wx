@@ -1,3 +1,11 @@
+/**
+ * Copyright (C) 2026
+ * All rights reserved, Designed By www.joolun.com
+ * 注意：
+ * 本软件为www.joolun.com开发研制，项目使用请保留此说明
+ */
+
+/* 商品详情页主图和底部操作区基础样式。 */
 .product-bg{width:100%;position:relative;}
 .product-bg swiper{width:100%;height:calc(100vw);position:relative;}
 .product-bg .page-index{
@@ -10,9 +18,9 @@
   margin-bottom: 100rpx
 }
 .screen{
-  width:94% !important; 
-  border-radius: 20rpx; 
-  min-height: 900rpx; 
+  width:94% !important;
+  border-radius: 20rpx;
+  min-height: 900rpx;
   margin:auto;
   background-color: #ececec;
 }
@@ -29,4 +37,208 @@
   background-color: #2967ff !important;
   font-weight:300;
   width:220rpx;
+}
+.buy-now--single{
+  width: 460rpx;
+}
+.btn-group--single{
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* 详情页主体只保留规格摘要入口。 */
+.sku-entry{
+  align-items: center;
+}
+.sku-entry__content{
+  text-align: left !important;
+}
+.sku-entry__summary{
+  color: #303133;
+  font-size: 26rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.policy-board{
+  margin-top: 24rpx;
+  padding: 24rpx 28rpx;
+  border-radius: 28rpx;
+  box-shadow: 0 16rpx 36rpx rgba(17, 24, 39, 0.05);
+}
+
+.policy-board__title{
+  color: #1f2937;
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.policy-board__list{
+  margin-top: 18rpx;
+}
+
+.policy-board__item{
+  display: flex;
+  align-items: flex-start;
+  gap: 14rpx;
+  margin-top: 14rpx;
+}
+
+.policy-board__item:first-child{
+  margin-top: 0;
+}
+
+.policy-board__dot{
+  width: 12rpx;
+  height: 12rpx;
+  margin-top: 12rpx;
+  border-radius: 50%;
+  background: #2967ff;
+  flex-shrink: 0;
+}
+
+.policy-board__dot--warm{
+  background: #c7863f;
+}
+
+.policy-board__text{
+  color: #606266;
+  font-size: 24rpx;
+  line-height: 1.8;
+}
+
+/* 淘宝式底部规格弹窗。 */
+.sku-popup{
+  border-top-left-radius: 32rpx;
+  border-top-right-radius: 32rpx;
+  overflow: hidden;
+  background: #ffffff;
+}
+.sku-popup__header{
+  position: relative;
+  display: flex;
+  padding: 28rpx 28rpx 20rpx;
+}
+.sku-popup__image{
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 24rpx;
+  background: #f5f5f5;
+  flex-shrink: 0;
+}
+.sku-popup__meta{
+  flex: 1;
+  padding: 8rpx 72rpx 0 24rpx;
+  text-align: left;
+}
+.sku-popup__market{
+  color: #909399;
+  font-size: 24rpx;
+  margin-top: 10rpx;
+}
+.sku-popup__stock{
+  color: #606266;
+  font-size: 24rpx;
+  margin-top: 10rpx;
+}
+.sku-popup__selected{
+  color: #303133;
+  font-size: 24rpx;
+  margin-top: 10rpx;
+  line-height: 1.5;
+}
+.sku-popup__close{
+  position: absolute;
+  top: 24rpx;
+  right: 24rpx;
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 50%;
+  background: #f5f7fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sku-popup__body{
+  max-height: 62vh;
+  padding: 0 30rpx;
+  box-sizing: border-box;
+}
+.sku-group{
+  padding: 24rpx 0;
+  border-top: 1rpx solid #f2f3f5;
+}
+.sku-group--quantity{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sku-group__name{
+  color: #303133;
+  font-size: 26rpx;
+  font-weight: 600;
+  margin-bottom: 18rpx;
+}
+.sku-group--quantity .sku-group__name{
+  margin-bottom: 0;
+}
+.sku-group__values{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18rpx;
+}
+.sku-tag{
+  min-width: 120rpx;
+  padding: 14rpx 24rpx;
+  border-radius: 999rpx;
+  background: #f7f8fa;
+  color: #303133;
+  font-size: 24rpx;
+  text-align: center;
+  border: 1rpx solid transparent;
+  box-sizing: border-box;
+}
+.sku-tag--active{
+  color: #2967ff;
+  background: rgba(41, 103, 255, 0.08);
+  border-color: rgba(41, 103, 255, 0.35);
+  font-weight: 600;
+}
+.sku-tag--disabled{
+  color: #c0c4cc;
+  background: #f2f3f5;
+}
+.sku-popup__tips{
+  padding: 0 30rpx 18rpx;
+  color: #fa5151;
+  font-size: 24rpx;
+  text-align: left;
+}
+.sku-popup__footer{
+  display: flex;
+  gap: 20rpx;
+  padding: 18rpx 24rpx calc(env(safe-area-inset-bottom) + 18rpx);
+  background: #ffffff;
+}
+.sku-popup__button{
+  flex: 1;
+  border-radius: 999rpx;
+  border: none;
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 500;
+  line-height: 88rpx;
+}
+.sku-popup__button::after{
+  border: none;
+}
+.sku-popup__button--cart{
+  background: #2d2d2f;
+}
+.sku-popup__button--buy{
+  background: #2967ff;
+}
+.sku-popup__button--single{
+  width: 100%;
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2018-2019
+ * Copyright (C) 2026
  * All rights reserved, Designed By www.joolun.com
  * 注意：
  * 本软件为www.joolun.com开发研制，项目使用请保留此说明
@@ -19,11 +19,11 @@ import java.time.LocalDateTime;
 /**
  * 用户收货地址
  *
- * @author JL
+ * @author www.joolun.com
  * @date 2019-09-11 14:28:59
  */
 @Data
-@TableName("user_address")
+@TableName("mall_user_address")
 @EqualsAndHashCode(callSuper = true)
 public class UserAddress extends Model<UserAddress> {
   private static final long serialVersionUID = 1L;

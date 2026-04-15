@@ -10,6 +10,7 @@ import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 /**
  *  存储到数据库, 将String数组转换成字符串;
@@ -30,19 +31,39 @@ public class ArrayStringTypeHandler extends BaseTypeHandler<String[]> {
 	@Override
 	public String[] getNullableResult(ResultSet rs, String columnName)
 			throws SQLException {
-		return JSONUtil.parseArray(rs.getString(columnName)).toArray(l);
+		return parseValue(rs.getString(columnName));
 	}
 
 	@Override
 	public String[] getNullableResult(ResultSet rs, int columnIndex)
 			throws SQLException {
-		return JSONUtil.parseArray(rs.getString(columnIndex)).toArray(l);
+		return parseValue(rs.getString(columnIndex));
 	}
 
 	@Override
 	public String[] getNullableResult(CallableStatement cs, int columnIndex)
 			throws SQLException {
-		return JSONUtil.parseArray(cs.getString(columnIndex)).toArray(l);
+		return parseValue(cs.getString(columnIndex));
+	}
+
+	private String[] parseValue(String value) {
+		if (value == null) {
+			return l;
+		}
+		String trimmedValue = value.trim();
+		if (trimmedValue.isEmpty()) {
+			return l;
+		}
+		try {
+			if (trimmedValue.startsWith("[") && trimmedValue.endsWith("]")) {
+				return JSONUtil.parseArray(trimmedValue).toArray(l);
+			}
+		} catch (Exception ignored) {
+		}
+		return Arrays.stream(trimmedValue.split("[,，]"))
+				.map(String::trim)
+				.filter(item -> !item.isEmpty())
+				.toArray(String[]::new);
 	}
 
 }

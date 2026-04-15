@@ -10,7 +10,7 @@
 
 ### [阿里云服务器低至￥91.80/年](https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=wnw8gle1)
 ### MIT真开源！！！如果对您有帮助，记得点右上角 "Star" ❤️ 支持一下哦 谢谢！
-#### 该项目已实时托管置Gitee，请直接使用boot3分支；遇到问题或发现bug请统一到Gitee发[Issues](https://gitee.com/joolun/JooLun-wx/issues)提出来，我们会定期处理
+#### 该项目已实时托管置Gitee，请直接使用main分支；遇到问题或发现bug请统一到Gitee发[Issues](https://gitee.com/joolun/JooLun-wx/issues)提出来，我们会定期处理
 ### 平台简介
 * 基于[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue) SpringBoot3版本二开，集成了[MybatisPlus](https://github.com/baomidou/mybatis-plus)、[Avue](https://gitee.com/smallweigit/avue)、[WxJava](https://gitee.com/binary/weixin-java-tools) SDK
 * MIT开源的小程序商城二开利器，放心使用
@@ -78,6 +78,10 @@
 18. 连接池监视：监视当前系统数据库连接池状态，可进行分析SQL找出系统性能瓶颈。
 
 ### 项目截图
+![输入图片说明](joolun-wx/doc/img/QQ20260415-111451.png)
+![输入图片说明](joolun-wx/doc/img/QQ20260415-111805.png)
+![输入图片说明](joolun-wx/doc/img/QQ20260415-111818.png)
+![输入图片说明](joolun-wx/doc/img/QQ20260415-111839.png)
 <table>
     <tr>
         <td><img src="https://images.gitee.com/uploads/images/2021/0206/113219_bd774cf3_5079715.png"/></td>

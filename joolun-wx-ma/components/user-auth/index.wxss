@@ -1,1 +1,18 @@
 @import "/app.wxss";
+
+.auth-block {
+  margin-top: 24rpx;
+}
+
+.auth-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #241b15;
+}
+
+.auth-desc {
+  margin: 12rpx 0 18rpx;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: #7d6653;
+}

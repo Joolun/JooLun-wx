@@ -157,6 +157,20 @@ export const dynamicRoutes = [
         meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
       }
     ]
+  },
+  {
+    path: '/mall/malluser-detail',
+    component: Layout,
+    hidden: true,
+    permissions: ['mall:malluser:get'],
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/mall/malluser/detail.vue'),
+        name: 'MallUserDetail',
+        meta: { title: '会员详情', activeMenu: '/mall/malluser' }
+      }
+    ]
   }
 ]
 

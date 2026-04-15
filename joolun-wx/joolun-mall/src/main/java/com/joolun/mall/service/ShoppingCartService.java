@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2018-2019
+ * Copyright (C) 2026
  * All rights reserved, Designed By www.joolun.com
  * 注意：
  * 本软件为www.joolun.com开发研制，项目使用请保留此说明
@@ -13,7 +13,7 @@ import com.joolun.mall.entity.ShoppingCart;
 /**
  * 购物车
  *
- * @author JL
+ * @author www.joolun.com
  * @date 2019-08-29 21:27:33
  */
 public interface ShoppingCartService extends IService<ShoppingCart> {

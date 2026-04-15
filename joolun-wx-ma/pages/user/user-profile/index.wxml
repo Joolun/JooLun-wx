@@ -1,0 +1,79 @@
+<!--
+  Copyright (C) 2026
+  All rights reserved, Designed By www.joolun.com
+  注意：
+  本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
+
+<view class="profile-page">
+  <view class="profile-hero">
+    <view class="cu-avatar round xl profile-avatar" style="background-image:url({{mallUser.avatarUrl}})">
+      {{!mallUser.avatarUrl ? '头' : ''}}
+    </view>
+    <view class="profile-name">{{mallUser.nickName || '微信用户'}}</view>
+    <view class="profile-no">{{mallUser.memberFlag === '1' ? '会员编号' : '商城用户编号'}}：{{mallUser.userNo || '系统生成中'}}</view>
+    <view class="profile-tag {{mallUser.memberFlag === '1' ? 'is-member' : 'is-guest'}}">{{memberIdentityText}}</view>
+    <button class="cu-btn round sm profile-auth" bindtap="getUserProfile">更新微信头像昵称</button>
+  </view>
+
+  <view class="cu-form-group">
+    <view class="title">真实姓名</view>
+    <input placeholder="请填写真实姓名" value="{{form.realName}}" bindinput="inputRealName"></input>
+  </view>
+
+  <view class="cu-form-group">
+    <view class="title">性别</view>
+    <picker mode="selector" range="{{sexOptions}}" range-key="label" value="{{sexIndex}}" bindchange="changeSex">
+      <view class="picker">{{sexOptions[sexIndex].label}}</view>
+    </picker>
+  </view>
+
+  <view class="cu-form-group">
+    <view class="title">生日</view>
+    <picker mode="date" value="{{form.birthday}}" bindchange="changeBirthday">
+      <view class="picker">{{form.birthday || '请选择生日'}}</view>
+    </picker>
+  </view>
+
+  <view class="cu-form-group">
+    <view class="title">手机号</view>
+    <view class="readonly-text">{{maskMobile(mallUser.mobile)}}</view>
+    <button
+      wx:if="{{mallUser.memberFlag !== '1'}}"
+      class="cu-btn sm phone-bind-btn"
+      open-type="getPhoneNumber"
+      bind:getphonenumber="bindPhoneNumber"
+    >
+      立即绑定
+    </button>
+  </view>
+
+  <view class="cu-form-group">
+    <view class="title">会员身份</view>
+    <view class="readonly-text">{{memberIdentityText}}</view>
+  </view>
+
+  <view class="cu-form-group">
+    <view class="title">入会时间</view>
+    <view class="readonly-text">{{memberTimeText}}</view>
+  </view>
+
+  <view class="cu-form-group">
+    <view class="title">注册来源</view>
+    <view class="readonly-text">{{formatRegisterSource(mallUser.registerSource)}}</view>
+  </view>
+
+  <view class="cu-form-group">
+    <view class="title">所在地区</view>
+    <view class="readonly-text">{{buildRegion()}}</view>
+  </view>
+
+  <view class="profile-tips">
+    <view class="tips-title">说明</view>
+    <view class="tips-text">1. 微信头像和昵称通过上方按钮重新授权同步。</view>
+    <view class="tips-text">2. 当前项目以绑定手机号作为会员认定标准，绑定成功后会自动转为会员。</view>
+    <view class="tips-text">3. 手机号当前通过微信手机号授权组件获取，绑定后会同步到商城用户档案。</view>
+  </view>
+
+  <button class="cu-btn block profile-save" bindtap="saveProfile">保存资料</button>
+</view>

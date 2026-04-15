@@ -1,66 +1,136 @@
 <!--
-  - Copyright (C) 2018-2019
-  - All rights reserved, Designed By www.joolun.com
-  - 注意：
-  - 本软件为www.joolun.com开发研制，项目使用请保留此说明
+  Copyright (C) 2026
+  All rights reserved, Designed By www.joolun.com
+  注意：
+  本软件为www.joolun.com开发研制，项目使用请保留此说明
 -->
-<view class="cu-list menu-avatar bg-white padding-bottom" style="background-color:#f3f4f7 !important;">
-  <view class='flex justify-end margin-right'>
-    <view class="text-xl margin-top" bindtap="settings">
-      <text class="cuIcon-settingsfill text-black"></text>
+
+<view class="user-page">
+  <view class="user-hero">
+    <view class="hero-toolbar">
+      <view class="toolbar-action" bindtap="settings">
+        <text class="cuIcon-settingsfill"></text>
+      </view>
+    </view>
+    <view class="hero-profile">
+    <view class="cu-avatar round xl head hero-avatar" style="background-image:url({{mallUser.avatarUrl}})">
+      {{!mallUser.avatarUrl ? '头' : ''}}
+    </view>
+    <view class="hero-name">{{mallUser.nickName || '微信用户'}}</view>
+    <view class="hero-subtitle">{{mallUser.memberFlag === '1' ? '会员编号' : '商城用户编号'}}：{{mallUser.userNo || '系统生成中'}}</view>
+    <view class="hero-member-tag {{mallUser.memberFlag === '1' ? 'is-member' : 'is-guest'}}">{{memberIdentityText}}</view>
+    <view class="hero-actions">
+      <button
+        wx:if="{{mallUser.memberFlag !== '1'}}"
+        class="cu-btn round sm hero-button warm"
+        open-type="getPhoneNumber"
+        bind:getphonenumber="bindPhoneNumber"
+      >
+        绑定手机号
+      </button>
+      <button class="cu-btn round sm hero-button primary" bindtap="getUserProfile">
+        {{!mallUser.nickName ? '获取昵称' : '更新昵称'}}
+      </button>
+      <button class="cu-btn round sm hero-button secondary" bindtap="goProfilePage">
+        资料编辑
+      </button>
+    </view>
     </view>
   </view>
-  <view class="cu-avatar round xl head flex" style="background-image:url({{wxUser.headimgUrl}})">{{!wxUser.headimgUrl ? '头' : ''}}</view>
-  <view class="content text-center margin-top-sm">
-    <view class="margin-top-xs text-xxl text-bold text-black" wx:if="{{wxUser.nickName}}">{{wxUser.nickName}}</view>
-    <button class="cu-btn round sm margin-top-xs" bindtap="getUserProfile">
-      {{!wxUser.nickName ? '获取昵称' : '更新昵称'}}
+
+  <view class="member-board">
+    <view class="board-title">
+      <text class="cuIcon-vipcard title-icon"></text>
+      <text>账户概览</text>
+    </view>
+    <view class="member-grid">
+      <view class="member-card" wx:for="{{memberCards}}" wx:key="label">
+        <view class="member-label">{{item.label}}</view>
+        <view class="member-value">{{item.value}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="profile-board">
+    <view class="board-title">
+      <text class="cuIcon-profile title-icon"></text>
+      <text>资料摘要</text>
+    </view>
+    <view class="profile-list">
+      <view class="profile-item" wx:for="{{profileMetas}}" wx:key="label">
+        <view class="profile-label">{{item.label}}</view>
+        <view class="profile-value">{{item.value}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="order-list">
+    <view class="cu-bar">
+      <view class="action">
+        <text class="cuIcon-titles titles-color"></text>我的订单
+      </view>
+      <navigator class="action order-all-link" url="/pages/order/order-list/index" hover-class="none">
+        全部订单<text class="cuIcon-right"></text>
+      </navigator>
+    </view>
+    <view class="cu-list grid col-4 no-border order-list-2">
+      <view class="cu-item order-item" wx:for="{{orderMenus}}" wx:key="label">
+        <navigator url="{{item.url}}" hover-class="none" class="order-link">
+          <view class="order-badge" wx:if="{{item.badge > 0}}">{{item.badge > 99 ? '99+' : item.badge}}</view>
+          <image class="order-image" src="{{item.icon}}"></image>
+          <text class="text-black">{{item.label}}</text>
+        </navigator>
+      </view>
+    </view>
+  </view>
+
+  <view class="quick-board">
+    <view class="board-title">
+      <text class="cuIcon-apps title-icon"></text>
+      <text>常用入口</text>
+    </view>
+    <view class="quick-list">
+      <navigator class="quick-item" wx:for="{{quickMenus}}" wx:key="label" url="{{item.url}}" hover-class="none">
+        <view class="quick-icon">
+          <text class="{{item.icon}}"></text>
+        </view>
+        <view class="quick-info">
+          <view class="quick-label">{{item.label}}</view>
+          <view class="quick-desc">{{item.desc}}</view>
+        </view>
+        <view class="quick-meta" wx:if="{{item.badgeText || item.extraText}}">
+          <view class="quick-badge" wx:if="{{item.badgeText}}">{{item.badgeText}}</view>
+          <view class="quick-extra">{{item.extraText}}</view>
+        </view>
+        <text class="cuIcon-right quick-arrow"></text>
+      </navigator>
+    </view>
+  </view>
+
+  <view class="service-panel">
+    <view class="board-title">
+      <text class="cuIcon-servicefill title-icon"></text>
+      <text>{{serviceEntry.title}}</text>
+    </view>
+    <view class="service-panel__desc">{{serviceEntry.desc}}</view>
+    <view class="service-panel__tips">
+      <view class="service-panel__tip" wx:for="{{serviceEntry.tips}}" wx:key="*this">
+        <text class="service-panel__dot"></text>
+        <text class="service-panel__text">{{item}}</text>
+      </view>
+    </view>
+    <button
+      class="service-panel__button"
+      open-type="contact"
+      bindcontact="handleContact"
+      send-message-title="商城客服咨询"
+      send-message-path="/pages/user/user-center/index"
+      send-message-img="{{mallUser.avatarUrl ? mallUser.avatarUrl : '/public/img/no_pic.png'}}"
+      show-message-card="true"
+    >
+      立即咨询
     </button>
   </view>
-</view>
-<view class="cu-listradius order-list">
-  <view class="cu-bar">
-    <view class="action">
-      <text class="cuIcon-titles text-black titles-color"></text>我的订单
-    </view>
-    <navigator class="action" url="/pages/order/order-list/index" hover-class="none">
-      全部订单<text class="cuIcon-right"></text>
-    </navigator>
-  </view>
-  <view class="cu-list grid col-4 no-border order-list-2">
-    <view class="cu-item">
-      <navigator url="/pages/order/order-list/index?status=0" hover-class="none">
-      <image class="order-image" src="/public/img/5-1.png"></image>
-        <text class="text-black">待付款</text>
-      </navigator>
-    </view>
-    <view class="cu-item">
-      <navigator url="/pages/order/order-list/index?status=1" hover-class="none">
-        <image class="order-image" src="/public/img/5-2.png"></image>
-        <text class="text-black">待发货</text>
-      </navigator>
-    </view>
-    <view class="cu-item">
-      <navigator url="/pages/order/order-list/index?status=2" hover-class="none">
-        <image class="order-image" src="/public/img/5-3.png"></image>
-        <text class="text-black">待收货</text>
-      </navigator>
-    </view>
-    <view class="cu-item">
-      <navigator url="/pages/order/order-list/index?status=4" hover-class="none">
-        <image class="order-image" src="/public/img/5-4.png"></image>
-        <text class="text-black">已完成</text>
-      </navigator>
-    </view>
-  </view>
-</view>
-<view class="cu-list menu card-menu radius address">
-  <navigator class="cu-item arrow" url="/pages/user/user-address/list/index" hover-class="none">
-    <view class="content">
-      <image class="address-image" src="/public/img/7-1.png"></image>
-      <text class="text-black">收货地址</text>
-    </view>
-  </navigator>
-</view>
 
-<view class="text-gray text-sm text-center margin-top-xl">www.joolun.com 提供技术支持</view>
+  <view class="text-gray text-sm text-center margin-top-xl">www.joolun.com 提供技术支持</view>
+</view>

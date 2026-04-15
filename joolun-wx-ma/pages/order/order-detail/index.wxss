@@ -1,3 +1,10 @@
+/**
+ * Copyright (C) 2026
+ * All rights reserved, Designed By www.joolun.com
+ * 注意：
+ * 本软件为www.joolun.com开发研制，项目使用请保留此说明
+ */
+
 .row-img{
   width: 600rpx!important;
   height: 600rpx!important;
@@ -25,4 +32,201 @@
 }
 .font-weight{
   font-weight: 300;
+}
+.after-sale-panel{
+  margin: 20rpx 20rpx 0;
+  padding: 20rpx 22rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(180deg, #fff8f1 0%, #ffffff 100%);
+  border: 1rpx solid rgba(199, 134, 63, 0.18);
+}
+.after-sale-panel-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+.after-sale-panel-title{
+  color: #2d241d;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+.after-sale-panel-status{
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+  background: rgba(199, 134, 63, 0.14);
+  color: #9a5a19;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+.after-sale-panel-line{
+  margin-top: 12rpx;
+  color: #69584a;
+  font-size: 24rpx;
+  line-height: 1.7;
+}
+.after-sale-timeline{
+  margin-top: 14rpx;
+}
+.after-sale-timeline-item{
+  position: relative;
+  display: flex;
+  gap: 18rpx;
+  padding-top: 14rpx;
+}
+.after-sale-timeline-item::after{
+  content: '';
+  position: absolute;
+  left: 10rpx;
+  top: 40rpx;
+  bottom: -10rpx;
+  width: 2rpx;
+  background: rgba(199, 134, 63, 0.26);
+}
+.after-sale-timeline-item:last-child::after{
+  display: none;
+}
+.after-sale-timeline-dot{
+  position: relative;
+  z-index: 1;
+  width: 22rpx;
+  height: 22rpx;
+  margin-top: 8rpx;
+  border-radius: 50%;
+  background: #c7863f;
+  box-shadow: 0 0 0 8rpx rgba(199, 134, 63, 0.12);
+}
+.after-sale-timeline-content{
+  flex: 1;
+  min-width: 0;
+}
+.after-sale-timeline-title{
+  color: #2d241d;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+.after-sale-timeline-time,
+.after-sale-timeline-desc{
+  margin-top: 6rpx;
+  color: #7c6a5b;
+  font-size: 22rpx;
+  line-height: 1.7;
+}
+.service-board{
+  margin: 24rpx 24rpx 0;
+  padding: 24rpx 28rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(135deg, #f5f9ff 0%, #ffffff 100%);
+  border: 1rpx solid rgba(41, 103, 255, 0.14);
+}
+.service-board__title{
+  color: #1f2937;
+  font-size: 30rpx;
+  font-weight: 700;
+}
+.service-board__desc{
+  margin-top: 10rpx;
+  color: #6b7280;
+  font-size: 24rpx;
+  line-height: 1.8;
+}
+.service-board__button{
+  margin-top: 20rpx;
+  border-radius: 999rpx;
+  background: #2967ff;
+  color: #ffffff;
+  font-size: 28rpx;
+  line-height: 84rpx;
+}
+.service-board__button::after{
+  border: none;
+}
+.refund-popup-mask{
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 2000;
+}
+.refund-popup-panel{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2001;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 120rpx);
+  padding: 28rpx 28rpx calc(env(safe-area-inset-bottom) + 28rpx);
+  border-radius: 32rpx 32rpx 0 0;
+  background: #ffffff;
+  box-shadow: 0 -12rpx 40rpx rgba(0, 0, 0, 0.12);
+}
+.refund-popup-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.refund-popup-title{
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #1f1f1f;
+}
+.refund-popup-close{
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background: #f5f5f5;
+  color: #666666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.refund-popup-content{
+  margin-top: 24rpx;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+.refund-goods-card{
+  padding: 24rpx;
+  border-radius: 24rpx;
+  background: #f8f9fb;
+}
+.refund-goods-name{
+  color: #1f1f1f;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+.refund-goods-spec,
+.refund-goods-price,
+.refund-form-tip{
+  margin-top: 10rpx;
+  color: #6f6f6f;
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+.refund-form-label{
+  margin-top: 24rpx;
+  color: #1f1f1f;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+.refund-textarea{
+  width: 100%;
+  min-height: 220rpx;
+  margin-top: 16rpx;
+  padding: 20rpx 22rpx;
+  box-sizing: border-box;
+  border-radius: 24rpx;
+  background: #f8f9fb;
+  font-size: 28rpx;
+}
+.refund-popup-actions{
+  display: flex;
+  justify-content: flex-end;
+  gap: 20rpx;
+  margin-top: 28rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #f0f0f0;
+  background: #ffffff;
 }

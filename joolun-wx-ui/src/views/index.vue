@@ -13,39 +13,7 @@
               使用RuoYi框架+Avue框架二次开发,新增商城模块、小程序管理模块、微信公众号管理模块
               <br />
               <br />
-              <el-link
-                href="https://gitee.com/joolun/JooLun-wx/tree/master/"
-                target="_blank"
-                >SpringBoot2+Vue2+微信小程序开源代码
-                <el-icon>
-                  <TopRight />
-                </el-icon>
-              </el-link>
-              <br />
-              <el-link
-                href="https://gitee.com/joolun/JooLun-wx/tree/boot3/"
-                target="_blank"
-                >SpringBoot3+Vue3+微信小程序开源代码
-                <el-icon>
-                  <TopRight />
-                </el-icon>
-              </el-link>
-              <br />
-              <el-link href="https://doc.ruoyi.vip/ruoyi/" target="_blank"
-                >RuoYi框架
-                <el-icon>
-                  <TopRight />
-                </el-icon>
-              </el-link>
-              <el-link
-                href="https://avuejs.com/"
-                target="_blank"
-                style="margin-left: 5px"
-                >Avue框架
-                <el-icon>
-                  <TopRight />
-                </el-icon>
-              </el-link>
+
             </p>
             <br />
             <p>此公众号对接了该平台，和该后台数据同步</p>

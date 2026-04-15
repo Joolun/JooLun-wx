@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2026
+  All rights reserved, Designed By www.joolun.com
+  注意：
+  本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joolun.mall.mapper.MallUserMapper">
+
+	<sql id="mallUserWhereCondition">
+		<if test="query.userNo != null and query.userNo != ''">
+			AND mall_user.`user_no` LIKE CONCAT('%', #{query.userNo}, '%')
+		</if>
+		<if test="query.nickName != null and query.nickName != ''">
+			AND mall_user.`nick_name` LIKE CONCAT('%', #{query.nickName}, '%')
+		</if>
+		<if test="query.realName != null and query.realName != ''">
+			AND mall_user.`real_name` LIKE CONCAT('%', #{query.realName}, '%')
+		</if>
+		<if test="query.mobile != null and query.mobile != ''">
+			AND mall_user.`mobile` LIKE CONCAT('%', #{query.mobile}, '%')
+		</if>
+		<if test="query.userTag != null and query.userTag != ''">
+			AND mall_user.`user_tag` LIKE CONCAT('%', #{query.userTag}, '%')
+		</if>
+		<if test="query.memberFlag != null and query.memberFlag != ''">
+			AND mall_user.`member_flag` = #{query.memberFlag}
+		</if>
+		<if test="query.status != null and query.status != ''">
+			AND mall_user.`status` = #{query.status}
+		</if>
+		<if test="query.registerSource != null and query.registerSource != ''">
+			AND mall_user.`register_source` = #{query.registerSource}
+		</if>
+		<if test="query.registerTimeBegin != null">
+			AND mall_user.`register_time` <![CDATA[ >= ]]> #{query.registerTimeBegin}
+		</if>
+		<if test="query.registerTimeEnd != null">
+			AND mall_user.`register_time` <![CDATA[ <= ]]> #{query.registerTimeEnd}
+		</if>
+		<if test="query.lastLoginTimeBegin != null">
+			AND mall_user.`last_login_time` <![CDATA[ >= ]]> #{query.lastLoginTimeBegin}
+		</if>
+		<if test="query.lastLoginTimeEnd != null">
+			AND mall_user.`last_login_time` <![CDATA[ <= ]]> #{query.lastLoginTimeEnd}
+		</if>
+		<if test="query.memberTimeBegin != null">
+			AND mall_user.`member_time` <![CDATA[ >= ]]> #{query.memberTimeBegin}
+		</if>
+		<if test="query.memberTimeEnd != null">
+			AND mall_user.`member_time` <![CDATA[ <= ]]> #{query.memberTimeEnd}
+		</if>
+		<if test="query.activityScene != null and query.activityScene != ''">
+			<choose>
+				<when test="query.activityScene == 'active7'">
+					AND mall_user.`last_login_time` <![CDATA[ >= ]]> DATE_SUB(NOW(), INTERVAL 7 DAY)
+				</when>
+				<when test="query.activityScene == 'wake30'">
+					AND mall_user.`last_login_time` <![CDATA[ >= ]]> DATE_SUB(NOW(), INTERVAL 30 DAY)
+					AND mall_user.`last_login_time` <![CDATA[ < ]]> DATE_SUB(NOW(), INTERVAL 7 DAY)
+				</when>
+				<when test="query.activityScene == 'silent30'">
+					AND (mall_user.`last_login_time` IS NULL OR mall_user.`last_login_time` <![CDATA[ < ]]> DATE_SUB(NOW(), INTERVAL 30 DAY))
+				</when>
+				<when test="query.activityScene == 'neverLogin'">
+					AND mall_user.`last_login_time` IS NULL
+				</when>
+			</choose>
+		</if>
+		<if test="query.minConsumeAmount != null">
+			AND mall_user.`consume_amount` <![CDATA[ >= ]]> #{query.minConsumeAmount}
+		</if>
+		<if test="query.maxConsumeAmount != null">
+			AND mall_user.`consume_amount` <![CDATA[ <= ]]> #{query.maxConsumeAmount}
+		</if>
+		<if test="query.minOrderCount != null">
+			AND mall_user.`order_count` <![CDATA[ >= ]]> #{query.minOrderCount}
+		</if>
+		<if test="query.maxOrderCount != null">
+			AND mall_user.`order_count` <![CDATA[ <= ]]> #{query.maxOrderCount}
+		</if>
+		<if test="query.hasOrder != null">
+			<choose>
+				<when test="query.hasOrder == 1">
+					AND mall_user.`order_count` <![CDATA[ >= ]]> 1
+				</when>
+				<otherwise>
+					AND mall_user.`order_count` = 0
+				</otherwise>
+			</choose>
+		</if>
+		<if test="query.hasConsume != null">
+			<choose>
+				<when test="query.hasConsume == 1">
+					AND mall_user.`consume_count` <![CDATA[ >= ]]> 1
+				</when>
+				<otherwise>
+					AND mall_user.`consume_count` = 0
+				</otherwise>
+			</choose>
+		</if>
+	</sql>
+
+	<sql id="mallUserWhere">
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+			<include refid="mallUserWhereCondition"/>
+		</trim>
+	</sql>
+
+	<select id="selectSummary" resultType="java.util.HashMap">
+		SELECT
+		COUNT(1) AS `totalCount`,
+		COALESCE(SUM(CASE WHEN mall_user.`member_flag` = '1' THEN 1 ELSE 0 END), 0) AS `memberCount`,
+		COALESCE(SUM(CASE WHEN mall_user.`member_flag` = '0' THEN 1 ELSE 0 END), 0) AS `nonMemberCount`,
+		COALESCE(SUM(CASE WHEN mall_user.`member_flag` = '1' AND mall_user.`status` = '0' THEN 1 ELSE 0 END), 0) AS `normalMemberCount`,
+		COALESCE(SUM(CASE WHEN mall_user.`status` = '0' THEN 1 ELSE 0 END), 0) AS `normalCount`,
+		COALESCE(SUM(CASE WHEN mall_user.`status` = '1' THEN 1 ELSE 0 END), 0) AS `disabledCount`,
+		COALESCE(SUM(CASE WHEN mall_user.`order_count` > 0 THEN 1 ELSE 0 END), 0) AS `orderUserCount`,
+		COALESCE(SUM(CASE WHEN mall_user.`consume_count` > 0 THEN 1 ELSE 0 END), 0) AS `consumeUserCount`,
+		COALESCE(SUM(mall_user.`consume_amount`), 0) AS `consumeAmount`
+		FROM mall_user mall_user
+		<include refid="mallUserWhere"/>
+	</select>
+
+	<select id="selectTagValues" resultType="java.lang.String">
+		SELECT mall_user.`user_tag`
+		FROM mall_user mall_user
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+			<include refid="mallUserWhereCondition"/>
+			AND mall_user.`user_tag` IS NOT NULL
+			AND mall_user.`user_tag` != ''
+		</trim>
+	</select>
+</mapper>

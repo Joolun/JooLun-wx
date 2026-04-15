@@ -1,7 +1,106 @@
+/**
+ * Copyright (C) 2026
+ * All rights reserved, Designed By www.joolun.com
+ * 注意：
+ * 本软件为www.joolun.com开发研制，项目使用请保留此说明
+ */
+
 .row-img{
   height: 240rpx!important;
   border-radius: 10rpx
 }
 .row-info{
   display: block!important;
+}
+.order-filter-board{
+  margin-bottom: 24rpx;
+  padding: 22rpx 24rpx;
+  border-radius: 28rpx;
+  background: #ffffff;
+  box-shadow: 0 16rpx 40rpx rgba(17, 24, 39, 0.05);
+}
+.order-filter-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+.order-filter-title{
+  color: #1f2937;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+.order-filter-link{
+  color: #2967ff;
+  font-size: 24rpx;
+}
+.order-filter-chip-list{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-top: 20rpx;
+}
+.order-filter-chip{
+  padding: 12rpx 22rpx;
+  border-radius: 999rpx;
+  background: #f4f6fb;
+  color: #5f6b7a;
+  font-size: 24rpx;
+}
+.order-filter-chip.is-active{
+  background: #edf3ff;
+  color: #2967ff;
+  font-weight: 600;
+}
+.order-after-sale-summary{
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  padding: 0 30rpx 18rpx;
+}
+.order-after-sale-tag{
+  padding: 8rpx 18rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+.order-after-sale-tag.is-warning{
+  background: rgba(199, 134, 63, 0.14);
+  color: #9a5a19;
+}
+.order-after-sale-tag.is-danger{
+  background: rgba(220, 38, 38, 0.12);
+  color: #dc2626;
+}
+.order-after-sale-tag.is-success{
+  background: rgba(31, 157, 85, 0.14);
+  color: #1f9d55;
+}
+.order-after-sale-tag.is-info{
+  background: rgba(41, 103, 255, 0.12);
+  color: #2967ff;
+}
+.order-after-sale-text{
+  flex: 1;
+  color: #6b7280;
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+.after-sale-status-btn{
+  pointer-events: none;
+}
+.order-empty-board{
+  padding: 80rpx 40rpx;
+  text-align: center;
+  color: #6b7280;
+}
+.order-empty-title{
+  color: #111827;
+  font-size: 34rpx;
+  font-weight: 700;
+}
+.order-empty-desc{
+  margin-top: 16rpx;
+  font-size: 26rpx;
+  line-height: 1.8;
 }

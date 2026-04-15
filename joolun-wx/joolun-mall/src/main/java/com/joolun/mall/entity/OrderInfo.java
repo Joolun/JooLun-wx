@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2018-2019
+ * Copyright (C) 2026
  * All rights reserved, Designed By www.joolun.com
  * 注意：
  * 本软件为www.joolun.com开发研制，项目使用请保留此说明
@@ -14,7 +14,6 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.joolun.common.annotation.Excel;
 import com.joolun.mall.config.CommonConstants;
 import com.joolun.mall.enums.OrderInfoEnum;
-import com.joolun.weixin.entity.WxUser;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -26,11 +25,11 @@ import java.util.List;
 /**
  * 商城订单
  *
- * @author JL
+ * @author www.joolun.com
  * @date 2019-09-10 15:21:22
  */
 @Data
-@TableName("order_info")
+@TableName("mall_order_info")
 @EqualsAndHashCode(callSuper = true)
 public class OrderInfo extends Model<OrderInfo> {
 	private static final long serialVersionUID = 1L;
@@ -178,7 +177,50 @@ public class OrderInfo extends Model<OrderInfo> {
 	 * 用户信息
 	 */
 	@TableField(exist = false)
-	private WxUser userInfo;
+	private MallUser userInfo;
+	/**
+	 * 会员编号。
+	 * 主要用于后台订单列表展示和筛选。
+	 */
+	@TableField(exist = false)
+	private String userNo;
+	/**
+	 * 会员昵称。
+	 * 主要用于后台订单列表展示和筛选。
+	 */
+	@TableField(exist = false)
+	private String userNickName;
+	/**
+	 * 会员真实姓名。
+	 * 主要用于后台订单列表筛选。
+	 */
+	@TableField(exist = false)
+	private String userRealName;
+	/**
+	 * 会员手机号。
+	 * 主要用于后台订单列表展示和筛选。
+	 */
+	@TableField(exist = false)
+	private String userMobile;
+	/**
+	 * 会员头像。
+	 * 主要用于后台订单列表展示。
+	 */
+	@TableField(exist = false)
+	private String userAvatarUrl;
+	/**
+	 * 售后状态筛选字段。
+	 * 仅用于后台订单列表按退款进度筛选，不落库。
+	 */
+	@TableField(exist = false)
+	private String afterSaleStatus;
+
+	/**
+	 * 订单操作日志。
+	 * 用于后台订单详情展示真实的订单流转和售后处理轨迹。
+	 */
+	@TableField(exist = false)
+	private List<OrderOperateLog> orderOperateLogList;
 	/**
 	 * 物流单号
 	 */

@@ -1,14 +1,21 @@
 <!--
-  - Copyright (C) 2018-2019
-  - All rights reserved, Designed By www.joolun.com
-  - 注意：
-  - 本软件为www.joolun.com开发研制，项目使用请保留此说明
+  Copyright (C) 2026
+  All rights reserved, Designed By www.joolun.com
+  注意：
+  本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
+
+<!--
+  购物车页多规格说明：
+  1. 每条购物车记录绑定一个 skuId。
+  2. 规格文案直接展示后端回填的 specInfo。
+  3. 跳转商品详情时会带上 skuId，方便继续改规格。
 -->
 <wxs module="numberUtil" src="../../utils/numberUtil.wxs"></wxs>
 <view class="cu-bar bg-white fixed" style="min-height: 80rpx;font-weight: 300;">
   <view class="grid col-3 response text-center text-gray">
     <view><text class="cuIcon-selection margin-right-xs"></text>100%正品保证</view>
-    <view><text class="cuIcon-discover margin-right-xs"></text>精挑细选</view>
+    <view><text class="cuIcon-discover margin-right-xs"></text>精选细选</view>
     <view><text class="cuIcon-squarecheck margin-right-xs"></text>售后无忧</view>
   </view>
 </view>
@@ -23,27 +30,28 @@
 <view class="bg-white" style="margin-top:160rpx;margin-bottom:100rpx;padding-top:40rpx;padding-bottom: 50px;">
   <checkbox-group bindchange="checkboxChange">
     <view class="cu-card article no-card solid-bottom">
-      <view class="cu-item padding-top-xs" wx:for="{{ shoppingCartData }}" wx:key="index">
+      <view class="cu-item padding-top-xs" wx:for="{{ shoppingCartData }}" wx:key="id">
+        <!-- 有效商品区：价格、库存和数量都按当前 SKU 快照展示。 -->
         <view class="flex align-center">
           <checkbox class="blue round margin-left" value="{{item.id}}" disabled="{{(item.quantity > item.goodsSpu.stock || !item.goodsSpu) && operation}}" checked="{{item.checked}}"></checkbox>
-          <navigator hover-class='none' style="width:100%" url='/pages/goods/goods-detail/index?id={{item.spuId}}'>
+          <navigator hover-class='none' style="width:100%" url='/pages/goods/goods-detail/index?id={{item.spuId}}&skuId={{item.skuId}}'>
             <view class="content">
-              <image src="{{item.goodsSpu.picUrls[0] ? item.goodsSpu.picUrls[0] : '/public/img/no_pic.png'}}" mode="aspectFill" class="row-img margin-top-xs"></image>
+              <image src="{{item.picUrl || (item.goodsSpu && item.goodsSpu.picUrls[0]) || '/public/img/no_pic.png'}}" mode="aspectFill" class="row-img margin-top-xs"></image>
               <view class="desc row-info">
                 <view class="text-black margin-top-sm overflow-2">{{item.goodsSpu.name}}</view>
-                <view class="text-gray text-sm margin-top-xs cu-tag round" catchtap bindtap="changeSpecs" data-spuid="{{item.goodsSpu.id}}" data-index="{{index}}" wx:if="{{item.goodsSpu.specType == '1'}}">
-                  <text class="overflow-1"></text>
+                <view class="text-gray text-sm margin-top-xs cu-tag round" catchtap="changeSpecs" data-index="{{index}}" wx:if="{{item.specInfo}}">
+                  <text class="overflow-1">{{item.specInfo}}</text>
                   <text class="cuIcon-unfold"></text>
                 </view>
                 <view class="text-{{item.quantity > item.goodsSpu.stock ? 'red' : 'gray'}} margin-top-sm text-right text-sm">库存{{item.goodsSpu.stock}}</view>
                 <view wx:if="{{item.goodsSpu}}">
                   <view class="text-red margin-top-sm" wx:if="{{(item.addPrice-item.goodsSpu.salesPrice) > 0}}">
-                    比加入时降
+                    比加入时降价
                     <view class="text-price display-ib">{{numberUtil.numberFormat(item.addPrice-item.goodsSpu.salesPrice,2)}}</view>
                   </view>
                   <view class="flex">
                     <view class="flex-sub">
-                      <view class="text-price text-bold text-blue text-xl margin-top-sm">{{item.goodsSpu.salesPrice}}</view>
+                      <view class="text-price text-bold text-blue text-xl margin-top-sm">{{item.goodsSpu.salesPrice || item.addPrice}}</view>
                     </view>
                     <view class="flex-sub margin-top-sm" catchtap>
                       <base-stepper
@@ -66,7 +74,8 @@
       </view>
     </view>
   </checkbox-group>
-  <!-- 失效商品 -->
+
+  <!-- 失效商品区：商品下架或规格失效后单独展示，避免影响正常结算。 -->
   <view class="cu-bar bg-white solid-bottom margin-top" wx:if="{{shoppingCartDataInvalid.length > 0}}">
     <view class="action">
       失效宝贝{{ shoppingCartDataInvalid.length }}件
@@ -76,33 +85,34 @@
     </view>
   </view>
   <view class="cu-card article no-card">
-      <view class="cu-item" wx:for="{{ shoppingCartDataInvalid }}" wx:key="index">
-        <view class="flex align-center">
-          <navigator hover-class='none' style="width:100%" url='/pages/goods/goods-detail/index?id={{item.spuId}}'>
-            <view class="content">
-              <image src="{{item.goodsSpu.picUrls[0] ? item.goodsSpu.picUrls[0] : '/public/img/no_pic.png'}}" mode="aspectFill" class="row-img margin-top-xs"></image>
-              <view class="desc row-info">
-                <view class="text-black margin-top-sm overflow-2">{{item.goodsSpu.name}}</view>
-                <view class="text-sm margin-top-lg text-blue">
-                  已下架
-                </view>
+    <view class="cu-item" wx:for="{{ shoppingCartDataInvalid }}" wx:key="id">
+      <view class="flex align-center">
+        <navigator hover-class='none' style="width:100%" url='/pages/goods/goods-detail/index?id={{item.spuId}}&skuId={{item.skuId}}'>
+          <view class="content">
+            <image src="{{item.picUrl || (item.goodsSpu && item.goodsSpu.picUrls[0]) || '/public/img/no_pic.png'}}" mode="aspectFill" class="row-img margin-top-xs"></image>
+            <view class="desc row-info">
+              <view class="text-black margin-top-sm overflow-2">{{(item.goodsSpu && item.goodsSpu.name) || item.spuName}}</view>
+              <view class="text-gray text-sm margin-top-xs cu-tag round" wx:if="{{item.specInfo}}">{{item.specInfo}}</view>
+              <view class="text-sm margin-top-lg text-blue">
+                已下架或规格失效
               </view>
             </view>
-          </navigator>
-        </view>
+          </view>
+        </navigator>
       </view>
+    </view>
   </view>
+
   <view class="cu-load bg-gray {{loadmore?'loading':''}}"></view>
   <view class="text-center margin-bottom" wx:if="{{ shoppingCartData.length <= 0 && !loadmore}}">
     <view class="text-xsl margin-top without">
-			<image class="margin-top-sm" src="/public/img/shopping-cart.jpg"></image>
-		</view>
-    购物车空空如也~
+      <image class="margin-top-sm" src="/public/img/shopping-cart.jpg"></image>
+    </view>
+    购物车空空如也
     <navigator hover-class='none' url='/pages/goods/goods-list/index'>
       <button class="cu-btn bg-black margin-top">去逛逛</button>
     </navigator>
   </view>
-  <ad unit-id="{{config.adBannerID}}" wx:if="{{config.adEnable}}"></ad>
   <view class="cu-bar justify-center bg-white margin-top-sm">
     <view class='action text-blue text-bold'>
       <text class='cuIcon-move'></text> <text class='cuIcon-appreciate'></text>为您推荐 <text class='cuIcon-move'></text>
@@ -110,6 +120,7 @@
   </view>
   <goods-card goodsList="{{goodsListRecom}}"/>
 </view>
+
 <view class="cu-bar bg-white tabbar border shop foot">
   <view class="flex align-center">
     <checkbox-group bindchange="checkboxAllChange">
@@ -120,7 +131,7 @@
   <view class="action bar-rt" wx:if="{{operation}}">
     <text class="text-xs text-bold">合计：</text>
     <text class="text-xl text-bold text-price text-blue margin-right-sm">{{settlePrice}}</text>
-    <button class="cu-btn shadow-blur margin-left-sm settle-bt" disabled="{{selectValue.length <= 0}}" type="" bindtap="orderConfirm">
+    <button class="cu-btn shadow-blur margin-left-sm settle-bt" disabled="{{selectValue.length <= 0}}" bindtap="orderConfirm">
       <text class="text-white">结算{{selectValue.length > 0 ? '('+selectValue.length+')' : ''}}</text>
     </button>
   </view>

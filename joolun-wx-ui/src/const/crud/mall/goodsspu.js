@@ -1,9 +1,5 @@
-/**
- * Copyright (C) 2024
- * All rights reserved, Designed By www.joolun.com
- * 注意：
- * 本软件为www.joolun.com开发研制，项目使用请保留此说明
- */
+// 商品管理页 Avue 配置。
+// 多规格改造后，规格编辑区不再拆成普通字段，而是通过 skuEditor 自定义表单插槽统一维护。
 export const tableOption = {
   dialogType: "drawer",
   border: true,
@@ -17,6 +13,8 @@ export const tableOption = {
   selection: true,
   dialogWidth: "88%",
   searchMenuSpan: 6,
+  // 列表区展示的是商品级摘要字段。
+  // 其中价格、库存由后端按启用 SKU 聚合后返回，便于列表直接展示。
   column: [
     {
       label: "商品名称",
@@ -80,7 +78,6 @@ export const tableOption = {
       sortable: true,
       display: false,
     },
-
     {
       label: "虚拟销量",
       prop: "saleNum",
@@ -103,14 +100,8 @@ export const tableOption = {
       slot: true,
       display: false,
       dicData: [
-        {
-          label: "下架",
-          value: "0",
-        },
-        {
-          label: "上架",
-          value: "1",
-        },
+        { label: "下架", value: "0" },
+        { label: "上架", value: "1" },
       ],
     },
     {
@@ -120,6 +111,8 @@ export const tableOption = {
       display: false,
     },
   ],
+  // 表单区按“基础信息 + 辅助信息”分组。
+  // 规格与 SKU 编辑器放在基础信息里，保证新增、编辑、查看都走同一套结构。
   group: [
     {
       icon: "el-icon-goods",
@@ -138,11 +131,10 @@ export const tableOption = {
             },
             {
               max: 100,
-              message: "长度在不能超过100个字符",
+              message: "长度不能超过100个字符",
             },
           ],
         },
-
         {
           label: "商品图片",
           prop: "picUrls",
@@ -166,7 +158,6 @@ export const tableOption = {
           span: 24,
           tip: "只能上传jpg/png文件，且不超过50kb",
         },
-
         {
           label: "类目",
           prop: "categoryId",
@@ -197,14 +188,8 @@ export const tableOption = {
             },
           ],
           dicData: [
-            {
-              label: "下架",
-              value: "0",
-            },
-            {
-              label: "上架",
-              value: "1",
-            },
+            { label: "下架", value: "0" },
+            { label: "上架", value: "1" },
           ],
         },
         {
@@ -213,45 +198,9 @@ export const tableOption = {
           rules: [
             {
               max: 32,
-              message: "长度在不能超过32个字符",
+              message: "长度不能超过32个字符",
             },
           ],
-        },
-        {
-          label: "库存",
-          prop: "stock",
-          type: "number",
-          precision: 0,
-          min: 0,
-          rules: [
-            {
-              required: true,
-              message: "库存必须填写",
-              trigger: "blur",
-            },
-          ],
-        },
-        {
-          label: "销售价",
-          prop: "salesPrice",
-          type: "number",
-          precision: 2,
-          min: 0,
-          rules: [
-            {
-              required: true,
-              message: "销售价必须填写",
-              trigger: "blur",
-            },
-          ],
-        },
-        {
-          label: "市场价",
-          prop: "marketPrice",
-        },
-        {
-          label: "成本价",
-          prop: "costPrice",
         },
         {
           label: "虚拟销量",
@@ -259,7 +208,7 @@ export const tableOption = {
           type: "number",
           precision: 0,
           min: 0,
-          tip: "可以按自己需求设置，系统会按销售情况自动累加",
+          tip: "系统会按销售情况自动累加",
         },
         {
           label: "卖点",
@@ -268,13 +217,19 @@ export const tableOption = {
           rules: [
             {
               max: 500,
-              message: "长度在不能超过500个字符",
+              message: "长度不能超过500个字符",
             },
           ],
         },
+        {
+          label: "规格与SKU",
+          prop: "skuEditor",
+          // 通过 formslot 渲染完整 SKU 编辑器，避免 Avue 普通字段无法承载多规格联动。
+          formslot: true,
+          span: 24,
+        },
       ],
     },
-
     {
       icon: "el-icon-grape",
       label: "辅助信息",
@@ -291,6 +246,7 @@ export const tableOption = {
   ],
 };
 
+// 只读弹窗配置，沿用商品主表字段展示，便于批量选择商品等场景复用。
 export const tableOption2 = {
   dialogType: "drawer",
   border: true,
@@ -359,7 +315,6 @@ export const tableOption2 = {
       search: true,
       sortable: true,
     },
-
     {
       label: "虚拟销量",
       prop: "saleNum",

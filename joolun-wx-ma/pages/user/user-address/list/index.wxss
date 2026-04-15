@@ -1,3 +1,10 @@
+/**
+ * Copyright (C) 2026
+ * All rights reserved, Designed By www.joolun.com
+ * 注意：
+ * 本软件为www.joolun.com开发研制，项目使用请保留此说明
+ */
+
 .loc-content{
   width: calc(100% - 96rpx - 60rpx - 80rpx)!important;
   left: 126rpx!important

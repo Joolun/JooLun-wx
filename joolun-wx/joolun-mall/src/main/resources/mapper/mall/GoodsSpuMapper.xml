@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (C) 2018-2019
-  ~ All rights reserved, Designed By www.joolun.com
-  ~ 注意：
-  ~ 本软件为www.joolun.com开发研制，项目使用请保留此说明
-  -->
+  Copyright (C) 2026
+  All rights reserved, Designed By www.joolun.com
+  注意：
+  本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.joolun.mall.mapper.GoodsSpuMapper">
+	<!--
+		SPU 结果映射。
+		其中 salesPrice / marketPrice / costPrice / stock 是兼容旧前端的临时展示字段，
+		由下方 SQL 按启用 SKU 聚合后回填。
+	-->
 	<resultMap id="goodsSpuMap" type="com.joolun.mall.entity.GoodsSpu">
 		<id property="id" column="id"/>
 		<result property="spuCode" column="spu_code"/>
@@ -16,125 +21,166 @@
 		<result property="description" column="description"/>
 		<result property="categoryFirst" column="category_first"/>
 		<result property="categorySecond" column="category_second"/>
-		<result property="picUrls" column="pic_urls"/>
+		<result property="picUrls" column="pic_urls" jdbcType="VARCHAR"
+				typeHandler="com.joolun.framework.config.typehandler.ArrayStringTypeHandler"/>
 		<result property="shelf" column="shelf"/>
 		<result property="sort" column="sort"/>
+		<result property="priceDown" column="price_down"/>
+		<result property="priceUp" column="price_up"/>
+		<result property="saleNum" column="sale_num"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="specType" column="spec_type"/>
+		<result property="delFlag" column="del_flag"/>
+		<result property="version" column="version"/>
 		<result property="salesPrice" column="sales_price"/>
 		<result property="marketPrice" column="market_price"/>
 		<result property="costPrice" column="cost_price"/>
 		<result property="stock" column="stock"/>
-		<result property="saleNum" column="sale_num"/>
-		<result property="createTime" column="create_time"/>
-		<result property="updateTime" column="update_time"/>
-		<result property="delFlag" column="del_flag"/>
-		<result property="version" column="version"/>
 	</resultMap>
 
-	<resultMap id="goodsSpuMap1" extends="goodsSpuMap" type="com.joolun.mall.entity.GoodsSpu">
-
-	</resultMap>
-
-	<resultMap id="goodsSpuMap2" extends="goodsSpuMap" type="com.joolun.mall.entity.GoodsSpu">
-
-	</resultMap>
-
-	<resultMap id="goodsSpuMap3" extends="goodsSpuMap" type="com.joolun.mall.entity.GoodsSpu">
-
-	</resultMap>
-
-	<resultMap id="goodsSpuMap4" extends="goodsSpuMap" type="com.joolun.mall.entity.GoodsSpu">
-
-	</resultMap>
-
-	<sql id="goodsSpuSql">
-		goods_spu.`id`,
-		goods_spu.`spu_code`,
-		goods_spu.`name`,
-		goods_spu.`sell_point`,
-		goods_spu.`description`,
-		goods_spu.`category_first`,
-		goods_spu.`category_second`,
-		goods_spu.`pic_urls`,
-		goods_spu.`shelf`,
-		goods_spu.`sort`,
-		goods_spu.`sales_price`,
-		goods_spu.`market_price`,
-		goods_spu.`cost_price`,
-		goods_spu.`stock`,
-		goods_spu.`sale_num`,
-		goods_spu.`create_time`,
-		goods_spu.`update_time`,
-		goods_spu.`del_flag`,
-		goods_spu.`version`
+	<!-- 商品详情查询字段，包含商品描述。 -->
+	<sql id="goodsSpuColumns">
+		mall_goods_spu.`id`,
+		mall_goods_spu.`spu_code`,
+		mall_goods_spu.`name`,
+		mall_goods_spu.`sell_point`,
+		mall_goods_spu.`description`,
+		mall_goods_spu.`category_first`,
+		mall_goods_spu.`category_second`,
+		mall_goods_spu.`pic_urls`,
+		mall_goods_spu.`shelf`,
+		mall_goods_spu.`sort`,
+		mall_goods_spu.`price_down`,
+		mall_goods_spu.`price_up`,
+		mall_goods_spu.`sale_num`,
+		mall_goods_spu.`create_time`,
+		mall_goods_spu.`update_time`,
+		mall_goods_spu.`spec_type`,
+		mall_goods_spu.`del_flag`,
+		mall_goods_spu.`version`,
+		IFNULL((
+			SELECT MIN(mall_goods_sku.`sales_price`)
+			FROM mall_goods_sku mall_goods_sku
+			WHERE mall_goods_sku.`spu_id` = mall_goods_spu.`id`
+			AND mall_goods_sku.`del_flag` = '0'
+			AND mall_goods_sku.`enable` = '1'
+		), mall_goods_spu.`price_down`) AS sales_price,
+		IFNULL((
+			SELECT MIN(mall_goods_sku.`market_price`)
+			FROM mall_goods_sku mall_goods_sku
+			WHERE mall_goods_sku.`spu_id` = mall_goods_spu.`id`
+			AND mall_goods_sku.`del_flag` = '0'
+			AND mall_goods_sku.`enable` = '1'
+		), mall_goods_spu.`price_up`) AS market_price,
+		IFNULL((
+			SELECT MIN(mall_goods_sku.`cost_price`)
+			FROM mall_goods_sku mall_goods_sku
+			WHERE mall_goods_sku.`spu_id` = mall_goods_spu.`id`
+			AND mall_goods_sku.`del_flag` = '0'
+			AND mall_goods_sku.`enable` = '1'
+		), mall_goods_spu.`price_down`) AS cost_price,
+		IFNULL((
+			SELECT SUM(mall_goods_sku.`stock`)
+			FROM mall_goods_sku mall_goods_sku
+			WHERE mall_goods_sku.`spu_id` = mall_goods_spu.`id`
+			AND mall_goods_sku.`del_flag` = '0'
+			AND mall_goods_sku.`enable` = '1'
+		), 0) AS stock
 	</sql>
 
-	<sql id="goodsSpuSql2">
-		goods_spu.`id`,
-		goods_spu.`spu_code`,
-		goods_spu.`name`,
-		goods_spu.`sell_point`,
-		null `description`,
-		goods_spu.`category_first`,
-		goods_spu.`category_second`,
-		goods_spu.`pic_urls`,
-		goods_spu.`shelf`,
-		goods_spu.`sort`,
-		goods_spu.`sales_price`,
-		goods_spu.`market_price`,
-		goods_spu.`cost_price`,
-		goods_spu.`stock`,
-		goods_spu.`sale_num`,
-		goods_spu.`create_time`,
-		goods_spu.`update_time`,
-		goods_spu.`del_flag`,
-		goods_spu.`version`
+	<!-- 商品列表和购物车场景字段，描述字段不参与列表查询，减少无效传输。 -->
+	<sql id="goodsSpuColumns4Page">
+		mall_goods_spu.`id`,
+		mall_goods_spu.`spu_code`,
+		mall_goods_spu.`name`,
+		mall_goods_spu.`sell_point`,
+		NULL AS description,
+		mall_goods_spu.`category_first`,
+		mall_goods_spu.`category_second`,
+		mall_goods_spu.`pic_urls`,
+		mall_goods_spu.`shelf`,
+		mall_goods_spu.`sort`,
+		mall_goods_spu.`price_down`,
+		mall_goods_spu.`price_up`,
+		mall_goods_spu.`sale_num`,
+		mall_goods_spu.`create_time`,
+		mall_goods_spu.`update_time`,
+		mall_goods_spu.`spec_type`,
+		mall_goods_spu.`del_flag`,
+		mall_goods_spu.`version`,
+		IFNULL((
+			SELECT MIN(mall_goods_sku.`sales_price`)
+			FROM mall_goods_sku mall_goods_sku
+			WHERE mall_goods_sku.`spu_id` = mall_goods_spu.`id`
+			AND mall_goods_sku.`del_flag` = '0'
+			AND mall_goods_sku.`enable` = '1'
+		), mall_goods_spu.`price_down`) AS sales_price,
+		IFNULL((
+			SELECT MIN(mall_goods_sku.`market_price`)
+			FROM mall_goods_sku mall_goods_sku
+			WHERE mall_goods_sku.`spu_id` = mall_goods_spu.`id`
+			AND mall_goods_sku.`del_flag` = '0'
+			AND mall_goods_sku.`enable` = '1'
+		), mall_goods_spu.`price_up`) AS market_price,
+		IFNULL((
+			SELECT MIN(mall_goods_sku.`cost_price`)
+			FROM mall_goods_sku mall_goods_sku
+			WHERE mall_goods_sku.`spu_id` = mall_goods_spu.`id`
+			AND mall_goods_sku.`del_flag` = '0'
+			AND mall_goods_sku.`enable` = '1'
+		), mall_goods_spu.`price_down`) AS cost_price,
+		IFNULL((
+			SELECT SUM(mall_goods_sku.`stock`)
+			FROM mall_goods_sku mall_goods_sku
+			WHERE mall_goods_sku.`spu_id` = mall_goods_spu.`id`
+			AND mall_goods_sku.`del_flag` = '0'
+			AND mall_goods_sku.`enable` = '1'
+		), 0) AS stock
 	</sql>
 
+	<!-- 管理端商品分页。 -->
 	<select id="selectPage1" resultMap="goodsSpuMap">
 		SELECT
-		<include refid="goodsSpuSql2"/>
-		FROM goods_spu goods_spu
+		<include refid="goodsSpuColumns4Page"/>
+		FROM mall_goods_spu mall_goods_spu
 		<where>
-			<if test="query.shelf != null">
-				AND goods_spu.`shelf` = #{query.shelf}
+			<if test="query.shelf != null and query.shelf != ''">
+				AND mall_goods_spu.`shelf` = #{query.shelf}
 			</if>
-			<if test="query.categorySecond != null">
-				AND goods_spu.`category_second` = #{query.categorySecond}
+			<if test="query.categorySecond != null and query.categorySecond != ''">
+				AND mall_goods_spu.`category_second` = #{query.categorySecond}
 			</if>
-			<if test="query.name != null">
-				AND goods_spu.`name` LIKE CONCAT('%',#{query.name},'%')
+			<if test="query.name != null and query.name != ''">
+				AND mall_goods_spu.`name` LIKE CONCAT('%', #{query.name}, '%')
 			</if>
-			<if test="query.spuCode != null">
-				AND goods_spu.`spu_code` = #{query.spuCode}
+			<if test="query.spuCode != null and query.spuCode != ''">
+				AND mall_goods_spu.`spu_code` = #{query.spuCode}
 			</if>
 		</where>
 	</select>
 
-	<select id="selectById1" resultMap="goodsSpuMap1">
+	<!-- 管理端商品详情。 -->
+	<select id="selectById1" resultMap="goodsSpuMap">
 		SELECT
-		<include refid="goodsSpuSql"/>
-		FROM goods_spu goods_spu
-		WHERE goods_spu.`id` = #{id}
+		<include refid="goodsSpuColumns"/>
+		FROM mall_goods_spu mall_goods_spu
+		WHERE mall_goods_spu.`id` = #{id}
 	</select>
 
-	<select id="selectById2" resultMap="goodsSpuMap2">
+	<!-- 小程序商品详情。 -->
+	<select id="selectById2" resultMap="goodsSpuMap">
 		SELECT
-			<include refid="goodsSpuSql"/>
-		FROM goods_spu goods_spu
-		WHERE goods_spu.`id` = #{id}
+		<include refid="goodsSpuColumns"/>
+		FROM mall_goods_spu mall_goods_spu
+		WHERE mall_goods_spu.`id` = #{id}
 	</select>
 
-	<select id="selectOneByShoppingCart" resultMap="goodsSpuMap3">
+	<!-- 购物车按 spuId 查询商品主信息，并补齐 SKU 聚合价格和库存。 -->
+	<select id="selectOneByShoppingCart" resultMap="goodsSpuMap">
 		SELECT
-			<include refid="goodsSpuSql2"/>
-		FROM goods_spu goods_spu
-		WHERE goods_spu.`id` = #{id}
-	</select>
-
-	<select id="selectById4" resultMap="goodsSpuMap4">
-		SELECT
-		<include refid="goodsSpuSql"/>
-		FROM goods_spu goods_spu
-		WHERE goods_spu.`id` = #{id}
+		<include refid="goodsSpuColumns4Page"/>
+		FROM mall_goods_spu mall_goods_spu
+		WHERE mall_goods_spu.`id` = #{id}
 	</select>
 </mapper>

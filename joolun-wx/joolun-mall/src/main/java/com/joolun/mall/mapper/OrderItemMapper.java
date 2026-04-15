@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2018-2019
+ * Copyright (C) 2026
  * All rights reserved, Designed By www.joolun.com
  * 注意：
  * 本软件为www.joolun.com开发研制，项目使用请保留此说明
@@ -7,9 +7,12 @@
 package com.joolun.mall.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.joolun.mall.entity.OrderItem;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商城订单详情
@@ -20,5 +23,9 @@ import java.util.List;
 public interface OrderItemMapper extends BaseMapper<OrderItem> {
 
 	List<OrderItem> selectList2(OrderItem orderItem);
+
+	IPage<OrderItem> selectAfterSalePage(IPage<OrderItem> page, @Param("query") OrderItem orderItem);
+
+	Map<String, Object> selectAfterSaleSummary(@Param("query") OrderItem orderItem);
 
 }

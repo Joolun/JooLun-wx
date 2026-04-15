@@ -1,32 +1,17 @@
-/*
-MIT License
-
-Copyright (c) 2020 www.joolun.com
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
+/**
+ * Copyright (C) 2026
+ * All rights reserved, Designed By www.joolun.com
+ * 注意：
+ * 本软件为www.joolun.com开发研制，项目使用请保留此说明
+ */
 package com.joolun.weixin.service.impl;
 
 import cn.binarywang.wx.miniapp.api.WxMaUserService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
+import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -36,6 +21,7 @@ import com.joolun.weixin.config.WxMaConfiguration;
 import com.joolun.weixin.constant.WxMaConstants;
 import com.joolun.weixin.entity.ThirdSession;
 import com.joolun.weixin.entity.WxOpenDataDTO;
+import com.joolun.weixin.entity.WxPhoneNumberDTO;
 import com.joolun.weixin.handler.SubscribeHandler;
 import com.joolun.weixin.mapper.WxUserMapper;
 import com.joolun.weixin.service.WxUserService;
@@ -167,7 +153,7 @@ public class WxUserServiceImpl extends ServiceImpl<WxUserMapper, WxUser> impleme
 	 * @param openidsList
 	 * @return
 	 * @throws WxErrorException
-	 * @author
+	 * @author www.joolun.com
 	 */
 	private List<WxMpUser> getWxMpUserList(WxMpUserService wxMpUserService, List<String> openidsList) throws WxErrorException {
 		// 粉丝openid数量
@@ -258,5 +244,56 @@ public class WxUserServiceImpl extends ServiceImpl<WxUserMapper, WxUser> impleme
 		baseMapper.updateById(wxUser);
 		wxUser = baseMapper.selectById(wxUser.getId());
 		return wxUser;
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public WxUser bindPhoneNumber(WxPhoneNumberDTO wxPhoneNumberDTO) {
+		WxMaUserService wxMaUserService = WxMaConfiguration.getMaService(wxPhoneNumberDTO.getAppId()).getUserService();
+		WxMaPhoneNumberInfo phoneNumberInfo = resolvePhoneNumberInfo(wxPhoneNumberDTO, wxMaUserService);
+		if (phoneNumberInfo == null || StrUtil.isBlank(phoneNumberInfo.getPhoneNumber())) {
+			throw new IllegalArgumentException("获取手机号失败");
+		}
+		WxUser wxUser = new WxUser();
+		wxUser.setId(wxPhoneNumberDTO.getUserId());
+		wxUser.setPhone(phoneNumberInfo.getPhoneNumber());
+		baseMapper.updateById(wxUser);
+		return baseMapper.selectById(wxPhoneNumberDTO.getUserId());
+	}
+
+	/**
+	 * 解析微信手机号信息。
+	 * 新版基础库优先使用 code 换取手机号，旧版设备仍兼容 encryptedData + iv 解密方式。
+	 *
+	 * @param wxPhoneNumberDTO 手机号绑定参数
+	 * @param wxMaUserService 小程序用户服务
+	 * @return 手机号信息
+	 */
+	private WxMaPhoneNumberInfo resolvePhoneNumberInfo(WxPhoneNumberDTO wxPhoneNumberDTO, WxMaUserService wxMaUserService) {
+		if (StrUtil.isNotBlank(wxPhoneNumberDTO.getCode())) {
+			return getPhoneByCode(wxPhoneNumberDTO, wxMaUserService);
+		}
+		if (StrUtil.isNotBlank(wxPhoneNumberDTO.getEncryptedData()) && StrUtil.isNotBlank(wxPhoneNumberDTO.getIv())) {
+			return wxMaUserService.getPhoneNoInfo(wxPhoneNumberDTO.getSessionKey(), wxPhoneNumberDTO.getEncryptedData(), wxPhoneNumberDTO.getIv());
+		}
+		throw new IllegalArgumentException("手机号授权参数不完整");
+	}
+
+	/**
+	 * 通过新版手机号授权 code 获取手机号。
+	 *
+	 * @param wxPhoneNumberDTO 手机号绑定参数
+	 * @param wxMaUserService 小程序用户服务
+	 * @return 手机号信息
+	 */
+	private WxMaPhoneNumberInfo getPhoneByCode(WxPhoneNumberDTO wxPhoneNumberDTO, WxMaUserService wxMaUserService) {
+		try {
+			return wxMaUserService.getPhoneNumber(wxPhoneNumberDTO.getCode());
+		} catch (WxErrorException ex) {
+			if (StrUtil.isNotBlank(wxPhoneNumberDTO.getEncryptedData()) && StrUtil.isNotBlank(wxPhoneNumberDTO.getIv())) {
+				return wxMaUserService.getPhoneNoInfo(wxPhoneNumberDTO.getSessionKey(), wxPhoneNumberDTO.getEncryptedData(), wxPhoneNumberDTO.getIv());
+			}
+			throw new IllegalStateException("获取手机号失败", ex);
+		}
 	}
 }

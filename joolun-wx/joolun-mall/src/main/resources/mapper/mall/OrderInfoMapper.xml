@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (C) 2018-2019
-  ~ All rights reserved, Designed By www.joolun.com
-  ~ 注意：
-  ~ 本软件为www.joolun.com开发研制，项目使用请保留此说明
-  -->
+  Copyright (C) 2026
+  All rights reserved, Designed By www.joolun.com
+  注意：
+  本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.joolun.mall.mapper.OrderInfoMapper">
@@ -34,97 +34,217 @@
 	</resultMap>
 
 	<resultMap id="orderInfoMap2" extends="orderInfoMap" type="com.joolun.mall.entity.OrderInfo">
+		<association property="orderLogistics" javaType="com.joolun.mall.entity.OrderLogistics"
+					 select="com.joolun.mall.mapper.OrderLogisticsMapper.selectById"
+					 column="{id=logistics_id}">
+		</association>
+		<association property="userInfo" javaType="com.joolun.mall.entity.MallUser"
+					 select="com.joolun.mall.mapper.MallUserMapper.selectById"
+					 column="user_id">
+		</association>
 		<collection property="listOrderItem" ofType="com.joolun.mall.entity.OrderItem"
 					select="com.joolun.mall.mapper.OrderItemMapper.selectList2"
 					column="{orderId=id}">
 		</collection>
-		<collection property="orderLogistics" ofType="com.joolun.mall.entity.OrderLogistics"
-					select="com.joolun.mall.mapper.OrderLogisticsMapper.selectById"
-					column="{id=logistics_id}">
-		</collection>
+	</resultMap>
+
+	<resultMap id="orderInfoPageMap" extends="orderInfoMap" type="com.joolun.mall.entity.OrderInfo">
+		<result property="userNo" column="user_no"/>
+		<result property="userNickName" column="user_nick_name"/>
+		<result property="userRealName" column="user_real_name"/>
+		<result property="userMobile" column="user_mobile"/>
+		<result property="userAvatarUrl" column="user_avatar_url"/>
 	</resultMap>
 
 	<sql id="orderInfoSql">
-		order_info.`id`,
-		order_info.`del_flag`,
-		order_info.`create_time`,
-		order_info.`update_time`,
-		order_info.`user_id`,
-		order_info.`order_no`,
-		order_info.`sales_price`,
-		order_info.`freight_price`,
-		order_info.`payment_way`,
-		order_info.`payment_price`,
-		order_info.`payment_time`,
-		order_info.`delivery_time`,
-		order_info.`receiver_time`,
-		order_info.`closing_time`,
-		order_info.`is_pay`,
-		order_info.`name`,
-		order_info.`status`,
-		order_info.`user_message`,
-		order_info.`transaction_id`,
-		order_info.`logistics_id`,
-		order_info.`remark`
+		mall_order_info.`id`,
+		mall_order_info.`del_flag`,
+		mall_order_info.`create_time`,
+		mall_order_info.`update_time`,
+		mall_order_info.`user_id`,
+		mall_order_info.`order_no`,
+		mall_order_info.`sales_price`,
+		mall_order_info.`freight_price`,
+		mall_order_info.`payment_way`,
+		mall_order_info.`payment_price`,
+		mall_order_info.`payment_time`,
+		mall_order_info.`delivery_time`,
+		mall_order_info.`receiver_time`,
+		mall_order_info.`closing_time`,
+		mall_order_info.`is_pay`,
+		mall_order_info.`name`,
+		mall_order_info.`status`,
+		mall_order_info.`user_message`,
+		mall_order_info.`transaction_id`,
+		mall_order_info.`logistics_id`,
+		mall_order_info.`remark`
 	</sql>
 
-	<select id="selectPage1" resultMap="orderInfoMap2">
-		SELECT
-		<include refid="orderInfoSql"/>
-		FROM order_info order_info
+	<sql id="orderInfoPageWhere">
 		<where>
 			<if test="query.userId != null">
-				AND order_info.`user_id` = #{query.userId}
+				AND mall_order_info.`user_id` = #{query.userId}
 			</if>
 			<if test="query.status != null">
 				<if test="query.status == '0'.toString()">
-					AND order_info.`is_pay` = '0'
-					AND order_info.`status` is null
+					AND mall_order_info.`is_pay` = '0'
+					AND mall_order_info.`status` is null
 				</if>
 				<if test="query.status == '4'.toString()">
-					AND order_info.`status` = '3'
+					AND mall_order_info.`status` = '3'
 				</if>
 				<if test="query.status != '0'.toString() and query.status != '4'.toString()">
-					AND order_info.`status` = #{query.status}
+					AND mall_order_info.`status` = #{query.status}
 				</if>
 			</if>
 			<if test="query.isPay != null">
-				AND order_info.`is_pay` = #{query.isPay}
+				AND mall_order_info.`is_pay` = #{query.isPay}
 			</if>
 			<if test="query.orderNo != null">
-				AND order_info.`order_no` = #{query.orderNo}
+				AND mall_order_info.`order_no` = #{query.orderNo}
+			</if>
+			<if test="query.userNo != null and query.userNo != ''">
+				AND mall_user.`user_no` LIKE CONCAT('%', #{query.userNo}, '%')
+			</if>
+			<if test="query.userNickName != null and query.userNickName != ''">
+				AND mall_user.`nick_name` LIKE CONCAT('%', #{query.userNickName}, '%')
+			</if>
+			<if test="query.userRealName != null and query.userRealName != ''">
+				AND mall_user.`real_name` LIKE CONCAT('%', #{query.userRealName}, '%')
+			</if>
+			<if test="query.userMobile != null and query.userMobile != ''">
+				AND mall_user.`mobile` LIKE CONCAT('%', #{query.userMobile}, '%')
+			</if>
+			<if test="query.afterSaleStatus != null and query.afterSaleStatus != ''">
+				<choose>
+					<when test="query.afterSaleStatus == 'ALL'.toString()">
+						AND EXISTS (
+							SELECT 1
+							FROM mall_order_item mall_order_item
+							WHERE mall_order_item.`order_id` = mall_order_info.`id`
+							AND (
+								(mall_order_item.`status` IN ('1', '2', '3') AND mall_order_item.`is_refund` = '0')
+								OR mall_order_item.`is_refund` = '1'
+							)
+						)
+					</when>
+					<when test="query.afterSaleStatus == '1'.toString()">
+						AND EXISTS (
+							SELECT 1
+							FROM mall_order_item mall_order_item
+							WHERE mall_order_item.`order_id` = mall_order_info.`id`
+							AND mall_order_item.`status` = '1'
+							AND mall_order_item.`is_refund` = '0'
+						)
+					</when>
+					<when test="query.afterSaleStatus == '2'.toString()">
+						AND EXISTS (
+							SELECT 1
+							FROM mall_order_item mall_order_item
+							WHERE mall_order_item.`order_id` = mall_order_info.`id`
+							AND mall_order_item.`status` = '2'
+							AND mall_order_item.`is_refund` = '0'
+						)
+					</when>
+					<when test="query.afterSaleStatus == '3'.toString()">
+						AND EXISTS (
+							SELECT 1
+							FROM mall_order_item mall_order_item
+							WHERE mall_order_item.`order_id` = mall_order_info.`id`
+							AND mall_order_item.`status` = '3'
+							AND mall_order_item.`is_refund` = '0'
+						)
+					</when>
+					<when test="query.afterSaleStatus == '4'.toString()">
+						AND EXISTS (
+							SELECT 1
+							FROM mall_order_item mall_order_item
+							WHERE mall_order_item.`order_id` = mall_order_info.`id`
+							AND mall_order_item.`is_refund` = '1'
+						)
+					</when>
+				</choose>
 			</if>
 			<if test="query.beginTime != null">
-				AND order_info.`create_time` >= #{query.beginTime}
+				AND mall_order_info.`create_time` >= #{query.beginTime}
 			</if>
 			<if test="query.endTime != null">
-				AND #{query.endTime} >= order_info.`create_time`
+				AND #{query.endTime} >= mall_order_info.`create_time`
 			</if>
 		</where>
+	</sql>
+
+	<select id="selectPage1" resultMap="orderInfoPageMap">
+		SELECT
+		<include refid="orderInfoSql"/>,
+		mall_user.`user_no`,
+		mall_user.`nick_name` AS `user_nick_name`,
+		mall_user.`real_name` AS `user_real_name`,
+		mall_user.`mobile` AS `user_mobile`,
+		mall_user.`avatar_url` AS `user_avatar_url`
+		FROM mall_order_info mall_order_info
+		LEFT JOIN mall_user mall_user ON mall_user.`id` = mall_order_info.`user_id`
+		<include refid="orderInfoPageWhere"/>
+	</select>
+
+	<select id="selectSummary" resultType="java.util.HashMap">
+		SELECT
+		COUNT(1) AS `totalCount`,
+		COALESCE(SUM(CASE WHEN result_set.`is_pay` = '1' THEN 1 ELSE 0 END), 0) AS `paidCount`,
+		COALESCE(SUM(CASE WHEN result_set.`status` = '1' THEN 1 ELSE 0 END), 0) AS `waitDeliveryCount`,
+		COALESCE(SUM(CASE WHEN result_set.`has_processing_after_sale` = 1 THEN 1 ELSE 0 END), 0) AS `processingAfterSaleCount`,
+		COALESCE(SUM(CASE WHEN result_set.`has_refunded` = 1 THEN 1 ELSE 0 END), 0) AS `refundedCount`,
+		COALESCE(SUM(result_set.`payment_price`), 0) AS `paymentAmount`
+		FROM (
+			SELECT
+			mall_order_info.`id`,
+			mall_order_info.`is_pay`,
+			mall_order_info.`status`,
+			mall_order_info.`payment_price`,
+			COALESCE(after_sale_stat.`has_processing_after_sale`, 0) AS `has_processing_after_sale`,
+			COALESCE(after_sale_stat.`has_refunded`, 0) AS `has_refunded`
+			FROM mall_order_info mall_order_info
+			LEFT JOIN mall_user mall_user ON mall_user.`id` = mall_order_info.`user_id`
+			LEFT JOIN (
+				SELECT
+				mall_order_item.`order_id`,
+				MAX(CASE
+					WHEN mall_order_item.`status` IN ('1', '3')
+						AND mall_order_item.`is_refund` = '0'
+					THEN 1 ELSE 0 END) AS `has_processing_after_sale`,
+				MAX(CASE
+					WHEN mall_order_item.`is_refund` = '1'
+					THEN 1 ELSE 0 END) AS `has_refunded`
+				FROM mall_order_item mall_order_item
+				WHERE mall_order_item.`del_flag` = '0'
+				GROUP BY mall_order_item.`order_id`
+			) after_sale_stat ON after_sale_stat.`order_id` = mall_order_info.`id`
+			<include refid="orderInfoPageWhere"/>
+		) result_set
 	</select>
 
 	<select id="selectPage2" resultMap="orderInfoMap2">
 		SELECT
 		<include refid="orderInfoSql"/>
-		FROM order_info order_info
+		FROM mall_order_info mall_order_info
 		<where>
 			<if test="query.userId != null">
-				AND order_info.`user_id` = #{query.userId}
+				AND mall_order_info.`user_id` = #{query.userId}
 			</if>
 			<if test="query.status != null">
 				<if test="query.status == '0'.toString()">
-					AND order_info.`is_pay` = '0'
-					AND order_info.`status` is null
+					AND mall_order_info.`is_pay` = '0'
+					AND mall_order_info.`status` is null
 				</if>
 				<if test="query.status == '4'.toString()">
-					AND order_info.`status` = '3'
+					AND mall_order_info.`status` = '3'
 				</if>
 				<if test="query.status != '0'.toString() and query.status != '4'.toString()">
-					AND order_info.`status` = #{query.status}
+					AND mall_order_info.`status` = #{query.status}
 				</if>
 			</if>
 			<if test="query.orderNo != null">
-				AND order_info.`order_no` = #{query.orderNo}
+				AND mall_order_info.`order_no` = #{query.orderNo}
 			</if>
 		</where>
 	</select>
@@ -132,7 +252,7 @@
 	<select id="selectById2" resultMap="orderInfoMap2">
 		SELECT
 		<include refid="orderInfoSql"/>
-		FROM order_info order_info
-		WHERE order_info.`id` = #{id}
+		FROM mall_order_info mall_order_info
+		WHERE mall_order_info.`id` = #{id}
 	</select>
 </mapper>

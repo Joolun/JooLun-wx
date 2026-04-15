@@ -1,0 +1,91 @@
+<!--
+  Copyright (C) 2026
+  All rights reserved, Designed By www.joolun.com
+  注意：
+  本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
+
+<scroll-view scroll-x class="bg-white nav fixed">
+  <view class="flex text-center">
+    <view
+      class="cu-item flex-sub {{index == tabCur ? 'text-blue cur' : ''}}"
+      wx:for="{{afterSaleTabs}}"
+      wx:key="key"
+      bindtap="tabSelect"
+      data-index="{{index}}"
+      data-key="{{item.key}}"
+    >
+      {{item.label}}
+    </view>
+  </view>
+</scroll-view>
+
+<view class="after-sale-page">
+  <view class="summary-board">
+    <view class="summary-card" wx:for="{{summaryCards}}" wx:key="label">
+      <view class="summary-label">{{item.label}}</view>
+      <view class="summary-value {{item.emphasisClass}}">{{item.value}}</view>
+      <view class="summary-tip">{{item.tip}}</view>
+    </view>
+  </view>
+
+  <view class="filter-tip-board">
+    <view class="filter-tip-title">当前说明</view>
+    <view class="filter-tip-desc">{{currentFilterTip}}</view>
+  </view>
+
+  <view wx:if="{{afterSaleList.length > 0}}">
+    <view class="after-sale-card" wx:for="{{afterSaleList}}" wx:key="id">
+      <view class="after-sale-header">
+        <view class="after-sale-order-no">订单号：{{item.orderNo}}</view>
+        <view class="after-sale-status {{item.statusClass}}">{{item.statusText}}</view>
+      </view>
+      <view class="after-sale-body">
+        <image class="after-sale-image" src="{{item.picUrl ? item.picUrl : '/public/img/no_pic.png'}}" mode="aspectFill"></image>
+        <view class="after-sale-content">
+          <view class="after-sale-name">{{item.spuName || '未命名商品'}}</view>
+          <view class="after-sale-spec">{{item.specInfo || '默认规格'}}</view>
+          <view class="after-sale-meta">数量：{{item.quantity || 0}}</view>
+          <view class="after-sale-price">退款金额：¥{{item.paymentPrice || '0.00'}}</view>
+          <view class="after-sale-meta">订单状态：{{item.orderStatusDesc || '处理中'}}</view>
+          <view class="after-sale-stage-board">
+            <view class="after-sale-stage-title">{{item.stageTitle}}</view>
+            <view class="after-sale-stage-desc">{{item.stageDesc}}</view>
+          </view>
+          <view class="after-sale-tip-board">{{item.nextActionText}}</view>
+          <view class="after-sale-timeline" wx:if="{{item.timeline.length > 0}}">
+            <view class="after-sale-timeline-item" wx:for="{{item.timeline}}" wx:for-item="timelineItem" wx:key="title">
+              <view class="after-sale-timeline-dot"></view>
+              <view class="after-sale-timeline-content">
+                <view class="after-sale-timeline-title">{{timelineItem.title}}</view>
+                <view class="after-sale-timeline-time">{{timelineItem.time}}</view>
+                <view class="after-sale-timeline-desc">{{timelineItem.desc}}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="after-sale-actions">
+        <button class="cu-btn line-blue sm round" bindtap="goOrderDetail" data-order-id="{{item.orderId}}">查看订单</button>
+        <button
+          class="cu-btn line-green sm round"
+          open-type="contact"
+          bindcontact="handleContact"
+          send-message-title="售后订单 {{item.orderNo}} 咨询"
+          send-message-path="/pages/order/after-sale-list/index?afterSaleStatus={{parameter.afterSaleStatus || 'ALL'}}"
+          send-message-img="{{item.picUrl ? item.picUrl : '/public/img/no_pic.png'}}"
+          show-message-card="true"
+        >
+          售后咨询
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <view wx:else class="after-sale-empty">
+    <view class="after-sale-empty-title">暂无售后记录</view>
+    <view class="after-sale-empty-desc">{{currentFilterTip}}</view>
+  </view>
+
+  <view class="cu-load bg-gray {{loadmore ? 'loading' : 'over'}}"></view>
+</view>

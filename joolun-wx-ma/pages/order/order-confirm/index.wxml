@@ -1,13 +1,17 @@
 <!--
-  - Copyright (C) 2018-2019
-  - All rights reserved, Designed By www.joolun.com
-  - 注意：
-  - 本软件为www.joolun.com开发研制，项目使用请保留此说明
+  Copyright (C) 2026
+  All rights reserved, Designed By www.joolun.com
+  注意：
+  本软件为www.joolun.com开发研制，项目使用请保留此说明
 -->
 <wxs module="numberUtil" src="../../../utils/numberUtil.wxs"></wxs>
 <view class="margin-bottom-bar">
+  <view class="member-alert" wx:if="{{mallConfig.needMemberPhoneForOrder && mallUser && mallUser.id && (mallUser.memberFlag !== '1' || !mallUser.mobile)}}">
+    <view class="member-alert-title">下单前需先完成会员绑定</view>
+    <view class="member-alert-desc">当前项目以绑定手机号作为会员认定标准，请先完成手机号授权，再继续提交订单。</view>
+  </view>
   <view class="cu-list menu-avatar">
-    <navigator class="cu-item" url='/pages/user/user-address/list/index?select=true' wx:if="{{orderSubParm.deliveryWay == '1'}}">
+    <navigator class="cu-item" url="/pages/user/user-address/list/index?select=true" wx:if="{{orderSubParm.deliveryWay == '1'}}">
       <view class="cu-avatar round cuIcon-location bg-black"></view>
       <view class="content loc-content" wx:if="{{userAddress}}">
         <view class="flex padding-top-sm">
@@ -16,7 +20,7 @@
           <view class="text-gray text-sm margin-left-sm">{{userAddress.telNum}}</view>
         </view>
         <view class="text-gray text-sm overflow-2 loc-info padding-bottom-sm address">
-						{{userAddress.provinceName}}{{userAddress.cityName}}{{ituserAddressem.countyName}}{{userAddress.detailInfo}}
+          {{userAddress.provinceName}}{{userAddress.cityName}}{{userAddress.countyName}}{{userAddress.detailInfo}}
         </view>
       </view>
       <view class="content loc-content" wx:if="{{!userAddress}}">
@@ -30,22 +34,23 @@
   <view class="cu-card article">
     <view class="cu-item">
       <view class="cu-list menu">
-        <view wx:for="{{ orderConfirmData }}" wx:key="index">
-            <view class="flex align-center">
-              <image src="{{item.picUrl ? item.picUrl : '/public/img/no_pic.png'}}" mode="aspectFill" class="row-img margin-top-xs"></image>
-             </view> 
-              <view class="row-info margin-left">
-                <view class="text-black margin-top-xl overflow-2">{{item.spuName}}</view>
-                <view class="text-gray text-sm margin-top-xs cu-tag round" wx:if="{{item.specInfo}}">{{item.specInfo}}</view>
-                <view class="flex margin-top-sm">
-                  <view class="flex-sub">
-                    <text class="text-price text-xl text-blue text-bold margin-top-sm">{{item.salesPrice}}</text>
-                  </view>
-                  <view class="flex-twice text-gray text-sm text-right margin-right">
-                    x{{item.quantity}}
-                  </view>
-                </view>
+        <!-- 订单确认商品列表：每一行都已经绑定 skuId 和规格文案。 -->
+        <view wx:for="{{orderConfirmData}}" wx:key="index">
+          <view class="flex align-center">
+            <image src="{{item.picUrl ? item.picUrl : '/public/img/no_pic.png'}}" mode="aspectFill" class="row-img margin-top-xs"></image>
+          </view>
+          <view class="row-info margin-left">
+            <view class="text-black margin-top-xl overflow-2">{{item.spuName}}</view>
+            <view class="text-gray text-sm margin-top-xs cu-tag round" wx:if="{{item.specInfo}}">{{item.specInfo}}</view>
+            <view class="flex margin-top-sm">
+              <view class="flex-sub">
+                <text class="text-price text-xl text-blue text-bold margin-top-sm">{{item.salesPrice}}</text>
               </view>
+              <view class="flex-twice text-gray text-sm text-right margin-right">
+                x{{item.quantity}}
+              </view>
+            </view>
+          </view>
         </view>
         <view class="cu-item margin-top-sm">
           <text class="text-gray text-sm">订单金额</text>
@@ -59,7 +64,6 @@
             <view class="text-price">{{freightPrice}}</view>
           </view>
         </view>
-        
       </view>
     </view>
   </view>
@@ -67,19 +71,44 @@
     <view class="cu-item cu-form-group align-start" style="height:200rpx;">
       <input style="font-size:24rpx; margin-top:20rpx;" bindinput="userMessageInput" placeholder="给卖家留言"></input>
     </view>
-	</view>
+  </view>
+  <view class="notice-board">
+    <view class="notice-board__title">提交前须知</view>
+    <view class="notice-board__list">
+      <view class="notice-board__item" wx:for="{{orderNoticeList}}" wx:key="*this">
+        <text class="notice-board__dot"></text>
+        <text class="notice-board__text">{{item}}</text>
+      </view>
+    </view>
+  </view>
+  <view class="notice-board notice-board--warm">
+    <view class="notice-board__title">售后说明</view>
+    <view class="notice-board__list">
+      <view class="notice-board__item" wx:for="{{afterSaleNoticeList}}" wx:key="*this">
+        <text class="notice-board__dot notice-board__dot--warm"></text>
+        <text class="notice-board__text">{{item}}</text>
+      </view>
+    </view>
+  </view>
 </view>
 <view class="cu-bar tabbar bg-white border foot">
   <view class="flex response">
     <view class="flex-sub"></view>
     <view class="flex-treble bar-rt">
-      <text class="text-sm text-gray">共{{ orderConfirmData.length }}件，</text>
+      <text class="text-sm text-gray">共{{orderConfirmData.length}}件，</text>
       <text class="text-sm text-gray">合计：</text>
-      <text class="text-xl text-price text-blue text-bold">{{numberUtil.numberAddition(paymentPrice,freightPrice)}}</text>
-      <button class="cu-btn shadow-blur margin-left-sm" style="background-color: #2967ff;font-weight:300;width:220rpx;" bindtap="orderSub" loading="{{loading}}" disabled="{{loading}}" type="">
-        <text class="text-white">提交订单</text>
+      <text class="text-xl text-price text-blue text-bold">{{numberUtil.numberAddition(paymentPrice, freightPrice)}}</text>
+      <button
+        class="cu-btn shadow-blur margin-left-sm"
+        style="background-color: #2967ff;font-weight:300;width:220rpx;"
+        bindtap="orderSub"
+        loading="{{loading}}"
+        disabled="{{loading || !mallUser || !mallUser.id || (mallConfig.needMemberPhoneForOrder && (mallUser.memberFlag !== '1' || !mallUser.mobile))}}"
+        type=""
+      >
+        <text class="text-white">{{mallConfig.needMemberPhoneForOrder && mallUser && mallUser.id && (mallUser.memberFlag !== '1' || !mallUser.mobile) ? '先绑定手机号' : '提交订单'}}</text>
       </button>
     </view>
   </view>
 </view>
-<user-auth/>
+<user-auth switchOn="{{mallConfig.needMemberPhoneForOrder}}" bindchange="handleMallUserChange"/>

@@ -1,9 +1,10 @@
 <!--
-  - Copyright (C) 2018-2019
-  - All rights reserved, Designed By www.joolun.com
-  - 注意：
-  - 本软件为www.joolun.com开发研制，项目使用请保留此说明
+  Copyright (C) 2026
+  All rights reserved, Designed By www.joolun.com
+  注意：
+  本软件为www.joolun.com开发研制，项目使用请保留此说明
 -->
+
 <scroll-view scroll-x class="bg-white nav fixed">
   <view class="flex text-center">
     <view class="cu-item flex-sub {{index==tabCur?'text-blue cur':''}}" wx:for="{{orderStatus}}" wx:key="index" 
@@ -13,6 +14,23 @@
   </view>
 </scroll-view>
 <view class="margin-top-bar">
+  <view class="order-filter-board">
+    <view class="order-filter-header">
+      <view class="order-filter-title">售后快捷筛选</view>
+      <view class="order-filter-link" bindtap="goAfterSaleCenter">进入售后中心</view>
+    </view>
+    <view class="order-filter-chip-list">
+      <view
+        class="order-filter-chip {{parameter.afterSaleStatus == item.key ? 'is-active' : ''}}"
+        wx:for="{{afterSaleQuickFilters}}"
+        wx:key="key"
+        bindtap="afterSaleFilterSelect"
+        data-key="{{item.key}}"
+      >
+        {{item.label}}
+      </view>
+    </view>
+  </view>
   <view class="cu-card article">
     <view class="cu-item" wx:for="{{ orderList }}" wx:key="index" wx:for-index="index">
       <navigator hover-class='none' url='/pages/order/order-detail/index?id={{item.id}}'>
@@ -23,6 +41,10 @@
           <view class="action text-red">
             {{item.statusDesc}}
           </view>
+        </view>
+        <view class="order-after-sale-summary" wx:if="{{item.orderAfterSaleStatus}}">
+          <view class="order-after-sale-tag {{item.orderAfterSaleStatus.type}}">{{item.orderAfterSaleStatus.label}}</view>
+          <view class="order-after-sale-text">{{item.orderAfterSaleSummary}}</view>
         </view>
         <view class="cu-item padding-bottom" wx:for="{{ item.listOrderItem }}" wx:for-item="item2" wx:key="index" wx:for-index="index2">
           <view class="content">
@@ -36,11 +58,10 @@
               </view>
             </view>
           </view>
-          <view class="cu-item text-right padding-sm" catchtap wx:if="{{item2.status != '0'&&item2.statusDesc}}">
-            <navigator class="cu-btn line sm text-orange" 
-              url='/pages/order/order-refunds/form/index?orderItemId={{item2.id}}'>
-              {{item2.statusDesc}}
-            </navigator>
+          <view class="cu-item text-right padding-sm" catchtap wx:if="{{item2.afterSaleVisible}}">
+            <view class="cu-btn line sm text-orange after-sale-status-btn">
+              {{item2.afterSaleStatusText}}
+            </view>
           </view>
         </view>
       </navigator>
@@ -53,6 +74,10 @@
         bind:unifiedOrder="unifiedOrder"
         data-index="{{index}}"/>
     </view>
+  </view>
+  <view class="order-empty-board" wx:if="{{orderList.length <= 0}}">
+    <view class="order-empty-title">暂无订单</view>
+    <view class="order-empty-desc">当前筛选条件下没有匹配订单，可以切换订单状态或售后筛选继续查看。</view>
   </view>
   <view class="cu-load bg-gray {{loadmore?'loading':'over'}}"></view>
 </view>

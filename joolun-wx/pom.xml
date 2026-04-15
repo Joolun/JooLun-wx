@@ -6,14 +6,13 @@
 	
     <groupId>com.joolun</groupId>
     <artifactId>joolun-wx</artifactId>
-    <version>3.8.8</version>
+    <version>3.9.0</version>
 
     <name>joolun-wx</name>
     <url>http://www.joolun.com</url>
     <description>joolun商城管理系统</description>
     
     <properties>
-        <joolun.version>3.8.8</joolun.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>17</java.version>
@@ -153,35 +152,35 @@
             <dependency>
                 <groupId>com.joolun</groupId>
                 <artifactId>joolun-quartz</artifactId>
-                <version>${joolun.version}</version>
+                <version>${project.version}</version>
             </dependency>
 
             <!-- 代码生成-->
             <dependency>
                 <groupId>com.joolun</groupId>
                 <artifactId>joolun-generator</artifactId>
-                <version>${joolun.version}</version>
+                <version>${project.version}</version>
             </dependency>
 
             <!-- 核心模块-->
             <dependency>
                 <groupId>com.joolun</groupId>
                 <artifactId>joolun-framework</artifactId>
-                <version>${joolun.version}</version>
+                <version>${project.version}</version>
             </dependency>
 
             <!-- 系统模块-->
             <dependency>
                 <groupId>com.joolun</groupId>
                 <artifactId>joolun-system</artifactId>
-                <version>${joolun.version}</version>
+                <version>${project.version}</version>
             </dependency>
 
             <!-- 通用工具-->
             <dependency>
                 <groupId>com.joolun</groupId>
                 <artifactId>joolun-common</artifactId>
-                <version>${joolun.version}</version>
+                <version>${project.version}</version>
             </dependency>
 
             <!-- 微信模块-->

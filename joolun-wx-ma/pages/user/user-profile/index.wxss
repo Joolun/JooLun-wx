@@ -1,0 +1,106 @@
+/**
+ * Copyright (C) 2026
+ * All rights reserved, Designed By www.joolun.com
+ * 注意：
+ * 本软件为www.joolun.com开发研制，项目使用请保留此说明
+ */
+
+page {
+  background-color: #f3f4f7 !important;
+}
+
+.profile-page {
+  padding: 24rpx;
+}
+
+.profile-hero {
+  margin-bottom: 24rpx;
+  padding: 36rpx 28rpx;
+  border-radius: 36rpx;
+  background: linear-gradient(135deg, #fff7ef 0%, #ffffff 58%, #f8efe5 100%);
+  box-shadow: 0 24rpx 60rpx rgba(162, 122, 81, 0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-avatar {
+  margin: auto;
+}
+
+.profile-name {
+  margin-top: 22rpx;
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #221a14;
+}
+
+.profile-no {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #7d6653;
+}
+
+.profile-tag {
+  margin-top: 14rpx;
+  padding: 10rpx 24rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.profile-tag.is-member {
+  background: rgba(199, 134, 63, 0.16);
+  color: #9a5a19;
+}
+
+.profile-tag.is-guest {
+  background: rgba(34, 26, 20, 0.08);
+  color: #5a4d43;
+}
+
+.profile-auth {
+  margin-top: 22rpx;
+  background: #221a14;
+  color: #fff;
+}
+
+.picker,
+.readonly-text {
+  flex: 1;
+  text-align: right;
+  color: #303133;
+}
+
+.phone-bind-btn {
+  margin-left: 20rpx;
+  background: #c7863f;
+  color: #fff;
+}
+
+.profile-tips {
+  margin-top: 24rpx;
+  padding: 24rpx 28rpx;
+  border-radius: 28rpx;
+  background: #ffffff;
+  box-shadow: 0 20rpx 40rpx rgba(17, 22, 33, 0.05);
+}
+
+.tips-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #241b15;
+}
+
+.tips-text {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: #8d7765;
+}
+
+.profile-save {
+  margin-top: 28rpx;
+  background: #c7863f;
+  color: #fff;
+}

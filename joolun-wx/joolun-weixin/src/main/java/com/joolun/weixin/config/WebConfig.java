@@ -1,3 +1,9 @@
+/**
+ * Copyright (C) 2026
+ * All rights reserved, Designed By www.joolun.com
+ * 注意：
+ * 本软件为www.joolun.com开发研制，项目使用请保留此说明
+ */
 package com.joolun.weixin.config;
 
 import com.joolun.weixin.interceptor.ThirdSessionInterceptor;
@@ -9,6 +15,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * web配置
+ *
+ * @author www.joolun.com
  */
 @Configuration
 @AllArgsConstructor
@@ -26,7 +34,8 @@ public class WebConfig implements WebMvcConfigurer {
 		 */
 		registry.addInterceptor(new ThirdSessionInterceptor(redisTemplate))
 				.addPathPatterns("/weixin/api/**")//拦截/api/**接口
-				.excludePathPatterns("/weixin/api/ma/wxuser/login",
+				.excludePathPatterns("/weixin/api/ma/malluser/login",
+						"/weixin/api/ma/wxuser/login",
 						"/weixin/api/ma/orderinfo/notify-order",
 						"/weixin/api/ma/orderinfo/notify-logisticsr",
 						"/weixin/api/ma/orderinfo/notify-refunds");//放行接口

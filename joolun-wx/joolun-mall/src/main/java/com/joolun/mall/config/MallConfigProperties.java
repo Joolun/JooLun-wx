@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2018-2019
+ * Copyright (C) 2026
  * All rights reserved, Designed By www.joolun.com
  * 注意：
  * 本软件为www.joolun.com开发研制，项目使用请保留此说明
@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * 商城相关配置
  *
- * @author
+ * @author www.joolun.com
  */
 @Data
 @Configuration

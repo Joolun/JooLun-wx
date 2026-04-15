@@ -1,113 +1,150 @@
 <!--
-  - Copyright (C) 2018-2019
-  - All rights reserved, Designed By www.joolun.com
-  - 注意：
-  - 本软件为www.joolun.com开发研制，项目使用请保留此说明
+  Copyright (C) 2026
+  All rights reserved, Designed By www.joolun.com
+  注意：
+  本软件为www.joolun.com开发研制，项目使用请保留此说明
 -->
+
 <view class="cu-bar search bg-white fixed" style="box-shadow:none">
   <view class="search-form">
     <text class="cuIcon-search"></text>
-    <navigator class="response" hover-class='none' url='/pages/base/search/index'>
+    <navigator class="response" hover-class="none" url="/pages/base/search/index">
       <input type="text" placeholder="请输入商品名"></input>
     </navigator>
   </view>
 </view>
-<view class="margin-top-bar bg-white">
-<navigator hover-class="none" url='/pages/goods/goods-detail/index?id=1442505794278191105'>
-  <swiper class="screen-swiper square-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500" bindchange="change" indicator-color="#cccccc" indicator-active-color="#676767">
-    <swiper-item wx:for="{{swiperData}}" wx:key="index" class="margin-top-sm">
-      <image class="swiper-image" src="{{item}}"></image>
-    </swiper-item>
-  </swiper>
-</navigator>
-<view class="cu-list grid no-border justify-around">
-  <navigator class="cu-item" hover-class="none" url='/pages/goods/goods-detail/index?id=1442505794278191105'>
-    <image class="nav-image" src="/public/img/6-1.png"></image>
-		<text class="text-black">iPhone</text>
-  </navigator>
-  <navigator class="cu-item" hover-class="none" url='/pages/goods/goods-detail/index?id=1442512382615416833'>
-    <image class="nav-image" src="/public/img/6-2.png"></image>
-		<text class="text-black">iPad</text>
-  </navigator>
-  <navigator class="cu-item" hover-class="none" url='/pages/goods/goods-detail/index?id=1442512958581436418'>
-    <image class="nav-image" src="/public/img/6-3.png"></image>
-		<text class="text-black">Mac</text>
-  </navigator>
-  <navigator class="cu-item" hover-class="none" url='/pages/goods/goods-detail/index?id=1442513594978988034'>
-    <image class="nav-image" src="/public/img/6-4.png"></image>
-		<text class="text-black">Watch</text>
-  </navigator>
-  <navigator class="cu-item" hover-class="none" url='/pages/goods/goods-detail/index?id=1442514202062548994'>
-    <image class="nav-image" src="/public/img/6-5.png"></image>
-		<text class="text-black">AirPods</text>
-  </navigator>
-</view>
-<!-- 公告 -->
-<view class="adsec light bg-white margin-top-sm">
-  <swiper class="swiper_container" autoplay="true" circular="true" interval="6000">
-    <swiper-item>
-      <view class="bg-white padding-left-sm text-black">
-        <text class="cu-tag line-black text-bold">公告</text>
-        <text class="details margin-left">再见2020，你好2021！</text>
-      </view>
-    </swiper-item>
-    <swiper-item >
-      <view class="bg-white padding-left-sm text-black">
-        <text class="cu-tag line-black text-bold">注意</text>
-        <text class="details margin-left">演示商城，不发货不退款</text>
-      </view>
-    </swiper-item>
-  </swiper>
-</view>
 
-<navigator hover-class="none" url='/pages/goods/goods-detail/index?id=1442505794278191105'>
-  <image class="margin-top-sm goods-image" src="https://joolun-base-test.oss-cn-zhangjiakou.aliyuncs.com/1/material/055f3304-13d1-43c8-8547-326cc3efc7fc.jpg"></image>
-  <view class="flex justify-between margin-top-sm align-center padding-lr">
-    <view class="text-black">RMB 7999 起</view>
-    <view class="cu-btn round bg-gray text-white buy-now">购买</view>
-  </view>
-</navigator>
-<navigator hover-class="none" url='/pages/goods/goods-detail/index?id=1442512050032275457'>
-  <image class="margin-top-xl goods-image" src="https://joolun-base-test.oss-cn-zhangjiakou.aliyuncs.com/1/material/2f290591-8351-4be8-a9ab-6277d007b8c7.jpg"></image>
-  <view class="flex justify-between margin-top-sm align-center padding-lr padding-bottom">
-    <view class="text-black">RMB 3799 起</view>
-    <view class="cu-btn round bg-gray text-white buy-now">购买</view>
-  </view>
-</navigator>
-<!--<ad unit-id="{{config.adBannerID}}" wx:if="{{config.adEnable}}"></ad>-->
-  <view class='wrapper bg-white margin-top-xl'>
-    <view class="cu-bar text-black">
-      <view class='action margin-left-sm'>
-        <text class="text-xxl text-bold">热销单品</text>
+<view class="margin-top-bar bg-white">
+  <block wx:for="{{homeSections}}" wx:key="id" wx:for-item="section">
+    <block wx:if="{{section.itemType == 'banner'}}">
+      <swiper class="screen-swiper square-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500" indicator-color="#cccccc" indicator-active-color="#676767">
+        <swiper-item wx:for="{{section.content.items}}" wx:key="index">
+          <view
+            class="banner-item"
+            data-link-type="{{item.linkType}}"
+            data-link-value="{{item.linkValue}}"
+            bindtap="handleTemplateLinkTap"
+          >
+            <image class="swiper-image" src="{{item.imageUrl}}"></image>
+          </view>
+        </swiper-item>
+      </swiper>
+    </block>
+
+    <block wx:elif="{{section.itemType == 'nav'}}">
+      <view class="cu-list grid no-border justify-around nav-section">
+        <view
+          wx:for="{{section.content.items}}"
+          wx:key="index"
+          class="cu-item"
+          data-link-type="{{item.linkType}}"
+          data-link-value="{{item.linkValue}}"
+          bindtap="handleTemplateLinkTap"
+        >
+          <image class="nav-image" src="{{item.imageUrl}}"></image>
+          <text class="text-black">{{item.title}}</text>
+        </view>
       </view>
-      <navigator hover-class="none" url='/pages/goods/goods-list/index?type=2' class='action'>
-        更多<text class='cuIcon-right'></text>
-      </navigator>
-    </view>
-    <view class='wrapper-list bg-white radius'>
-      <scroll-view class="scroll-view_x hot-goods" scroll-x>
-        <block wx:for="{{goodsListHot}}" wx:key="index">
-          <navigator hover-class="none" url='/pages/goods/goods-detail/index?id={{item.id}}' class='item'>
-            <view class='text-cut text-bold text-xxl text-black margin-top-sm'>{{item.name}}</view>
-            <view class='text-cut text-sm text-gray margin-top-sm'>{{item.sellPoint}}</view>
-            <view class='img-box margin-top-xl'>
-              <image src="{{item.picUrls[0] ? item.picUrls[0] : '/public/img/no_pic.png'}}"></image>
+    </block>
+
+    <block wx:elif="{{section.itemType == 'notice'}}">
+      <view class="adsec light bg-white margin-top-sm">
+        <swiper class="swiper_container" autoplay="true" circular="true" interval="6000">
+          <swiper-item wx:for="{{section.content.items}}" wx:key="index">
+            <view class="bg-white padding-left-sm text-black">
+              <text class="cu-tag line-black text-bold">{{item.tag}}</text>
+              <text class="details margin-left">{{item.text}}</text>
             </view>
-            <view class="flex justify-between margin-top">
-              <view class="text-df padding-top-sm"><text class="text-price">{{item.salesPrice}}</text> 起</view>
-              <view class="cu-btn round shadow-blur text-white buy-now">购买</view>
-            </view>
-          </navigator>
-        </block>  
-      </scroll-view>
-    </view>
-  </view>
-  <view class="cu-bar">
-      <view class='action'>
-        <text class="text-xxl text-bold text-black">猜你喜欢</text> 
+          </swiper-item>
+        </swiper>
       </view>
-    </view>
-  <goods-card goodsList="{{goodsList}}"/>
+    </block>
+
+    <block wx:elif="{{section.itemType == 'image'}}">
+      <view class="activity-section">
+        <view
+          wx:for="{{section.content.items}}"
+          wx:key="index"
+          class="activity-item"
+          data-link-type="{{item.linkType}}"
+          data-link-value="{{item.linkValue}}"
+          bindtap="handleTemplateLinkTap"
+        >
+          <image class="activity-image" src="{{item.imageUrl}}"></image>
+        </view>
+      </view>
+    </block>
+
+    <block wx:elif="{{section.itemType == 'service'}}">
+      <view class="home-service-card bg-white margin-top-sm">
+        <view class="home-service-header">
+          <view>
+            <view class="home-service-title text-black">{{section.content.title}}</view>
+            <view class="home-service-desc">{{section.content.desc}}</view>
+          </view>
+          <button
+            class="cu-btn round home-service-btn"
+            open-type="contact"
+            bindcontact="handleHomeContact"
+            show-message-card="true"
+            send-message-title="{{serviceContactCard.homeTitle}}"
+            send-message-path="/pages/home/index"
+          >
+            {{section.content.contactButtonText}}
+          </button>
+        </view>
+        <view class="home-service-tag-list">
+          <view wx:for="{{section.content.tags}}" wx:key="index" class="home-service-tag">{{item}}</view>
+        </view>
+        <view class="home-service-shortcuts">
+          <button
+            class="home-service-shortcut is-primary"
+            open-type="contact"
+            bindcontact="handleGoodsContact"
+            show-message-card="true"
+            send-message-title="{{serviceContactCard.chooseGoodsTitle}}"
+            send-message-path="/pages/home/index"
+          >
+            {{section.content.goodsButtonText}}
+          </button>
+          <view class="home-service-shortcut" bindtap="goOrderProgressPage">{{section.content.orderButtonText}}</view>
+          <view class="home-service-shortcut" bindtap="goAfterSaleHelpPage">{{section.content.afterSaleButtonText}}</view>
+        </view>
+      </view>
+    </block>
+
+    <block wx:elif="{{section.itemType == 'goods'}}">
+      <view class="goods-group">
+        <view class="cu-bar text-black goods-group-header">
+          <view class="action margin-left-sm">
+            <text class="text-xxl text-bold">{{section.content.title}}</text>
+            <text wx:if="{{section.content.subTitle}}" class="goods-group-sub-title">{{section.content.subTitle}}</text>
+          </view>
+          <view
+            wx:if="{{section.content.moreLinkType != 'none' && section.content.moreLinkValue}}"
+            class="action goods-group-more"
+            data-link-type="{{section.content.moreLinkType}}"
+            data-link-value="{{section.content.moreLinkValue}}"
+            bindtap="handleTemplateLinkTap"
+          >
+            {{section.content.moreText}}<text class="cuIcon-right"></text>
+          </view>
+        </view>
+        <goods-card goodsList="{{section.content.goodsList}}"/>
+      </view>
+    </block>
+  </block>
   <view class="cu-load bg-white {{loadmore?'loading':'over'}}"></view>
 </view>
-<ad unit-id="{{config.adBannerID}}" wx:if="{{config.adEnable}}"></ad>
+
+<button
+  class="home-service-float"
+  open-type="contact"
+  bindcontact="handleHomeContact"
+  show-message-card="true"
+  send-message-title="{{serviceContactCard.homeTitle}}"
+  send-message-path="/pages/home/index"
+>
+  <text class="home-service-float-icon">咨</text>
+  <text class="home-service-float-text">客服</text>
+</button>

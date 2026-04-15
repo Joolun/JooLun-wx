@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (C) 2018-2019
-  ~ All rights reserved, Designed By www.joolun.com
-  ~ 注意：
-  ~ 本软件为www.joolun.com开发研制，项目使用请保留此说明
-  -->
+  Copyright (C) 2026
+  All rights reserved, Designed By www.joolun.com
+  注意：
+  本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.joolun.mall.mapper.OrderItemMapper">
 
+	<!--
+		订单商品快照映射。
+		specInfo 和 skuId 都来自下单时冻结的数据，后续展示不再依赖实时商品表。
+	-->
 	<resultMap id="orderItemMap" type="com.joolun.mall.entity.OrderItem">
 		<id property="id" column="id"/>
 		<result property="delFlag" column="del_flag"/>
@@ -16,6 +20,7 @@
 		<result property="updateTime" column="update_time"/>
 		<result property="orderId" column="order_id"/>
 		<result property="spuId" column="spu_id"/>
+		<result property="skuId" column="sku_id"/>
 		<result property="spuName" column="spu_name"/>
 		<result property="picUrl" column="pic_url"/>
 		<result property="quantity" column="quantity"/>
@@ -25,30 +30,158 @@
 		<result property="remark" column="remark"/>
 		<result property="status" column="status"/>
 		<result property="isRefund" column="is_refund"/>
+		<result property="specInfo" column="spec_info"/>
+		<result property="refundReason" column="refund_reason"/>
+		<result property="refundApplyTime" column="refund_apply_time"/>
+		<result property="refundAuditRemark" column="refund_audit_remark"/>
+		<result property="refundAuditTime" column="refund_audit_time"/>
+		<result property="refundSuccessTime" column="refund_success_time"/>
 	</resultMap>
 
+	<resultMap id="orderItemAfterSaleMap" extends="orderItemMap" type="com.joolun.mall.entity.OrderItem">
+		<result property="orderNo" column="order_no"/>
+		<result property="userId" column="user_id"/>
+		<result property="userNo" column="user_no"/>
+		<result property="userNickName" column="user_nick_name"/>
+		<result property="userRealName" column="user_real_name"/>
+		<result property="userMobile" column="user_mobile"/>
+		<result property="userAvatarUrl" column="user_avatar_url"/>
+		<result property="orderStatus" column="order_status"/>
+		<result property="orderIsPay" column="order_is_pay"/>
+		<result property="orderCreateTime" column="order_create_time"/>
+		<result property="orderPaymentTime" column="order_payment_time"/>
+		<result property="orderDeliveryTime" column="order_delivery_time"/>
+		<result property="orderReceiverTime" column="order_receiver_time"/>
+	</resultMap>
+
+	<!-- 订单商品明细基础查询字段。 -->
 	<sql id="orderItemSql">
-		order_item.`id`,
-		order_item.`del_flag`,
-		order_item.`create_time`,
-		order_item.`update_time`,
-		order_item.`order_id`,
-		order_item.`spu_id`,
-		order_item.`spu_name`,
-		order_item.`pic_url`,
-		order_item.`quantity`,
-		order_item.`sales_price`,
-		order_item.`freight_price`,
-		order_item.`payment_price`,
-		order_item.`remark`,
-		order_item.`status`,
-		order_item.`is_refund`
+		mall_order_item.`id`,
+		mall_order_item.`del_flag`,
+		mall_order_item.`create_time`,
+		mall_order_item.`update_time`,
+		mall_order_item.`order_id`,
+		mall_order_item.`spu_id`,
+		mall_order_item.`sku_id`,
+		mall_order_item.`spu_name`,
+		mall_order_item.`pic_url`,
+		mall_order_item.`quantity`,
+		mall_order_item.`sales_price`,
+		mall_order_item.`freight_price`,
+		mall_order_item.`payment_price`,
+		mall_order_item.`remark`,
+		mall_order_item.`status`,
+		mall_order_item.`is_refund`,
+		mall_order_item.`spec_info`,
+		mall_order_item.`refund_reason`,
+		mall_order_item.`refund_apply_time`,
+		mall_order_item.`refund_audit_remark`,
+		mall_order_item.`refund_audit_time`,
+		mall_order_item.`refund_success_time`
 	</sql>
 
+	<sql id="orderItemAfterSaleWhere">
+		<where>
+			AND (
+				(mall_order_item.`status` IN ('1', '2', '3') AND mall_order_item.`is_refund` = '0')
+				OR mall_order_item.`is_refund` = '1'
+			)
+			<if test="query.userId != null and query.userId != ''">
+				AND mall_order_info.`user_id` = #{query.userId}
+			</if>
+			<if test="query.afterSaleStatus != null and query.afterSaleStatus != '' and query.afterSaleStatus != 'ALL'.toString()">
+				<choose>
+					<when test="query.afterSaleStatus == '1'.toString()">
+						AND mall_order_item.`status` = '1'
+						AND mall_order_item.`is_refund` = '0'
+					</when>
+					<when test="query.afterSaleStatus == '2'.toString()">
+						AND mall_order_item.`status` = '2'
+						AND mall_order_item.`is_refund` = '0'
+					</when>
+					<when test="query.afterSaleStatus == '3'.toString()">
+						AND mall_order_item.`status` = '3'
+						AND mall_order_item.`is_refund` = '0'
+					</when>
+					<when test="query.afterSaleStatus == '4'.toString()">
+						AND mall_order_item.`is_refund` = '1'
+					</when>
+				</choose>
+			</if>
+			<if test="query.orderNo != null and query.orderNo != ''">
+				AND mall_order_info.`order_no` LIKE CONCAT('%', #{query.orderNo}, '%')
+			</if>
+			<if test="query.userNo != null and query.userNo != ''">
+				AND mall_user.`user_no` LIKE CONCAT('%', #{query.userNo}, '%')
+			</if>
+			<if test="query.userNickName != null and query.userNickName != ''">
+				AND mall_user.`nick_name` LIKE CONCAT('%', #{query.userNickName}, '%')
+			</if>
+			<if test="query.userRealName != null and query.userRealName != ''">
+				AND mall_user.`real_name` LIKE CONCAT('%', #{query.userRealName}, '%')
+			</if>
+			<if test="query.userMobile != null and query.userMobile != ''">
+				AND mall_user.`mobile` LIKE CONCAT('%', #{query.userMobile}, '%')
+			</if>
+			<if test="query.spuNameKeyword != null and query.spuNameKeyword != ''">
+				AND mall_order_item.`spu_name` LIKE CONCAT('%', #{query.spuNameKeyword}, '%')
+			</if>
+			<if test="query.beginTime != null">
+				AND mall_order_item.`refund_apply_time` >= #{query.beginTime}
+			</if>
+			<if test="query.endTime != null">
+				AND mall_order_item.`refund_apply_time` &lt;= #{query.endTime}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 按订单主键查询所有订单项。 -->
 	<select id="selectList2" resultMap="orderItemMap">
 		SELECT
 		<include refid="orderItemSql"/>
-		FROM order_item order_item
-		WHERE order_item.`order_id` = #{orderId}
+		FROM mall_order_item mall_order_item
+		WHERE mall_order_item.`order_id` = #{orderId}
+	</select>
+
+	<select id="selectAfterSalePage" resultMap="orderItemAfterSaleMap">
+		SELECT
+		<include refid="orderItemSql"/>,
+		mall_order_info.`order_no`,
+		mall_order_info.`user_id`,
+		mall_order_info.`status` AS `order_status`,
+		mall_order_info.`is_pay` AS `order_is_pay`,
+		mall_order_info.`create_time` AS `order_create_time`,
+		mall_order_info.`payment_time` AS `order_payment_time`,
+		mall_order_info.`delivery_time` AS `order_delivery_time`,
+		mall_order_info.`receiver_time` AS `order_receiver_time`,
+		mall_user.`user_no`,
+		mall_user.`nick_name` AS `user_nick_name`,
+		mall_user.`real_name` AS `user_real_name`,
+		mall_user.`mobile` AS `user_mobile`,
+		mall_user.`avatar_url` AS `user_avatar_url`
+		FROM mall_order_item mall_order_item
+		LEFT JOIN mall_order_info mall_order_info ON mall_order_info.`id` = mall_order_item.`order_id`
+		LEFT JOIN mall_user mall_user ON mall_user.`id` = mall_order_info.`user_id`
+		<include refid="orderItemAfterSaleWhere"/>
+	</select>
+
+	<select id="selectAfterSaleSummary" resultType="java.util.HashMap">
+		SELECT
+		COUNT(1) AS `totalCount`,
+		COALESCE(SUM(CASE WHEN result_set.`status` = '1' AND result_set.`is_refund` = '0' THEN 1 ELSE 0 END), 0) AS `applyingCount`,
+		COALESCE(SUM(CASE WHEN result_set.`status` = '2' AND result_set.`is_refund` = '0' THEN 1 ELSE 0 END), 0) AS `rejectCount`,
+		COALESCE(SUM(CASE WHEN result_set.`status` = '3' AND result_set.`is_refund` = '0' THEN 1 ELSE 0 END), 0) AS `waitingRefundCount`,
+		COALESCE(SUM(CASE WHEN result_set.`is_refund` = '1' THEN 1 ELSE 0 END), 0) AS `refundedCount`,
+		COALESCE(SUM(result_set.`payment_price`), 0) AS `refundAmount`
+		FROM (
+			SELECT
+			mall_order_item.`status`,
+			mall_order_item.`is_refund`,
+			mall_order_item.`payment_price`
+			FROM mall_order_item mall_order_item
+			LEFT JOIN mall_order_info mall_order_info ON mall_order_info.`id` = mall_order_item.`order_id`
+			LEFT JOIN mall_user mall_user ON mall_user.`id` = mall_order_info.`user_id`
+			<include refid="orderItemAfterSaleWhere"/>
+		) result_set
 	</select>
 </mapper>

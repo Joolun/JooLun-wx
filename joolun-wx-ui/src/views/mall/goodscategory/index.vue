@@ -1,7 +1,10 @@
 <!--
-  - Copyright (C) 2024
-  - All rights reserved, Designed By www.joolun.com
+  Copyright (C) 2026
+  All rights reserved, Designed By www.joolun.com
+  注意：
+  本软件为www.joolun.com开发研制，项目使用请保留此说明
 -->
+
 <template>
   <div>
     <avue-crud
@@ -37,6 +40,13 @@
           v-model="form.picUrl"
         />
       </template>
+      <template #picUrl="scope">
+        <el-image
+          style="width: 80px; height: 80px"
+          :src="resolvePicUrl(scope.row.picUrl)"
+          fit="cover"
+        />
+      </template>
     </avue-crud>
   </div>
 </template>
@@ -51,6 +61,7 @@ import {
   delObj,
 } from "@/api/mall/goodscategory";
 import { tableOption } from "@/const/crud/mall/goodscategory";
+import { resolveMallImageUrl } from "@/utils/mall-image";
 
 const { proxy } = getCurrentInstance();
 const crud = ref(null);
@@ -170,6 +181,10 @@ function handleSave(row, done, loading) {
 
 function refreshChange(page) {
   getPageF(data.page);
+}
+
+function resolvePicUrl(picUrl) {
+  return resolveMallImageUrl(picUrl);
 }
 </script>
 <style lang="scss" scoped></style>

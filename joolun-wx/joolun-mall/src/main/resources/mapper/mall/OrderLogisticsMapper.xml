@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (C) 2018-2019
-  ~ All rights reserved, Designed By www.joolun.com
-  ~ 注意：
-  ~ 本软件为www.joolun.com开发研制，项目使用请保留此说明
-  -->
+  Copyright (C) 2026
+  All rights reserved, Designed By www.joolun.com
+  注意：
+  本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.joolun.mall.mapper.OrderLogisticsMapper">
@@ -30,25 +30,25 @@
 	</resultMap>
 
 	<sql id="orderLogisticsSql">
-		order_logistics.`id`,
-		order_logistics.`del_flag`,
-		order_logistics.`create_time`,
-		order_logistics.`update_time`,
-		order_logistics.`postal_code`,
-		order_logistics.`user_name`,
-		order_logistics.`tel_num`,
-		order_logistics.`address`,
-		order_logistics.`logistics`,
-		order_logistics.`logistics_no`,
-		order_logistics.`status`,
-		order_logistics.`is_check`,
-		order_logistics.`message`
+		mall_order_logistics.`id`,
+		mall_order_logistics.`del_flag`,
+		mall_order_logistics.`create_time`,
+		mall_order_logistics.`update_time`,
+		mall_order_logistics.`postal_code`,
+		mall_order_logistics.`user_name`,
+		mall_order_logistics.`tel_num`,
+		mall_order_logistics.`address`,
+		mall_order_logistics.`logistics`,
+		mall_order_logistics.`logistics_no`,
+		mall_order_logistics.`status`,
+		mall_order_logistics.`is_check`,
+		mall_order_logistics.`message`
 	</sql>
 
 	<select id="selectById2" resultMap="orderLogisticsMap2">
 		SELECT
 		<include refid="orderLogisticsSql"/>
-		FROM order_logistics order_logistics
-		WHERE order_logistics.`id` = #{id}
+		FROM mall_order_logistics mall_order_logistics
+		WHERE mall_order_logistics.`id` = #{id}
 	</select>
 </mapper>

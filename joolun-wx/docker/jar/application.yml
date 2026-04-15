@@ -94,7 +94,7 @@ token:
   # 令牌自定义标识
   header: Authorization
   # 令牌密钥
-  secret: abcdefghijklmnopqrstuvwxyz
+  secret: JLWX@2026#Mall_Token-Secret-Key_For_HS512_Auth_Sign_Use_At_Least_64_Chars_ABCDE12345FGHIJ67890KLMN
   # 令牌有效期（默认30分钟）
   expireTime: 30
 

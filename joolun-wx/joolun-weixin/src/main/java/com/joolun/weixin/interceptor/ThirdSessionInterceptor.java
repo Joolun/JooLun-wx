@@ -1,3 +1,9 @@
+/**
+ * Copyright (C) 2026
+ * All rights reserved, Designed By www.joolun.com
+ * 注意：
+ * 本软件为www.joolun.com开发研制，项目使用请保留此说明
+ */
 package com.joolun.weixin.interceptor;
 
 import cn.hutool.core.util.StrUtil;
@@ -23,7 +29,7 @@ import java.io.PrintWriter;
 
 /**
  * ThirdSession拦截器，校验每个请求的ThirdSession
- * @author
+ * @author www.joolun.com
  */
 @Slf4j
 @Component

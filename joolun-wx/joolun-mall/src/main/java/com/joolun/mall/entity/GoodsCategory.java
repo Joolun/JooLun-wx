@@ -1,6 +1,8 @@
 /**
- * Copyright (C) 2018-2019
+ * Copyright (C) 2026
  * All rights reserved, Designed By www.joolun.com
+ * 注意：
+ * 本软件为www.joolun.com开发研制，项目使用请保留此说明
  */
 package com.joolun.mall.entity;
 
@@ -21,7 +23,7 @@ import java.time.LocalDateTime;
  * @date 2019-08-12 11:46:28
  */
 @Data
-@TableName("goods_category")
+@TableName("mall_goods_category")
 @EqualsAndHashCode(callSuper = true)
 public class GoodsCategory extends Model<GoodsCategory> {
 private static final long serialVersionUID = 1L;

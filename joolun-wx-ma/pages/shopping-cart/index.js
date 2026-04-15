@@ -1,9 +1,22 @@
 /**
- * Copyright (C) 2018-2019
+ * Copyright (C) 2026
  * All rights reserved, Designed By www.joolun.com
  * 注意：
  * 本软件为www.joolun.com开发研制，项目使用请保留此说明
  */
+
+/**
+ * 版权所有 (C) 2018-2019 www.joolun.com
+ * 保留所有权利
+ * 注意：
+ * 本软件为 www.joolun.com 开发研制，项目使用请保留此说明
+ *
+ * 多规格改造说明：
+ * 1. 购物车记录现在以 skuId 为准，不再只依赖 spuId。
+ * 2. 价格和库存校验统一读取当前选中 SKU 的快照数据。
+ * 3. “修改规格”会把 skuId 和 shoppingCartId 一起带回详情页。
+ */
+const util = require('../../utils/util.js')
 const app = getApp()
 
 Page({
@@ -12,7 +25,7 @@ Page({
     page: {
       current: 1,
       size: 50,
-      ascs: '',//升序字段
+      ascs: '',
       descs: 'create_time'
     },
     parameter: {},
@@ -20,54 +33,52 @@ Page({
     operation: true,
     shoppingCartData: [],
     shoppingCartDataInvalid: [],
-    isAllSelect: false,//全选
+    isAllSelect: false,
     selectValue: [],
-    settlePrice: 0, //结算金额
+    settlePrice: 0,
     goodsSpu: [],
     shoppingCartSelect: []
   },
   onShow() {
-    //更新tabbar购物车数量
+    // 每次切回购物车页都重新拉取列表，保证价格、库存和勾选态及时刷新。
     wx.setTabBarBadge({
       index: 2,
       text: app.globalData.shoppingCartCount + ''
     })
     app.initPage()
-      .then(res => {
+      .then(() => {
         this.shoppingCartPage()
       })
   },
   onLoad: function () {
     app.initPage()
-      .then(res => {
+      .then(() => {
         this.goodsRecom()
       })
   },
-  //管理按键事件
   operation() {
     this.setData({
       operation: !this.data.operation
     })
     this.checkboxHandle(this.data.selectValue)
   },
-  //加载数据
-  shoppingCartPage(){
+  shoppingCartPage() {
+    // 将购物车记录拆成有效和失效两组，结算时只处理有效商品，逻辑更清晰。
     app.api.shoppingCartPage(this.data.page)
       .then(res => {
-        //更新购物车数量
         app.globalData.shoppingCartCount = res.data.total + ''
         wx.setTabBarBadge({
           index: 2,
           text: app.globalData.shoppingCartCount + ''
         })
 
-        let shoppingCartData = []
-        //过滤出失效商品
-        let shoppingCartDataInvalid = []
-        res.data.records.forEach(function (shoppingCart, index) {
-          if (!shoppingCart.goodsSpu || shoppingCart.goodsSpu.shelf == '0'){//下架或删除了
+        const shoppingCartData = []
+        const shoppingCartDataInvalid = []
+        res.data.records.forEach((record) => {
+          const shoppingCart = this.normalizeShoppingCart(record)
+          if (!shoppingCart.goodsSpu || shoppingCart.goodsSpu.shelf == '0') {
             shoppingCartDataInvalid.push(shoppingCart)
-          }else{
+          } else {
             shoppingCartData.push(shoppingCart)
           }
         })
@@ -76,13 +87,11 @@ Page({
           shoppingCartDataInvalid: shoppingCartDataInvalid,
           loadmore: false
         })
-        let selectValue = this.data.selectValue
-        if (selectValue.length > 0) {
-          this.checkboxHandle(selectValue)
+        if (this.data.selectValue.length > 0) {
+          this.checkboxHandle(this.data.selectValue)
         }
       })
   },
-  //推荐商品
   goodsRecom() {
     app.api.goodsPage({
       searchCount: false,
@@ -91,72 +100,77 @@ Page({
       descs: 'create_time'
     })
       .then(res => {
-        let goodsListRecom = res.data.records
         this.setData({
-          goodsListRecom: goodsListRecom
+          goodsListRecom: res.data.records
         })
       })
   },
-  //数量变化
+  normalizeShoppingCart(shoppingCart) {
+    const nextGoodsSpu = shoppingCart.goodsSpu
+      ? Object.assign({}, shoppingCart.goodsSpu, {
+        picUrls: util.normalizePicUrlList(shoppingCart.goodsSpu.picUrls)
+      })
+      : null
+    return Object.assign({}, shoppingCart, {
+      picUrl: util.resolveResourceUrl(shoppingCart.picUrl),
+      goodsSpu: nextGoodsSpu
+    })
+  },
   cartNumChang(e) {
-    let index = e.target.dataset.index
-    let shoppingCart = this.data.shoppingCartData[index]
-    let quantity = Number(e.detail)
+    // 数量变更时必须同时携带 spuId 和 skuId，后端才能准确定位到当前购物车行。
+    const index = e.target.dataset.index
+    const shoppingCart = this.data.shoppingCartData[index]
+    const quantity = Number(e.detail)
     this.setData({
       [`shoppingCartData[${index}].quantity`]: quantity
     })
     this.shoppingCartEdit({
       id: shoppingCart.id,
+      spuId: shoppingCart.spuId,
+      skuId: shoppingCart.skuId,
       quantity: quantity
     })
     this.countSelect()
   },
-  shoppingCartEdit(parm){
+  shoppingCartEdit(parm) {
     app.api.shoppingCartEdit(parm)
   },
-  //收藏
-  userCollectAdd(){
-    
+  userCollectAdd() {
   },
-  shoppingCartDel(){
-    let selectValue = this.data.selectValue
-    let that = this
-    if (selectValue.length > 0){
+  shoppingCartDel() {
+    const selectValue = this.data.selectValue
+    if (selectValue.length > 0) {
       wx.showModal({
-        content: '确认将这' + selectValue.length+'个宝贝删除',
+        content: '确认将这' + selectValue.length + '个宝贝删除？',
         cancelText: '我再想想',
         confirmColor: '#ff0000',
-        success(res) {
+        success: (res) => {
           if (res.confirm) {
             app.api.shoppingCartDel(selectValue)
-              .then(res => {
-                that.setData({
+              .then(() => {
+                this.setData({
                   selectValue: [],
                   isAllSelect: false,
                   settlePrice: 0
                 })
-                that.shoppingCartPage()
+                this.shoppingCartPage()
               })
           }
         }
       })
     }
   },
-  clearInvalid(){
-    let selectValue = []
-    let that = this
-    this.data.shoppingCartDataInvalid.forEach(function (shoppingCart, index) {
-      selectValue.push(shoppingCart.id)
-    })
+  clearInvalid() {
+    const selectValue = this.data.shoppingCartDataInvalid.map(item => item.id)
     wx.showModal({
       content: '确认清空失效的宝贝吗',
       cancelText: '我再想想',
       confirmColor: '#ff0000',
-      success(res) {
+      success: (res) => {
         if (res.confirm) {
           app.api.shoppingCartDel(selectValue)
-            .then(res => {
-              that.setData({
+            .then(() => {
+              this.setData({
                 shoppingCartDataInvalid: []
               })
             })
@@ -164,45 +178,49 @@ Page({
       }
     })
   },
-  checkboxHandle(selectValue){
-    let that = this
-    let shoppingCartData = this.data.shoppingCartData
+  checkboxHandle(selectValue) {
+    // 结算模式下需要过滤库存不足的商品，避免勾选后到了下单页再失败。
+    const shoppingCartData = this.data.shoppingCartData
+    const nextSelectValue = Array.isArray(selectValue) ? selectValue.slice() : []
     let isAllSelect = false
-    if (shoppingCartData.length == selectValue.length) { isAllSelect = true }
-    if (selectValue.length > 0) {
-      let shoppingCartIds = []
-      shoppingCartData.forEach(function (shoppingCart, index) {
+    if (shoppingCartData.length == nextSelectValue.length) { isAllSelect = true }
+    if (nextSelectValue.length > 0) {
+      const shoppingCartIds = []
+      shoppingCartData.forEach((shoppingCart) => {
         shoppingCartIds.push(shoppingCart.id)
-        let selectValueIndex = selectValue.indexOf(shoppingCart.id)
+        const selectValueIndex = nextSelectValue.indexOf(shoppingCart.id)
         if (selectValueIndex > -1) {
-          if (!that.data.operation){
+          if (!this.data.operation) {
             shoppingCart.checked = true
-          }else{//如果是购买操作，需过滤不符商品
+          } else {
             if (shoppingCart.goodsSpu && shoppingCart.quantity <= shoppingCart.goodsSpu.stock) {
               shoppingCart.checked = true
             } else {
               shoppingCart.checked = false
-              selectValue.splice(selectValueIndex, 1)
+              nextSelectValue.splice(selectValueIndex, 1)
             }
           }
         } else {
           shoppingCart.checked = false
         }
       })
-      selectValue.forEach(function (obj, index) {
+      nextSelectValue.slice().forEach((obj) => {
         if (shoppingCartIds.indexOf(obj) <= -1) {
-          selectValue.splice(index, 1)
+          const removeIndex = nextSelectValue.indexOf(obj)
+          if (removeIndex > -1) {
+            nextSelectValue.splice(removeIndex, 1)
+          }
         }
       })
-    }else{
-      shoppingCartData.forEach(function (shoppingCart, index) {
+    } else {
+      shoppingCartData.forEach((shoppingCart) => {
         shoppingCart.checked = false
       })
     }
     this.setData({
       shoppingCartData: shoppingCartData,
       isAllSelect: isAllSelect,
-      selectValue: selectValue
+      selectValue: nextSelectValue
     })
     this.countSelect()
   },
@@ -210,89 +228,93 @@ Page({
     this.checkboxHandle(e.detail.value)
   },
   checkboxAllChange(e) {
-    var value = e.detail.value;
-    if (value.length > 0) { 
-      this.setAllSelectValue(true) 
-    }else { 
-      this.setAllSelectValue(false) 
+    const value = e.detail.value
+    if (value.length > 0) {
+      this.setAllSelectValue(true)
+    } else {
+      this.setAllSelectValue(false)
     }
   },
   setAllSelectValue(status) {
-    let shoppingCartData = this.data.shoppingCartData
-    let selectValue = []
-    let that = this
+    const shoppingCartData = this.data.shoppingCartData
+    const selectValue = []
     if (shoppingCartData.length > 0) {
       if (status) {
-        shoppingCartData.forEach(function (shoppingCart, index) {
-          if (!that.data.operation) {
+        shoppingCartData.forEach((shoppingCart) => {
+          if (!this.data.operation) {
             selectValue.push(shoppingCart.id)
-          } else {//如果是购买操作，需过滤不符商品
-            if (shoppingCart.goodsSpu
-              && shoppingCart.quantity <= shoppingCart.goodsSpu.stock) {
-              selectValue.push(shoppingCart.id)
-            }
-          } 
+          } else if (shoppingCart.goodsSpu && shoppingCart.quantity <= shoppingCart.goodsSpu.stock) {
+            selectValue.push(shoppingCart.id)
+          }
         })
       }
       this.checkboxHandle(selectValue)
     }
   },
-  //计算结算值
   countSelect() {
-    let selectValue = this.data.selectValue
+    // 结算金额按当前 SKU 价格快照计算，不再直接使用 SPU 单规格价格。
+    const selectValue = this.data.selectValue
     let settlePrice = 0
-    if (selectValue.length <= 0) { 
-      this.setData({ 
+    if (selectValue.length <= 0) {
+      this.setData({
         settlePrice: settlePrice
-      }) 
-    }else {
-      this.data.shoppingCartData.forEach(function (shoppingCart, index) {
-        if (selectValue.indexOf(shoppingCart.id) > -1 
-            && shoppingCart.goodsSpu 
-          && shoppingCart.quantity <= shoppingCart.goodsSpu.stock) {
-          settlePrice = Number(settlePrice) + Number(shoppingCart.quantity) * Number(shoppingCart.goodsSpu.salesPrice)
+      })
+    } else {
+      this.data.shoppingCartData.forEach((shoppingCart) => {
+        if (
+          selectValue.indexOf(shoppingCart.id) > -1 &&
+          shoppingCart.goodsSpu &&
+          shoppingCart.quantity <= shoppingCart.goodsSpu.stock
+        ) {
+          const currentPrice = shoppingCart.goodsSpu.salesPrice || shoppingCart.addPrice
+          settlePrice = Number(settlePrice) + Number(shoppingCart.quantity) * Number(currentPrice)
         }
       })
-      this.setData({ 
-        settlePrice: settlePrice.toFixed(2) 
+      this.setData({
+        settlePrice: settlePrice.toFixed(2)
       })
     }
   },
-  //更换规格
-  changeSpecs(e){
-   
+  changeSpecs(e) {
+    // 跳回商品详情页时带上当前购物车行 id，改规格后仍然覆盖原购物车记录。
+    const index = e.currentTarget.dataset.index
+    const shoppingCart = this.data.shoppingCartData[index]
+    wx.navigateTo({
+      url: '/pages/goods/goods-detail/index?id=' + shoppingCart.spuId + '&skuId=' + shoppingCart.skuId + '&shoppingCartId=' + shoppingCart.id
+    })
   },
   goodsGet(id) {
     app.api.goodsGet(id)
       .then(res => {
-        let goodsSpu = res.data
         this.setData({
-          goodsSpu: goodsSpu
+          goodsSpu: res.data
         })
       })
   },
   operateCartEvent() {
     this.shoppingCartPage()
   },
-  //结算
-  orderConfirm(){
-    let params = []
-    let shoppingCartData = this.data.shoppingCartData
-    shoppingCartData.forEach(function (shoppingCart, index) {
-      if (shoppingCart.checked && shoppingCart.goodsSpu 
-        && shoppingCart.goodsSpu && shoppingCart.goodsSpu.shelf == '1'
-        && shoppingCart.quantity <= shoppingCart.goodsSpu.stock){
-        let param = {
+  orderConfirm() {
+    // 结算前把选中的 skuId 和规格文案一并缓存，下单确认页直接复用这份快照。
+    const params = []
+    this.data.shoppingCartData.forEach((shoppingCart) => {
+      if (
+        shoppingCart.checked &&
+        shoppingCart.goodsSpu &&
+        shoppingCart.goodsSpu.shelf == '1' &&
+        shoppingCart.quantity <= shoppingCart.goodsSpu.stock
+      ) {
+        params.push({
           spuId: shoppingCart.spuId,
+          skuId: shoppingCart.skuId,
           quantity: shoppingCart.quantity,
-          salesPrice: shoppingCart.goodsSpu.salesPrice,
+          salesPrice: shoppingCart.goodsSpu.salesPrice || shoppingCart.addPrice,
           spuName: shoppingCart.goodsSpu.name,
-          picUrl: shoppingCart.goodsSpu.picUrls?shoppingCart.goodsSpu.picUrls[0]:''
-        }
-        params.push(param)
+          picUrl: shoppingCart.picUrl || (shoppingCart.goodsSpu.picUrls ? shoppingCart.goodsSpu.picUrls[0] : ''),
+          specInfo: shoppingCart.specInfo || ''
+        })
       }
     })
-    /* 把参数信息异步存储到缓存当中 */
     wx.setStorage({
       key: 'param-orderConfirm',
       data: params

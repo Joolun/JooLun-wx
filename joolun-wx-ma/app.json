@@ -9,14 +9,16 @@
     "pages/order/order-confirm/index",
     "pages/order/order-list/index",
     "pages/order/order-detail/index",
+    "pages/order/after-sale-list/index",
     "pages/user/user-center/index",
+    "pages/user/user-profile/index",
     "pages/user/user-address/list/index",
     "pages/user/user-address/form/index"
   ],
   "window": {
     "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#fefefe",
-    "navigationBarTitleText": "WeChat",
+    "navigationBarTitleText": "JooLun 商城",
     "navigationBarTextStyle": "black"
   },
   "sitemapLocation": "sitemap.json",
@@ -54,7 +56,5 @@
   "requiredPrivateInfos": [
     "chooseAddress"
   ],
-  "usingComponents": {
-    
-  }
+  "usingComponents": {}
 }

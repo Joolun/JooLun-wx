@@ -1,3 +1,9 @@
+/**
+ * Copyright (C) 2026
+ * All rights reserved, Designed By www.joolun.com
+ * 注意：
+ * 本软件为www.joolun.com开发研制，项目使用请保留此说明
+ */
 package com.joolun.mall.enums;
 
 import com.baomidou.mybatisplus.annotation.IEnum;
@@ -9,6 +15,8 @@ import java.util.Map;
 
 /**
  * 快递单当前状态，包括-1错误，0在途，1揽收，2疑难，3签收，4退签，5派件，6退回，7转投 等7个状态
+ *
+ * @author www.joolun.com
  */
 public enum OrderLogisticsEnum implements IEnum<String> {
 

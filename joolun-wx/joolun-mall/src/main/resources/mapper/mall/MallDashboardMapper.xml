@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2026
+  All rights reserved, Designed By www.joolun.com
+  注意：
+  本软件为www.joolun.com开发研制，项目使用请保留此说明
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joolun.mall.mapper.MallDashboardMapper">
+
+	<!--
+		看板顶部核心经营数据。
+		这里统一输出订单规模、成交额和今日成交，便于前端首屏卡片直接展示。
+	-->
+	<select id="selectOverview" resultType="java.util.HashMap">
+		SELECT
+		COUNT(1) AS `totalOrderCount`,
+		COALESCE(SUM(CASE
+			WHEN mall_order_info.`create_time` <![CDATA[ >= ]]> #{todayStart}
+				AND mall_order_info.`create_time` <![CDATA[ < ]]> #{todayEnd}
+			THEN 1 ELSE 0 END), 0) AS `todayOrderCount`,
+		COALESCE(SUM(CASE WHEN mall_order_info.`is_pay` = '1' THEN 1 ELSE 0 END), 0) AS `paidOrderCount`,
+		COALESCE(SUM(CASE
+			WHEN mall_order_info.`is_pay` = '1'
+				AND mall_order_info.`payment_time` <![CDATA[ >= ]]> #{todayStart}
+				AND mall_order_info.`payment_time` <![CDATA[ < ]]> #{todayEnd}
+			THEN 1 ELSE 0 END), 0) AS `todayPaidOrderCount`,
+		COALESCE(SUM(CASE WHEN mall_order_info.`is_pay` = '1' THEN mall_order_info.`payment_price` ELSE 0 END), 0) AS `totalPaidAmount`,
+		COALESCE(SUM(CASE
+			WHEN mall_order_info.`is_pay` = '1'
+				AND mall_order_info.`payment_time` <![CDATA[ >= ]]> #{todayStart}
+				AND mall_order_info.`payment_time` <![CDATA[ < ]]> #{todayEnd}
+			THEN mall_order_info.`payment_price` ELSE 0 END), 0) AS `todayPaidAmount`
+		FROM mall_order_info mall_order_info
+		WHERE mall_order_info.`del_flag` = '0'
+	</select>
+
+	<!--
+		订单状态统计。
+		除了标准订单状态外，这里额外统计进入售后处理中的订单量，方便客服和运营快速感知压力。
+	-->
+	<select id="selectOrderStats" resultType="java.util.HashMap">
+		SELECT
+		COALESCE(SUM(CASE
+			WHEN mall_order_info.`is_pay` = '0' AND mall_order_info.`status` IS NULL
+			THEN 1 ELSE 0 END), 0) AS `waitPayCount`,
+		COALESCE(SUM(CASE WHEN mall_order_info.`status` = '1' THEN 1 ELSE 0 END), 0) AS `waitDeliveryCount`,
+		COALESCE(SUM(CASE WHEN mall_order_info.`status` = '2' THEN 1 ELSE 0 END), 0) AS `waitReceiveCount`,
+		COALESCE(SUM(CASE WHEN mall_order_info.`status` = '3' THEN 1 ELSE 0 END), 0) AS `finishedCount`,
+		COALESCE(SUM(CASE WHEN mall_order_info.`status` = '5' THEN 1 ELSE 0 END), 0) AS `cancelCount`,
+		COALESCE(SUM(CASE WHEN after_sale_stat.`has_processing_after_sale` = 1 THEN 1 ELSE 0 END), 0) AS `processingAfterSaleCount`
+		FROM mall_order_info mall_order_info
+		LEFT JOIN (
+			SELECT
+			mall_order_item.`order_id`,
+			MAX(CASE
+				WHEN mall_order_item.`status` IN ('1', '3')
+					AND mall_order_item.`is_refund` = '0'
+				THEN 1 ELSE 0 END) AS `has_processing_after_sale`
+			FROM mall_order_item mall_order_item
+			WHERE mall_order_item.`del_flag` = '0'
+			GROUP BY mall_order_item.`order_id`
+		) after_sale_stat ON after_sale_stat.`order_id` = mall_order_info.`id`
+		WHERE mall_order_info.`del_flag` = '0'
+	</select>
+
+	<!--
+		商城用户与会员统计。
+		会员定义已经切到 mall_user.member_flag，这里直接按商城域用户主数据汇总。
+	-->
+	<select id="selectMemberStats" resultType="java.util.HashMap">
+		SELECT
+		COUNT(1) AS `totalUserCount`,
+		COALESCE(SUM(CASE WHEN mall_user.`member_flag` = '1' THEN 1 ELSE 0 END), 0) AS `memberCount`,
+		COALESCE(SUM(CASE WHEN mall_user.`member_flag` = '0' THEN 1 ELSE 0 END), 0) AS `nonMemberCount`,
+		COALESCE(SUM(CASE
+			WHEN mall_user.`register_time` <![CDATA[ >= ]]> #{todayStart}
+				AND mall_user.`register_time` <![CDATA[ < ]]> #{todayEnd}
+			THEN 1 ELSE 0 END), 0) AS `todayNewUserCount`,
+		COALESCE(SUM(CASE
+			WHEN mall_user.`member_flag` = '1'
+				AND mall_user.`member_time` <![CDATA[ >= ]]> #{todayStart}
+				AND mall_user.`member_time` <![CDATA[ < ]]> #{todayEnd}
+			THEN 1 ELSE 0 END), 0) AS `todayNewMemberCount`,
+		COALESCE(SUM(CASE
+			WHEN mall_user.`last_login_time` <![CDATA[ >= ]]> DATE_SUB(NOW(), INTERVAL 7 DAY)
+			THEN 1 ELSE 0 END), 0) AS `activeUser7Count`,
+		COALESCE(SUM(CASE
+			WHEN mall_user.`last_login_time` <![CDATA[ >= ]]> DATE_SUB(NOW(), INTERVAL 30 DAY)
+			THEN 1 ELSE 0 END), 0) AS `activeUser30Count`,
+		COALESCE(SUM(CASE WHEN mall_user.`consume_count` > 0 THEN 1 ELSE 0 END), 0) AS `consumeUserCount`
+		FROM mall_user mall_user
+		WHERE mall_user.`del_flag` = '0'
+	</select>
+
+	<!--
+		商品与库存统计。
+		这里把 SPU 和 SKU 同时汇总，前端可以同时看到商品规模和库存风险。
+	-->
+	<select id="selectGoodsStats" resultType="java.util.HashMap">
+		SELECT
+		(SELECT COUNT(1)
+			FROM mall_goods_spu mall_goods_spu
+			WHERE mall_goods_spu.`del_flag` = '0') AS `totalGoodsCount`,
+		(SELECT COUNT(1)
+			FROM mall_goods_spu mall_goods_spu
+			WHERE mall_goods_spu.`del_flag` = '0'
+				AND mall_goods_spu.`shelf` = '1') AS `onShelfGoodsCount`,
+		(SELECT COUNT(1)
+			FROM mall_goods_spu mall_goods_spu
+			WHERE mall_goods_spu.`del_flag` = '0'
+				AND mall_goods_spu.`shelf` = '0') AS `offShelfGoodsCount`,
+		(SELECT COUNT(1)
+			FROM mall_goods_sku mall_goods_sku
+			WHERE mall_goods_sku.`del_flag` = '0') AS `totalSkuCount`,
+		(SELECT COUNT(1)
+			FROM mall_goods_sku mall_goods_sku
+			WHERE mall_goods_sku.`del_flag` = '0'
+				AND mall_goods_sku.`enable` = '1') AS `enabledSkuCount`,
+		(SELECT COALESCE(SUM(COALESCE(mall_goods_sku.`stock`, 0)), 0)
+			FROM mall_goods_sku mall_goods_sku
+			WHERE mall_goods_sku.`del_flag` = '0'
+				AND mall_goods_sku.`enable` = '1') AS `totalStock`,
+		(SELECT COUNT(1)
+			FROM mall_goods_sku mall_goods_sku
+			WHERE mall_goods_sku.`del_flag` = '0'
+				AND mall_goods_sku.`enable` = '1'
+				AND COALESCE(mall_goods_sku.`stock`, 0) <![CDATA[ <= ]]> 10) AS `warningSkuCount`,
+		(SELECT COUNT(1)
+			FROM (
+				SELECT mall_goods_sku.`spu_id`
+				FROM mall_goods_sku mall_goods_sku
+				WHERE mall_goods_sku.`del_flag` = '0'
+					AND mall_goods_sku.`enable` = '1'
+				GROUP BY mall_goods_sku.`spu_id`
+				HAVING COALESCE(SUM(COALESCE(mall_goods_sku.`stock`, 0)), 0) <![CDATA[ <= ]]> 0
+			) sold_out_goods) AS `soldOutGoodsCount`
+	</select>
+
+	<!--
+		售后统计。
+		口径与后台售后工作台保持一致，便于两个页面之间对数。
+	-->
+	<select id="selectAfterSaleStats" resultType="java.util.HashMap">
+		SELECT
+		COUNT(1) AS `totalCount`,
+		COALESCE(SUM(CASE WHEN mall_order_item.`status` = '1' AND mall_order_item.`is_refund` = '0' THEN 1 ELSE 0 END), 0) AS `applyingCount`,
+		COALESCE(SUM(CASE WHEN mall_order_item.`status` = '2' AND mall_order_item.`is_refund` = '0' THEN 1 ELSE 0 END), 0) AS `rejectCount`,
+		COALESCE(SUM(CASE WHEN mall_order_item.`status` = '3' AND mall_order_item.`is_refund` = '0' THEN 1 ELSE 0 END), 0) AS `waitingRefundCount`,
+		COALESCE(SUM(CASE WHEN mall_order_item.`is_refund` = '1' THEN 1 ELSE 0 END), 0) AS `refundedCount`,
+		COALESCE(SUM(CASE WHEN mall_order_item.`is_refund` = '1' THEN mall_order_item.`payment_price` ELSE 0 END), 0) AS `refundAmount`,
+		COALESCE(SUM(CASE
+			WHEN mall_order_item.`is_refund` = '1'
+				AND mall_order_item.`refund_success_time` <![CDATA[ >= ]]> #{todayStart}
+				AND mall_order_item.`refund_success_time` <![CDATA[ < ]]> #{todayEnd}
+			THEN mall_order_item.`payment_price` ELSE 0 END), 0) AS `todayRefundAmount`
+		FROM mall_order_item mall_order_item
+		WHERE mall_order_item.`del_flag` = '0'
+			AND (
+				(mall_order_item.`status` IN ('1', '2', '3') AND mall_order_item.`is_refund` = '0')
+				OR mall_order_item.`is_refund` = '1'
+			)
+	</select>
+
+	<!--
+		按天输出经营趋势。
+		使用递归日期表补齐没有数据的日期，避免前端图表因为断点日期而错位。
+	-->
+	<select id="selectTrend" resultType="java.util.HashMap">
+		WITH RECURSIVE date_list AS (
+			SELECT #{beginDate} AS `stat_date`
+			UNION ALL
+			SELECT DATE_ADD(`stat_date`, INTERVAL 1 DAY)
+			FROM date_list
+			WHERE `stat_date` <![CDATA[ < ]]> #{endDate}
+		)
+		SELECT
+		DATE_FORMAT(date_list.`stat_date`, '%Y-%m-%d') AS `statDate`,
+		DATE_FORMAT(date_list.`stat_date`, '%m-%d') AS `dateLabel`,
+		COALESCE(order_stat.`orderCount`, 0) AS `orderCount`,
+		COALESCE(order_stat.`paidOrderCount`, 0) AS `paidOrderCount`,
+		COALESCE(order_stat.`paidAmount`, 0) AS `paidAmount`,
+		COALESCE(refund_stat.`refundAmount`, 0) AS `refundAmount`,
+		COALESCE(user_stat.`newUserCount`, 0) AS `newUserCount`,
+		COALESCE(member_stat.`newMemberCount`, 0) AS `newMemberCount`
+		FROM date_list
+		LEFT JOIN (
+			SELECT
+			DATE(mall_order_info.`create_time`) AS `statDate`,
+			COUNT(1) AS `orderCount`,
+			COALESCE(SUM(CASE WHEN mall_order_info.`is_pay` = '1' THEN 1 ELSE 0 END), 0) AS `paidOrderCount`,
+			COALESCE(SUM(CASE WHEN mall_order_info.`is_pay` = '1' THEN mall_order_info.`payment_price` ELSE 0 END), 0) AS `paidAmount`
+			FROM mall_order_info mall_order_info
+			WHERE mall_order_info.`del_flag` = '0'
+				AND mall_order_info.`create_time` <![CDATA[ >= ]]> #{beginTime}
+				AND mall_order_info.`create_time` <![CDATA[ < ]]> #{endTime}
+			GROUP BY DATE(mall_order_info.`create_time`)
+		) order_stat ON order_stat.`statDate` = date_list.`stat_date`
+		LEFT JOIN (
+			SELECT
+			DATE(mall_order_item.`refund_success_time`) AS `statDate`,
+			COALESCE(SUM(mall_order_item.`payment_price`), 0) AS `refundAmount`
+			FROM mall_order_item mall_order_item
+			WHERE mall_order_item.`del_flag` = '0'
+				AND mall_order_item.`is_refund` = '1'
+				AND mall_order_item.`refund_success_time` IS NOT NULL
+				AND mall_order_item.`refund_success_time` <![CDATA[ >= ]]> #{beginTime}
+				AND mall_order_item.`refund_success_time` <![CDATA[ < ]]> #{endTime}
+			GROUP BY DATE(mall_order_item.`refund_success_time`)
+		) refund_stat ON refund_stat.`statDate` = date_list.`stat_date`
+		LEFT JOIN (
+			SELECT
+			DATE(mall_user.`register_time`) AS `statDate`,
+			COUNT(1) AS `newUserCount`
+			FROM mall_user mall_user
+			WHERE mall_user.`del_flag` = '0'
+				AND mall_user.`register_time` IS NOT NULL
+				AND mall_user.`register_time` <![CDATA[ >= ]]> #{beginTime}
+				AND mall_user.`register_time` <![CDATA[ < ]]> #{endTime}
+			GROUP BY DATE(mall_user.`register_time`)
+		) user_stat ON user_stat.`statDate` = date_list.`stat_date`
+		LEFT JOIN (
+			SELECT
+			DATE(mall_user.`member_time`) AS `statDate`,
+			COUNT(1) AS `newMemberCount`
+			FROM mall_user mall_user
+			WHERE mall_user.`del_flag` = '0'
+				AND mall_user.`member_flag` = '1'
+				AND mall_user.`member_time` IS NOT NULL
+				AND mall_user.`member_time` <![CDATA[ >= ]]> #{beginTime}
+				AND mall_user.`member_time` <![CDATA[ < ]]> #{endTime}
+			GROUP BY DATE(mall_user.`member_time`)
+		) member_stat ON member_stat.`statDate` = date_list.`stat_date`
+		ORDER BY date_list.`stat_date` ASC
+	</select>
+
+	<!--
+		热销商品榜。
+		按最近一段时间的已支付订单聚合，既考虑销量，也能看到商品贡献金额。
+	-->
+	<select id="selectTopGoods" resultType="java.util.HashMap">
+		SELECT
+		mall_order_item.`spu_id` AS `spuId`,
+		MAX(mall_order_item.`spu_name`) AS `spuName`,
+		MAX(mall_order_item.`pic_url`) AS `picUrl`,
+		COALESCE(SUM(COALESCE(mall_order_item.`quantity`, 0)), 0) AS `saleQuantity`,
+		COUNT(DISTINCT mall_order_item.`order_id`) AS `paidOrderCount`,
+		COALESCE(SUM(COALESCE(mall_order_item.`payment_price`, 0)), 0) AS `paidAmount`
+		FROM mall_order_item mall_order_item
+		INNER JOIN mall_order_info mall_order_info ON mall_order_info.`id` = mall_order_item.`order_id`
+		WHERE mall_order_item.`del_flag` = '0'
+			AND mall_order_info.`del_flag` = '0'
+			AND mall_order_info.`is_pay` = '1'
+			AND mall_order_info.`payment_time` IS NOT NULL
+			AND mall_order_info.`payment_time` <![CDATA[ >= ]]> #{beginTime}
+		GROUP BY mall_order_item.`spu_id`
+		ORDER BY `saleQuantity` DESC, `paidAmount` DESC
+		LIMIT #{limit}
+	</select>
+</mapper>

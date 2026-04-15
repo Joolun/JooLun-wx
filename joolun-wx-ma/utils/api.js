@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2018-2019
+ * Copyright (C) 2026
  * All rights reserved, Designed By www.joolun.com
  * 注意：
  * 本软件为www.joolun.com开发研制，项目使用请保留此说明
@@ -7,15 +7,15 @@
 import __config from '../config/env'
 
 const request = (url, method, data, showLoading) => {
-  let _url = __config.basePath + url
+  const requestUrl = __config.basePath + url
   return new Promise((resolve, reject) => {
-    if (showLoading){
+    if (showLoading) {
       wx.showLoading({
-        title: '加载中',
+        title: '加载中...'
       })
     }
     wx.request({
-      url: _url,
+      url: requestUrl,
       method: method,
       data: data,
       header: {
@@ -23,18 +23,13 @@ const request = (url, method, data, showLoading) => {
         'third-session': getApp().globalData.thirdSession != null ? getApp().globalData.thirdSession : ''
       },
       success(res) {
-        if (res.statusCode == 200) {
-          if (res.data.code != 200) {
-            console.log(res.data)
+        if (res.statusCode === 200) {
+          if (res.data.code !== 200) {
             wx.showModal({
               title: '提示',
-              content: res.data.msg ? res.data.msg : '没有数据' + '',
-              success() {
-                
-              },
-              complete(){
-                if(res.data.code == 60001){
-                  //session过期，则清除过期session，并重新加载当前页
+              content: res.data.msg ? res.data.msg : '没有数据',
+              complete() {
+                if (res.data.code === 60001) {
                   getApp().globalData.thirdSession = null
                   wx.reLaunch({
                     url: getApp().getCurrentPageUrlWithArgs()
@@ -43,41 +38,33 @@ const request = (url, method, data, showLoading) => {
               }
             })
             reject(res.data.msg)
+            return
           }
           resolve(res.data)
-        } else if (res.statusCode == 404) {
-          wx.showModal({
-            title: '提示',
-            content: '接口请求出错，请检查手机网络',
-            success(res) {
-
-            }
-          })
-          reject()
-        } else {
-          console.log(res)
-          wx.showModal({
-            title: '提示',
-            content: res.errMsg + ':' + res.data.message + ':' + res.data.msg,
-            success(res) {
-
-            }
-          })
-          reject()
+          return
         }
-      },
-      fail(error) {
-        console.log(error)
+        if (res.statusCode === 404) {
+          wx.showModal({
+            title: '提示',
+            content: '接口请求出错，请检查手机网络'
+          })
+          reject(res)
+          return
+        }
         wx.showModal({
           title: '提示',
-          content: '接口请求出错：' + error.errMsg,
-          success(res) {
-
-          }
+          content: `${res.errMsg}:${res.data.message}:${res.data.msg}`
+        })
+        reject(res)
+      },
+      fail(error) {
+        wx.showModal({
+          title: '提示',
+          content: '接口请求出错：' + error.errMsg
         })
         reject(error)
       },
-      complete(res) {
+      complete() {
         wx.hideLoading()
       }
     })
@@ -86,73 +73,89 @@ const request = (url, method, data, showLoading) => {
 
 module.exports = {
   request,
-  login: (data) => {//小程序登录接口
-    return request('/weixin/api/ma/wxuser/login', 'post', data, false)
+  login: (data) => {
+    return request('/weixin/api/ma/malluser/login', 'post', data, false)
   },
-  wxUserGet: (data) => {//微信用户查询
-    return request('/weixin/api/ma/wxuser', 'get', null, false)
+  // 获取当前商城用户资料。
+  mallUserGet: () => {
+    return request('/weixin/api/ma/malluser', 'get', null, false)
   },
-  wxUserSave: (data) => {//微信用户新增
-    return request('/weixin/api/ma/wxuser', 'post', data, true)
+  // 保存微信授权资料，并同步商城用户快照。
+  mallUserSave: (data) => {
+    return request('/weixin/api/ma/malluser', 'post', data, true)
   },
-  goodsCategoryGet: (data) => {//商品分类查询
-    return request('/weixin/api/ma/goodscategory/tree' , 'get', data, true)
+  // 更新商城用户基础资料。
+  mallUserUpdate: (data) => {
+    return request('/weixin/api/ma/malluser', 'put', data, true)
   },
-  goodsPage: (data) => {//商品列表
+  // 绑定小程序手机号，并刷新商城会员身份。
+  mallUserBindPhone: (data) => {
+    return request('/weixin/api/ma/malluser/phone', 'post', data, true)
+  },
+  mallConfigGet: () => {
+    return request('/weixin/api/ma/mall/config', 'get', null, false)
+  },
+  homeTemplateGet: () => {
+    return request('/weixin/api/ma/home/template/current', 'get', null, false)
+  },
+  goodsCategoryGet: (data) => {
+    return request('/weixin/api/ma/goodscategory/tree', 'get', data, true)
+  },
+  goodsPage: (data) => {
     return request('/weixin/api/ma/goodsspu/page', 'get', data, false)
   },
-  goodsGet: (id) => {//商品查询
+  goodsGet: (id) => {
     return request('/weixin/api/ma/goodsspu/' + id, 'get', null, false)
   },
-  shoppingCartPage: (data) => {//购物车列表
+  shoppingCartPage: (data) => {
     return request('/weixin/api/ma/shoppingcart/page', 'get', data, false)
   },
-  shoppingCartAdd: (data) => {//购物车新增
+  shoppingCartAdd: (data) => {
     return request('/weixin/api/ma/shoppingcart', 'post', data, true)
   },
-  shoppingCartEdit: (data) => {//购物车修改
+  shoppingCartEdit: (data) => {
     return request('/weixin/api/ma/shoppingcart', 'put', data, true)
   },
-  shoppingCartDel: (data) => {//购物车删除
+  shoppingCartDel: (data) => {
     return request('/weixin/api/ma/shoppingcart/del', 'post', data, false)
   },
-  shoppingCartCount: (data) => {//购物车数量
+  shoppingCartCount: (data) => {
     return request('/weixin/api/ma/shoppingcart/count', 'get', data, false)
   },
-  orderSub: (data) => {//订单提交
+  orderSub: (data) => {
     return request('/weixin/api/ma/orderinfo', 'post', data, true)
   },
-  orderPage: (data) => {//订单列表
+  orderPage: (data) => {
     return request('/weixin/api/ma/orderinfo/page', 'get', data, false)
   },
-  orderGet: (id) => {//订单详情查询
+  orderGet: (id) => {
     return request('/weixin/api/ma/orderinfo/' + id, 'get', null, false)
   },
-  orderCancel: (id) => {//订单确认取消
+  orderCancel: (id) => {
     return request('/weixin/api/ma/orderinfo/cancel/' + id, 'put', null, true)
   },
-  orderRefunds: (data) => {//订单申请退款
+  orderRefunds: (data) => {
     return request('/weixin/api/ma/orderinfo/refunds', 'post', data, true)
   },
-  orderReceive: (id) => {//订单确认收货
+  orderReceive: (id) => {
     return request('/weixin/api/ma/orderinfo/receive/' + id, 'put', null, true)
   },
-  orderDel: (id) => {//订单删除
+  orderDel: (id) => {
     return request('/weixin/api/ma/orderinfo/' + id, 'delete', null, false)
   },
-  orderCountAll: (data) => {//订单计数
+  orderCountAll: (data) => {
     return request('/weixin/api/ma/orderinfo/countAll', 'get', data, false)
   },
-  unifiedOrder: (data) => {//下单接口
+  unifiedOrder: (data) => {
     return request('/weixin/api/ma/orderinfo/unifiedOrder', 'post', data, true)
   },
-  userAddressPage: (data) => {//用户收货地址列表
+  userAddressPage: (data) => {
     return request('/weixin/api/ma/useraddress/page', 'get', data, false)
   },
-  userAddressSave: (data) => {//用户收货地址新增
+  userAddressSave: (data) => {
     return request('/weixin/api/ma/useraddress', 'post', data, true)
   },
-  userAddressDel: (id) => {//用户收货地址删除
+  userAddressDel: (id) => {
     return request('/weixin/api/ma/useraddress/' + id, 'delete', null, false)
   }
 }
