@@ -106,7 +106,7 @@
                 <div class="goods-cell">
                   <el-image
                     v-if="scope.row.picUrl"
-                    :src="scope.row.picUrl"
+                    :src="resolveDashboardImage(scope.row.picUrl)"
                     fit="cover"
                     class="goods-cover"
                   />
@@ -212,6 +212,7 @@
 import * as echarts from "echarts";
 import { computed, getCurrentInstance, nextTick, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 import { getDashboardOverview } from "@/api/mall/dashboard";
+import { resolveMallImageUrl } from "@/utils/mall-image";
 
 const { proxy } = getCurrentInstance();
 
@@ -230,6 +231,16 @@ const dayRange = ref(15);
 const trendChartRef = ref(null);
 const orderStatusChartRef = ref(null);
 const memberTrendChartRef = ref(null);
+
+/**
+ * 统一处理数据看板中的商品图片地址。
+ *
+ * @param {string} imageUrl 图片地址
+ * @returns {string}
+ */
+function resolveDashboardImage(imageUrl) {
+  return resolveMallImageUrl(imageUrl);
+}
 
 /**
  * 页面所有统计结果统一放在一个响应式对象中。

@@ -213,12 +213,12 @@
         </div>
       </template>
       <template #avatarUrl="scope">
-        <el-avatar :src="scope.row.avatarUrl" icon="el-icon-user-solid"></el-avatar>
+        <el-avatar :src="resolveMallUserImage(scope.row.avatarUrl)" icon="el-icon-user-solid"></el-avatar>
       </template>
       <template #profileSummary-form>
         <div class="detail-overview">
           <div class="detail-profile-card">
-            <el-avatar :src="form.avatarUrl" icon="el-icon-user-solid" :size="72"></el-avatar>
+            <el-avatar :src="resolveMallUserImage(form.avatarUrl)" icon="el-icon-user-solid" :size="72"></el-avatar>
             <div class="detail-profile-main">
               <div class="detail-profile-name">{{ form.nickName || "微信用户" }}</div>
               <div class="detail-profile-sub">会员编号：{{ form.userNo || "未生成" }}</div>
@@ -327,7 +327,7 @@
       </template>
       <template #nickName="scope">
         <div class="user-cell">
-          <el-avatar :src="scope.row.avatarUrl" icon="el-icon-user-solid"></el-avatar>
+          <el-avatar :src="resolveMallUserImage(scope.row.avatarUrl)" icon="el-icon-user-solid"></el-avatar>
           <div class="user-meta">
             <div class="user-name">{{ scope.row.nickName || "微信用户" }}</div>
             <div class="user-id">{{ scope.row.id }}</div>
@@ -570,9 +570,20 @@
 <script setup name="MallUser">
 import { checkPermi } from "@/utils/permission";
 import { addTag, exportMallUser, getPage, getObj, getSummary, getTagLibrary, getTagOptions, getTagSummary, putBatchRemark, putBatchStatus, putBatchTag, putObj, putTag } from "@/api/mall/malluser";
+import { resolveMallImageUrl } from "@/utils/mall-image";
 import { tableOption } from "@/const/crud/mall/malluser";
 
 const { proxy } = getCurrentInstance();
+
+/**
+ * 统一处理商城用户列表与弹窗中的头像地址。
+ *
+ * @param {string} imageUrl 图片地址
+ * @returns {string}
+ */
+function resolveMallUserImage(imageUrl) {
+  return resolveMallImageUrl(imageUrl);
+}
 const router = useRouter();
 const crud = ref(null);
 

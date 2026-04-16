@@ -91,7 +91,7 @@
         <template #userNickName="scope">
           <div class="member-cell">
             <el-avatar
-              :src="scope.row.userAvatarUrl"
+              :src="resolveOrderImage(scope.row.userAvatarUrl)"
               icon="el-icon-user-solid"
             ></el-avatar>
             <div class="member-meta">
@@ -197,7 +197,7 @@
           <el-table :data="form.listOrderItem || []" border style="width: 100%; margin-top: -10px">
             <el-table-column align="center" prop="picUrl" label="图片" width="120">
               <template #default="scope">
-                <img :src="scope.row.picUrl" width="100" height="100" />
+                <img :src="resolveOrderImage(scope.row.picUrl)" width="100" height="100" />
               </template>
             </el-table-column>
             <el-table-column align="center" prop="spuName" label="商品名">
@@ -256,7 +256,7 @@
           <el-table :data="[form.userInfo || {}]" border style="width: 100%">
             <el-table-column align="center" prop="nickName" label="会员信息" width="220">
               <template #default="scope">
-                <el-avatar icon="el-icon-user-solid" :src="scope.row.avatarUrl"></el-avatar>
+                <el-avatar icon="el-icon-user-solid" :src="resolveOrderImage(scope.row.avatarUrl)"></el-avatar>
                 <div class="detail-member-name">{{ scope.row.nickName || "未授权昵称" }}</div>
                 <div class="detail-member-sub">会员编号：{{ scope.row.userNo || "未生成" }}</div>
               </template>
@@ -418,7 +418,7 @@
             class="goods-row"
           >
             <el-col :span="4" class="goods-image-wrap">
-              <el-image :src="item.picUrl" class="goods-image" />
+              <el-image :src="resolveOrderImage(item.picUrl)" class="goods-image" />
             </el-col>
             <el-col :span="12" class="goods-info">
               <div class="spu-name">{{ item.spuName }}</div>
@@ -574,11 +574,22 @@
 import { checkPermi } from "@/utils/permission";
 import { doOrderRefunds, getObj, getPage, getSummary, orderCancel, putObj } from "@/api/mall/orderinfo";
 import { tableOption } from "@/const/crud/mall/orderinfo";
+import { resolveMallImageUrl } from "@/utils/mall-image";
 
 const crud = ref(null);
 const { proxy } = getCurrentInstance();
 const route = useRoute();
 const router = useRouter();
+
+/**
+ * 统一处理订单页中的商品图、会员头像等商城图片地址。
+ *
+ * @param {string} imageUrl 图片地址
+ * @returns {string}
+ */
+function resolveOrderImage(imageUrl) {
+  return resolveMallImageUrl(imageUrl);
+}
 
 /**
  * 订单页状态。

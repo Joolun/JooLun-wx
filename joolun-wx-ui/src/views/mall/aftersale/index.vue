@@ -91,7 +91,7 @@
         <el-table-column label="商品信息" min-width="280">
           <template #default="scope">
             <div class="goods-cell">
-              <el-image :src="scope.row.picUrl" class="goods-image" fit="cover" />
+              <el-image :src="resolveAfterSaleImage(scope.row.picUrl)" class="goods-image" fit="cover" />
               <div class="goods-meta">
                 <div class="goods-name">{{ scope.row.spuName || "未命名商品" }}</div>
                 <div class="goods-sub">{{ scope.row.specInfo || "默认规格" }}</div>
@@ -104,7 +104,7 @@
         <el-table-column label="会员信息" min-width="220">
           <template #default="scope">
             <div class="member-cell">
-              <el-avatar :src="scope.row.userAvatarUrl" icon="el-icon-user-solid" />
+              <el-avatar :src="resolveAfterSaleImage(scope.row.userAvatarUrl)" icon="el-icon-user-solid" />
               <div class="member-meta">
                 <div class="member-name">{{ buildMemberName(scope.row) }}</div>
                 <div class="member-sub">会员编号：{{ scope.row.userNo || "未生成" }}</div>
@@ -246,10 +246,21 @@ import { computed, getCurrentInstance, onMounted, reactive, toRefs, watch } from
 import { useRoute, useRouter } from "vue-router";
 import { getAfterSalePage, getAfterSaleSummary } from "@/api/mall/aftersale";
 import { doOrderRefunds } from "@/api/mall/orderinfo";
+import { resolveMallImageUrl } from "@/utils/mall-image";
 
 const { proxy } = getCurrentInstance();
 const router = useRouter();
 const route = useRoute();
+
+/**
+ * 统一处理售后页中的商品图和会员头像地址。
+ *
+ * @param {string} imageUrl 图片地址
+ * @returns {string}
+ */
+function resolveAfterSaleImage(imageUrl) {
+  return resolveMallImageUrl(imageUrl);
+}
 
 const data = reactive({
   loading: false,

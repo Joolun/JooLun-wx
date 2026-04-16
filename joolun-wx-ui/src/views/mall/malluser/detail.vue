@@ -22,7 +22,7 @@
 
     <div class="detail-overview">
       <div class="detail-profile-card">
-        <el-avatar :src="detail.avatarUrl" icon="el-icon-user-solid" :size="76"></el-avatar>
+        <el-avatar :src="resolveMallUserImage(detail.avatarUrl)" icon="el-icon-user-solid" :size="76"></el-avatar>
         <div class="detail-profile-main">
           <div class="detail-profile-name">{{ detail.nickName || "微信用户" }}</div>
           <div class="detail-profile-sub">会员编号：{{ detail.userNo || "未生成" }}</div>
@@ -503,8 +503,19 @@
 
 <script setup name="MallUserDetail">
 import { getObj, postFollowRecord } from "@/api/mall/malluser";
+import { resolveMallImageUrl } from "@/utils/mall-image";
 
 const { proxy } = getCurrentInstance();
+
+/**
+ * 统一处理商城会员详情页头像地址。
+ *
+ * @param {string} imageUrl 图片地址
+ * @returns {string}
+ */
+function resolveMallUserImage(imageUrl) {
+  return resolveMallImageUrl(imageUrl);
+}
 const route = useRoute();
 const router = useRouter();
 
