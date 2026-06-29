@@ -1,5 +1,5 @@
-<img alt="JooLun" src="https://img.shields.io/badge/Java-17-brightgreen.svg"/>
-<img alt="JooLun" src="https://img.shields.io/badge/SpringBoot-3.5.10-green.svg"/>
+<img alt="JooLun" src="https://img.shields.io/badge/Java-21-brightgreen.svg"/>
+<img alt="JooLun" src="https://img.shields.io/badge/SpringBoot-4.0.6-green.svg"/>
 <a href="https://gitee.com/joolun/JooLun-wx" target="_blank">
     <img alt="JooLun" src="https://gitee.com/joolun/JooLun-wx/badge/star.svg"/>
 </a>
@@ -33,8 +33,9 @@
 * 演示小程序：
 
 ![输入图片说明](joolun-wx/doc/Joolun_Plus_11.png)
+
 ### 系统需求
-* JDK = 17
+* JDK = 21
 * MySQL >= 5.8
 * Maven >= 3.0
 
@@ -44,13 +45,21 @@
 
 ### [公众号接入教程](https://gitee.com/joolun/JooLun-wx/wikis/C%20%E5%85%AC%E4%BC%97%E5%8F%B7%E6%8E%A5%E5%85%A5%E6%95%99%E7%A8%8B?sort_id=2236061)
 
+### 开发文档
+* https://wiki.joolun.com/doc-wiki#/home?spaceId=1
+
 ### 内置功能
-1.  小程序用户管理
+1.  数据看板
+1.  首页装修
+1.  商城用户
+1.  售后管理
 1.  商品分类
 1.  商品管理
 1.  订单管理
+1.  小程序客户
 1.  商城购物车
 1.  用户收货地址
+1.  小程序用户管理
 1.  公众号用户标签管理
 1.  公众号用户管理
 1.  公众号用户消息管理
@@ -104,24 +113,24 @@
 |  其他产品  |  SpringCloud微服务、Nacos、Sentinel、vue前后端分离、uniapp等  |  功能强大、模块完善，多样化的营销工具，商城自定义拖拽装修，支付宝、微信服务商支付，支持阿里oss、七牛云、腾讯cos、minio多种存储方式，多租户（多商城）、多店铺、多公众号、多小程序等等  |  小程序、公众号h5、PC-h5、安卓、ios、商户端app等  |  https://www.joolun.com/  |
 
 ### 其他产品截图
-![输入图片说明](joolun-wx-ma/public/img/2.jpg)
-![输入图片说明](joolun-wx-ma/public/img/3.jpg)
-![输入图片说明](joolun-wx-ma/public/img/4.jpg)
-![输入图片说明](joolun-wx-ma/public/img/5.jpg)
-![输入图片说明](joolun-wx-ma/public/img/6.jpg)
-![输入图片说明](joolun-wx-ma/public/img/7.jpg)
-![输入图片说明](joolun-wx-ma/public/img/8.jpg)
-![输入图片说明](joolun-wx-ma/public/img/9.jpg)
-![输入图片说明](joolun-wx-ma/public/img/10.jpg)
-![输入图片说明](joolun-wx-ma/public/img/11.jpg)
-![输入图片说明](joolun-wx-ma/public/img/12.jpg)
-![输入图片说明](joolun-wx-ma/public/img/13.jpg)
-![输入图片说明](joolun-wx-ma/public/img/14.jpg)
-![输入图片说明](joolun-wx-ma/public/img/15.jpg)
-![输入图片说明](joolun-wx-ma/public/img/16.jpg)
-![输入图片说明](joolun-wx-ma/public/img/17.jpg)
-![输入图片说明](joolun-wx-ma/public/img/18.jpg)
-![输入图片说明](joolun-wx-ma/public/img/19.jpg)
+![输入图片说明](joolun-wx/doc/img/2.jpg)
+![输入图片说明](joolun-wx/doc/img/3.jpg)
+![输入图片说明](joolun-wx/doc/img/4.jpg)
+![输入图片说明](joolun-wx/doc/img/5.jpg)
+![输入图片说明](joolun-wx/doc/img/6.jpg)
+![输入图片说明](joolun-wx/doc/img/7.jpg)
+![输入图片说明](joolun-wx/doc/img/8.jpg)
+![输入图片说明](joolun-wx/doc/img/9.jpg)
+![输入图片说明](joolun-wx/doc/img/10.jpg)
+![输入图片说明](joolun-wx/doc/img/11.jpg)
+![输入图片说明](joolun-wx/doc/img/12.jpg)
+![输入图片说明](joolun-wx/doc/img/13.jpg)
+![输入图片说明](joolun-wx/doc/img/14.jpg)
+![输入图片说明](joolun-wx/doc/img/15.jpg)
+![输入图片说明](joolun-wx/doc/img/16.jpg)
+![输入图片说明](joolun-wx/doc/img/17.jpg)
+![输入图片说明](joolun-wx/doc/img/18.jpg)
+![输入图片说明](joolun-wx/doc/img/19.jpg)
 
 <table>
     <tr>

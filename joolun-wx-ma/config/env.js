@@ -6,6 +6,6 @@
  */
 export default {
   // 服务地址，即后台服务访问地址。
-  basePath: 'https://demo2.joolun.com/prod-api/',
-  //basePath: 'http://localhost:7500',
+  //basePath: 'https://demo2.joolun.com/prod-api/',
+  basePath: 'http://localhost:7500',
 }

@@ -2,10 +2,14 @@ package com.joolun.common.core.domain.model;
 
 import com.alibaba.fastjson2.annotation.JSONField;
 import com.joolun.common.core.domain.entity.SysUser;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import java.util.Collections;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 登录用户身份权限
@@ -261,6 +265,12 @@ public class LoginUser implements UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities()
     {
-        return null;
+        if (permissions == null || permissions.isEmpty())
+        {
+            return Collections.emptyList();
+        }
+        return permissions.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 }

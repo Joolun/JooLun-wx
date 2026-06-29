@@ -15,14 +15,14 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>17</java.version>
-        <spring-boot.version>3.5.10</spring-boot.version>
+        <java.version>21</java.version>
+        <spring-boot.version>4.0.6</spring-boot.version>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
-        <druid.version>1.2.27</druid.version>
+        <druid.version>1.2.28</druid.version>
         <bitwalker.version>1.21</bitwalker.version>
         <swagger.version>3.0.0</swagger.version>
         <kaptcha.version>2.3.3</kaptcha.version>
-        <pagehelper.boot.version>2.1.1</pagehelper.boot.version>
+        <pagehelper.boot.version>4.0.0</pagehelper.boot.version>
         <fastjson.version>2.0.52</fastjson.version>
         <oshi.version>6.9.2</oshi.version>
         <commons.io.version>2.21.0</commons.io.version>
@@ -32,8 +32,8 @@
         <mysql.version>8.0.33</mysql.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jakarta.version>6.0.0</jakarta.version>
-        <springdoc.version>2.8.15</springdoc.version>
-        <mybatis-plus.version>3.5.10.1</mybatis-plus.version>
+        <springdoc.version>3.0.3</springdoc.version>
+        <mybatis-plus.version>3.5.16</mybatis-plus.version>
         <hutool.version>5.8.43</hutool.version>
         <weixin-java.version>4.8.0</weixin-java.version>
         <ttl.version>2.14.5</ttl.version>
@@ -55,7 +55,7 @@
             <!-- 阿里数据库连接池 -->
             <dependency>
                 <groupId>com.alibaba</groupId>
-                <artifactId>druid-spring-boot-3-starter</artifactId>
+                <artifactId>druid-spring-boot-4-starter</artifactId>
                 <version>${druid.version}</version>
             </dependency>
 
@@ -206,7 +206,7 @@
             <!--mybatis-->
             <dependency>
                 <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <artifactId>mybatis-plus-spring-boot4-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
             <!--mybatis-plus-jsqlparser for PaginationInnerInterceptor-->
