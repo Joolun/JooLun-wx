@@ -37,7 +37,7 @@
 
 ### 系统需求
 * JDK = 21
-* MySQL >= 5.8
+* MySQL = 8
 * Maven >= 3.0
 
 ### [运行系统](https://gitee.com/joolun/JooLun-wx/wikis/A%20%E6%9C%AC%E5%9C%B0%E8%BF%90%E8%A1%8C?sort_id=2235756)
