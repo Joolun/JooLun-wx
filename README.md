@@ -12,11 +12,12 @@
 ### MIT真开源！！！如果对您有帮助，记得点右上角 "Star" ❤️ 支持一下哦 谢谢！
 #### 该项目已实时托管置Gitee，请直接使用main分支；遇到问题或发现bug请统一到Gitee发[Issues](https://gitee.com/joolun/JooLun-wx/issues)提出来，我们会定期处理
 ### 平台简介
-* 基于[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue) SpringBoot3版本二开，集成了[MybatisPlus](https://github.com/baomidou/mybatis-plus)、[Avue](https://gitee.com/smallweigit/avue)、[WxJava](https://gitee.com/binary/weixin-java-tools) SDK
+* 本项目已全面支持SpringBoot4生态
+* 基于[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue) 版本二开，集成了[MybatisPlus](https://github.com/baomidou/mybatis-plus)、[Avue](https://gitee.com/smallweigit/avue)、[WxJava](https://gitee.com/binary/weixin-java-tools) SDK
 * MIT开源的小程序商城二开利器，放心使用
 * 专业的微信管理框架并加入小程序商城，是用来学习和实际项目的不二选择
 * 前端采用Vue3、Element-Plus、Avue3。
-* 后端采用Spring Boot3、Spring Security、Redis & Jwt、Mybatis Plus、WxJava。
+* 后端采用Spring Boot4、Spring Security、Redis & Jwt、Mybatis Plus、WxJava。
 * 小程序端采用原生框架+Color UI。
 * 权限认证使用Jwt，支持多终端认证系统。
 * 支持加载动态权限菜单，多方式轻松权限控制。

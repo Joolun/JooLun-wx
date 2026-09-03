@@ -399,9 +399,11 @@ const data = reactive({
     title: "",
     introduction: "",
   },
-  actionUrl: "/weixin/wxmaterial/materialFileUpload",
+  actionUrl: ref(
+    import.meta.env.VITE_APP_BASE_API + "/wxmaterial/materialFileUpload"
+  ), // 上传的图片服务器地址
   headers: {
-    Authorization: "Bearer " + getToken().access_token,
+    Authorization: "Bearer " + getToken(),
   },
 });
 
@@ -462,7 +464,7 @@ function beforeImageUpload(file) {
 }
 
 function handleUploadSuccess(response) {
-  if (response.code == "0") {
+  if (response.code == 200) {
     data.fileList = [];
     data.uploadData.title = "";
     data.uploadData.introduction = "";
