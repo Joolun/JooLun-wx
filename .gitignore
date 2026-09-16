@@ -1,3 +1,11 @@
 /joolun-wx/joolun-admin/src/main/java/com/joolun/web/controller/wiki
 /joolun-wx/docs
 /.runtime-logs
+/joolun-wx/docker/jar/joolun-admin.jar
+/deploy/.env
+/deploy/secrets/
+/deploy/state/
+/deploy/backups/
+/deploy/dist/
+/deploy/certs/*
+!/deploy/certs/.gitkeep

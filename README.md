@@ -40,6 +40,16 @@
 * MySQL = 8
 * Maven >= 3.0
 
+### 一键部署（Linux）
+
+仓库已提供面向普通使用者的 Docker Compose 发行方案。目标服务器不需要安装 Java、Maven、Node.js、MySQL、Redis 或 Nginx；使用发行包时只需执行：
+
+```bash
+./install.sh
+```
+
+安装器会自动生成密钥、初始化数据库、设置随机管理员临时密码并等待服务健康。构建在线/离线发行包、备份恢复和日常维护说明见 [`deploy/README.md`](deploy/README.md)。
+
 ### [运行系统](https://gitee.com/joolun/JooLun-wx/wikis/A%20%E6%9C%AC%E5%9C%B0%E8%BF%90%E8%A1%8C?sort_id=2235756)
 
 ### [部署系统](https://gitee.com/joolun/JooLun-wx/wikis/B%20%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2%E7%B3%BB%E7%BB%9F?sort_id=2236020)

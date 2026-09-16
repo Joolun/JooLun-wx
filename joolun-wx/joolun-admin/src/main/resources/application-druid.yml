@@ -1,5 +1,9 @@
 # 数据源配置
 spring:
+    config:
+        # Docker 部署时把 /run/secrets 下的文件名直接映射为配置键。
+        # 本地开发没有该目录时继续使用下方默认值。
+        import: optional:configtree:/opt/joolun/runtime-secrets/
     datasource:
         type: com.alibaba.druid.pool.DruidDataSource
         driverClassName: com.mysql.cj.jdbc.Driver

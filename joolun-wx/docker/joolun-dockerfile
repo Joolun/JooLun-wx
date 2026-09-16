@@ -1,4 +1,4 @@
-FROM openjdk:17
+FROM openjdk:21-jdk
 # author
 MAINTAINER www.joolun.com
 
