@@ -40,7 +40,8 @@
 * MySQL = 8
 * Maven >= 3.0
 
-### 一键部署（Linux）
+### 运行部署
+* [服务器一键部署（Linux）](https://gitee.com/joolun/JooLun-wx/wikis/A%20%E5%AE%89%E8%A3%85%E5%8C%85%E4%B8%80%E9%94%AE%E9%83%A8%E7%BD%B2)
 
 仓库已提供面向普通使用者的 Docker Compose 发行方案。目标服务器不需要安装 Java、Maven、Node.js、MySQL、Redis 或 Nginx；使用发行包时只需执行：
 
@@ -48,13 +49,12 @@
 ./install.sh
 ```
 
-安装器会自动生成密钥、初始化数据库、设置随机管理员临时密码并等待服务健康。构建在线/离线发行包、备份恢复和日常维护说明见 [`deploy/README.md`](deploy/README.md)。
+安装器会自动生成密钥、初始化数据库、设置随机管理员临时密码并等待服务健康。
 
-### [运行系统](https://gitee.com/joolun/JooLun-wx/wikis/A%20%E6%9C%AC%E5%9C%B0%E8%BF%90%E8%A1%8C?sort_id=2235756)
+* [本地运行系统](https://gitee.com/joolun/JooLun-wx/wikis/A%20%E6%9C%AC%E5%9C%B0%E8%BF%90%E8%A1%8C?sort_id=2235756)
 
-### [部署系统](https://gitee.com/joolun/JooLun-wx/wikis/B%20%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2%E7%B3%BB%E7%BB%9F?sort_id=2236020)
+* [jar包部署系统](https://gitee.com/joolun/JooLun-wx/wikis/B%20%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2%E7%B3%BB%E7%BB%9F?sort_id=2236020)
 
-### [公众号接入教程](https://gitee.com/joolun/JooLun-wx/wikis/C%20%E5%85%AC%E4%BC%97%E5%8F%B7%E6%8E%A5%E5%85%A5%E6%95%99%E7%A8%8B?sort_id=2236061)
 
 ### 开发文档
 * https://wiki.joolun.com/doc-wiki#/home?spaceId=1
