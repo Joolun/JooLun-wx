@@ -11,7 +11,7 @@
     <parent>
         <artifactId>joolun-wx</artifactId>
         <groupId>com.joolun</groupId>
-        <version>3.9.1</version>
+        <version>3.9.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -72,6 +72,11 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>transmittable-thread-local</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

@@ -8,6 +8,8 @@ joolun:
   copyrightYear: 2026
   # 文件路径 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/ruoyi/uploadPath）
   profile: C:/ruoyi/uploadPath
+  # 私密证书存储路径，不可放在 profile 目录内
+  certPath: C:/ruoyi/certs
   # 获取ip地址开关
   addressEnabled: false
   # 验证码类型 math 数字计算 char 字符验证
@@ -163,8 +165,10 @@ wx:
         mchId: 1588227511
         # 微信支付 API v3 密钥
         apiV3Key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-        # 商户 API PKCS#12 证书，密码为商户号
-        pkcs12Path: /mnt/install/joolun-wx/apiclient_cert.p12
+        # 商户 API 私钥（后台上传后会由系统参数覆盖此默认值）
+        privateKeyPath:
+        # 商户 API 证书序列号，需与 apiclient_key.pem 对应
+        certSerialNo:
         # 微信支付公钥模式必填，在商户平台下载 pub_key.pem 并复制对应的公钥 ID
         publicKeyId:
         publicKeyPath:

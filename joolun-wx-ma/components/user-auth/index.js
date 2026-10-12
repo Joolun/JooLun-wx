@@ -34,13 +34,6 @@ Component({
     }
   },
   methods: {
-    agreeGetUser (e) {
-      if (e.detail.errMsg === 'getUserInfo:ok') {
-        app.api.mallUserSave(e.detail).then((res) => {
-          this.applyMallUser(res.data || null)
-        })
-      }
-    },
     /**
      * 绑定手机号。
      * 订单确认等场景下可直接在公共授权弹层里完成会员转化，并把最新 mallUser 同步给宿主页面。

@@ -1,0 +1,13 @@
+<view class="page">
+  <view class="card">
+    <view class="level">{{profile.currentLevel.name || '普通会员'}}</view>
+    <view class="summary"><view><text class="value">{{profile.user.points || 0}}</text><text class="label">积分</text></view><view><text class="value">{{profile.user.growthValue || 0}}</text><text class="label">成长值</text></view><view><text class="value">{{profile.currentLevel.discountRate || 100}}%</text><text class="label">会员价</text></view></view>
+    <view class="progress"><view class="bar" style="width:{{progress}}%"></view></view>
+    <view class="next" wx:if="{{profile.nextLevel}}">再获得 {{profile.nextLevel.minGrowth - profile.user.growthValue}} 成长值升级为 {{profile.nextLevel.name}}</view>
+    <view class="next" wx:else>已达到当前最高等级</view>
+  </view>
+  <view class="rule">支付成功按实付整数金额累计积分和成长值；退款会扣回对应积分。积分当前仅用于账户展示。</view>
+  <view class="title">积分明细</view>
+  <view class="log" wx:for="{{logs}}" wx:key="id"><view><view class="remark">{{item.remark}}</view><view class="time">{{item.createTime}}</view></view><view class="change {{item.changeValue > 0 ? 'plus' : ''}}">{{item.changeValue > 0 ? '+' : ''}}{{item.changeValue}}</view></view>
+  <view class="empty" wx:if="{{logs.length === 0}}">暂无积分记录</view>
+</view>

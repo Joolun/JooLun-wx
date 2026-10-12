@@ -245,6 +245,15 @@
                 入会时间：{{ formatDateTime(form.memberTime) }}
               </div>
               <div class="detail-profile-sub">
+                会员等级：{{ formatMemberLevel(form) }}
+                <span class="detail-divider">|</span>
+                成长值：{{ Number(form.growthValue || 0) }}
+                <span class="detail-divider">|</span>
+                积分：{{ Number(form.points || 0) }}
+                <span class="detail-divider">|</span>
+                等级折扣：{{ formatMemberDiscount(form) }}
+              </div>
+              <div class="detail-profile-sub">
                 注册来源：{{ formatRegisterSource(form.registerSource) }}
                 <span class="detail-divider">|</span>
                 最近下单：{{ formatDateTime(form.lastOrderTime) }}
@@ -359,6 +368,14 @@
         <el-tag size="small" effect="light" :type="scope.row.memberFlag === '1' ? 'success' : 'info'">
           {{ formatMemberIdentity(scope.row.memberFlag) }}
         </el-tag>
+      </template>
+      <template #memberLevelName="scope">
+        <div>
+          <el-tag size="small" effect="light" :type="scope.row.memberFlag === '1' ? 'warning' : 'info'">
+            {{ formatMemberLevel(scope.row) }}
+          </el-tag>
+          <div class="user-id">成长值 {{ Number(scope.row.growthValue || 0) }}</div>
+        </div>
       </template>
       <template #userTag="scope">
         <div v-if="buildUserTags(scope.row).length" class="user-tag-list">
@@ -837,6 +854,37 @@ function formatSex(sex) {
  */
 function formatMemberIdentity(memberFlag) {
   return memberFlag === "1" ? "已入会" : "未入会";
+}
+
+/**
+ * 格式化商城用户当前会员等级。
+ * 未绑定手机号的用户不展示会员等级，避免把普通商城用户误认为正式会员。
+ *
+ * @param {Object} row 商城用户
+ * @returns {string}
+ */
+function formatMemberLevel(row) {
+  if (row?.memberFlag !== "1") {
+    return "未入会";
+  }
+  return row?.memberLevelName || "未匹配等级";
+}
+
+/**
+ * 格式化当前等级折扣百分比。
+ *
+ * @param {Object} row 商城用户
+ * @returns {string}
+ */
+function formatMemberDiscount(row) {
+  if (row?.memberFlag !== "1") {
+    return "不适用";
+  }
+  if (row?.memberDiscountRate === null || row?.memberDiscountRate === undefined || row?.memberDiscountRate === "") {
+    return "未配置";
+  }
+  const discountRate = Number(row?.memberDiscountRate);
+  return Number.isFinite(discountRate) ? `${discountRate}%` : "未配置";
 }
 
 /**

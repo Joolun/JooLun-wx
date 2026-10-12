@@ -55,6 +55,7 @@ export const tableOption = {
       type: "upload",
       minWidth: 83,
       listType: "picture-img",
+      hide: true,
       editDisplay: false,
     },
     {
@@ -62,7 +63,7 @@ export const tableOption = {
       prop: "nickName",
       width: 100,
       sortable: true,
-      search: true,
+      hide: true,
       editDisplay: false,
     },
     {
@@ -80,26 +81,28 @@ export const tableOption = {
       label: "所在国家",
       prop: "country",
       sortable: true,
-      search: true,
+      hide: true,
       editDisplay: false,
     },
     {
       label: "所在省份",
       prop: "province",
       sortable: true,
+      hide: true,
       editDisplay: false,
     },
     {
       label: "所在城市",
       prop: "city",
       sortable: true,
-      search: true,
+      hide: true,
       editDisplay: false,
     },
     {
       label: "用户语言",
       prop: "language",
       sortable: true,
+      hide: true,
       editDisplay: false,
     },
     {

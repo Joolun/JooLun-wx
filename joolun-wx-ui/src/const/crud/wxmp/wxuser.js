@@ -111,6 +111,7 @@ export const tableOption = {
       type: "upload",
       minWidth: 83,
       listType: "picture-img",
+      hide: true,
       editDisplay: false,
     },
     {
@@ -118,7 +119,7 @@ export const tableOption = {
       prop: "nickName",
       width: 100,
       sortable: true,
-      search: true,
+      hide: true,
       editDisplay: false,
     },
     {
@@ -167,23 +168,25 @@ export const tableOption = {
     {
       label: "国家",
       prop: "country",
-      search: true,
+      hide: true,
       editDisplay: false,
     },
     {
       label: "省份",
       prop: "province",
+      hide: true,
       editDisplay: false,
     },
     {
       label: "城市",
       prop: "city",
-      search: true,
+      hide: true,
       editDisplay: false,
     },
     {
       label: "语言",
       prop: "language",
+      hide: true,
       editDisplay: false,
     },
     {
@@ -284,6 +287,7 @@ export const tableOption2 = {
       type: "upload",
       imgWidth: 50,
       listType: "picture-img",
+      hide: true,
       editDisplay: false,
     },
     {
@@ -291,7 +295,7 @@ export const tableOption2 = {
       prop: "nickName",
       width: 100,
       sortable: true,
-      search: true,
+      hide: true,
       editDisplay: false,
     },
     {
@@ -326,27 +330,28 @@ export const tableOption2 = {
       label: "国家",
       prop: "country",
       sortable: true,
-      search: true,
+      hide: true,
       editDisplay: false,
     },
     {
       label: "省份",
       prop: "province",
       sortable: true,
+      hide: true,
       editDisplay: false,
     },
     {
       label: "城市",
       prop: "city",
       sortable: true,
-      search: true,
+      hide: true,
       editDisplay: false,
     },
     {
       label: "语言",
       prop: "language",
       sortable: true,
-      search: true,
+      hide: true,
       editDisplay: false,
     },
     {

@@ -20,11 +20,18 @@
 		<result property="freightPrice" column="freight_price"/>
 		<result property="paymentWay" column="payment_way"/>
 		<result property="paymentPrice" column="payment_price"/>
+		<result property="couponUserId" column="coupon_user_id"/>
+		<result property="couponDiscountAmount" column="coupon_discount_amount"/>
+		<result property="memberDiscountAmount" column="member_discount_amount"/>
 		<result property="paymentTime" column="payment_time"/>
 		<result property="deliveryTime" column="delivery_time"/>
 		<result property="receiverTime" column="receiver_time"/>
 		<result property="closingTime" column="closing_time"/>
 		<result property="transactionId" column="transaction_id"/>
+		<result property="wxShippingStatus" column="wx_shipping_status"/>
+		<result property="wxShippingSyncTime" column="wx_shipping_sync_time"/>
+		<result property="wxShippingError" column="wx_shipping_error"/>
+		<result property="wxShippingRetryCount" column="wx_shipping_retry_count"/>
 		<result property="logisticsId" column="logistics_id"/>
 		<result property="remark" column="remark"/>
 		<result property="isPay" column="is_pay"/>
@@ -56,6 +63,16 @@
 		<result property="userAvatarUrl" column="user_avatar_url"/>
 	</resultMap>
 
+	<resultMap id="shippingOrderPageMap" extends="orderInfoPageMap" type="com.joolun.mall.entity.OrderInfo">
+		<association property="orderLogistics" javaType="com.joolun.mall.entity.OrderLogistics">
+			<id property="id" column="shipping_logistics_id"/>
+			<result property="logistics" column="shipping_logistics"/>
+			<result property="logisticsNo" column="shipping_logistics_no"/>
+			<result property="telNum" column="shipping_tel_num"/>
+			<result property="status" column="shipping_logistics_status"/>
+		</association>
+	</resultMap>
+
 	<sql id="orderInfoSql">
 		mall_order_info.`id`,
 		mall_order_info.`del_flag`,
@@ -67,6 +84,9 @@
 		mall_order_info.`freight_price`,
 		mall_order_info.`payment_way`,
 		mall_order_info.`payment_price`,
+		mall_order_info.`coupon_user_id`,
+		mall_order_info.`coupon_discount_amount`,
+		mall_order_info.`member_discount_amount`,
 		mall_order_info.`payment_time`,
 		mall_order_info.`delivery_time`,
 		mall_order_info.`receiver_time`,
@@ -76,8 +96,45 @@
 		mall_order_info.`status`,
 		mall_order_info.`user_message`,
 		mall_order_info.`transaction_id`,
+		mall_order_info.`wx_shipping_status`,
+		mall_order_info.`wx_shipping_sync_time`,
+		mall_order_info.`wx_shipping_error`,
+		mall_order_info.`wx_shipping_retry_count`,
 		mall_order_info.`logistics_id`,
 		mall_order_info.`remark`
+	</sql>
+
+	<sql id="shippingOrderWhere">
+		<where>
+			AND mall_order_info.`del_flag` = '0'
+			AND mall_order_info.`is_pay` = '1'
+			AND mall_order_info.`status` IN ('1', '2', '3')
+			<if test="query.orderNo != null and query.orderNo != ''">
+				AND mall_order_info.`order_no` LIKE CONCAT('%', #{query.orderNo}, '%')
+			</if>
+			<if test="query.status != null and query.status != ''">
+				AND mall_order_info.`status` = #{query.status}
+			</if>
+			<if test="query.wxShippingStatus != null and query.wxShippingStatus != ''">
+				AND COALESCE(mall_order_info.`wx_shipping_status`, '0') = #{query.wxShippingStatus}
+			</if>
+			<if test="query.shippingKeyword != null and query.shippingKeyword != ''">
+				AND (
+					mall_order_info.`order_no` LIKE CONCAT('%', #{query.shippingKeyword}, '%')
+					OR mall_order_info.`transaction_id` LIKE CONCAT('%', #{query.shippingKeyword}, '%')
+					OR mall_user.`user_no` LIKE CONCAT('%', #{query.shippingKeyword}, '%')
+					OR mall_user.`nick_name` LIKE CONCAT('%', #{query.shippingKeyword}, '%')
+					OR mall_user.`mobile` LIKE CONCAT('%', #{query.shippingKeyword}, '%')
+					OR mall_order_logistics.`logistics_no` LIKE CONCAT('%', #{query.shippingKeyword}, '%')
+				)
+			</if>
+			<if test="query.beginTime != null">
+				AND mall_order_info.`payment_time` &gt;= #{query.beginTime}
+			</if>
+			<if test="query.endTime != null">
+				AND mall_order_info.`payment_time` &lt;= #{query.endTime}
+			</if>
+		</where>
 	</sql>
 
 	<sql id="orderInfoPageWhere">
@@ -221,6 +278,40 @@
 			) after_sale_stat ON after_sale_stat.`order_id` = mall_order_info.`id`
 			<include refid="orderInfoPageWhere"/>
 		) result_set
+	</select>
+
+	<select id="selectShippingPage" resultMap="shippingOrderPageMap">
+		SELECT
+		<include refid="orderInfoSql"/>,
+		mall_user.`user_no`,
+		mall_user.`nick_name` AS `user_nick_name`,
+		mall_user.`real_name` AS `user_real_name`,
+		mall_user.`mobile` AS `user_mobile`,
+		mall_user.`avatar_url` AS `user_avatar_url`,
+		mall_order_logistics.`id` AS `shipping_logistics_id`,
+		mall_order_logistics.`logistics` AS `shipping_logistics`,
+		mall_order_logistics.`logistics_no` AS `shipping_logistics_no`,
+		mall_order_logistics.`tel_num` AS `shipping_tel_num`,
+		mall_order_logistics.`status` AS `shipping_logistics_status`
+		FROM mall_order_info mall_order_info
+		LEFT JOIN mall_user mall_user ON mall_user.`id` = mall_order_info.`user_id`
+		LEFT JOIN mall_order_logistics mall_order_logistics ON mall_order_logistics.`id` = mall_order_info.`logistics_id`
+		<include refid="shippingOrderWhere"/>
+		ORDER BY mall_order_info.`payment_time` DESC, mall_order_info.`create_time` DESC
+	</select>
+
+	<select id="selectShippingSummary" resultType="java.util.HashMap">
+		SELECT
+		COUNT(1) AS `totalCount`,
+		COALESCE(SUM(CASE WHEN mall_order_info.`status` = '1' THEN 1 ELSE 0 END), 0) AS `waitDeliveryCount`,
+		COALESCE(SUM(CASE WHEN mall_order_info.`status` IN ('2', '3') AND COALESCE(mall_order_info.`wx_shipping_status`, '0') = '0' THEN 1 ELSE 0 END), 0) AS `pendingSyncCount`,
+		COALESCE(SUM(CASE WHEN mall_order_info.`wx_shipping_status` = '1' THEN 1 ELSE 0 END), 0) AS `successCount`,
+		COALESCE(SUM(CASE WHEN mall_order_info.`wx_shipping_status` = '2' THEN 1 ELSE 0 END), 0) AS `failedCount`,
+		COALESCE(SUM(CASE WHEN mall_order_info.`wx_shipping_status` = '3' THEN 1 ELSE 0 END), 0) AS `skippedCount`
+		FROM mall_order_info mall_order_info
+		LEFT JOIN mall_user mall_user ON mall_user.`id` = mall_order_info.`user_id`
+		LEFT JOIN mall_order_logistics mall_order_logistics ON mall_order_logistics.`id` = mall_order_info.`logistics_id`
+		<include refid="shippingOrderWhere"/>
 	</select>
 
 	<select id="selectPage2" resultMap="orderInfoMap2">

@@ -80,18 +80,17 @@ public class WxAccountConfigDTO {
 		@Size(max = 200, message = "API v3 密钥不能超过200个字符")
 		private String apiV3Key;
 
-		@NotBlank(message = "商户 API 证书路径不能为空")
-		@Size(max = 500, message = "商户 API 证书路径不能超过500个字符")
-		private String pkcs12Path;
+		@NotBlank(message = "商户 API 证书序列号不能为空")
+		@Size(max = 64, message = "商户 API 证书序列号不能超过64个字符")
+		@Pattern(regexp = "(?i)^[0-9a-f]+$", message = "商户 API 证书序列号只能包含十六进制字符")
+		private String certSerialNo;
 
 		@NotBlank(message = "微信支付公钥 ID 不能为空")
 		@Size(max = 128, message = "微信支付公钥 ID 不能超过128个字符")
 		private String publicKeyId;
 
-		@NotBlank(message = "微信支付公钥路径不能为空")
-		@Size(max = 500, message = "微信支付公钥路径不能超过500个字符")
-		private String publicKeyPath;
-
 		private boolean apiV3KeyConfigured;
+		private boolean privateKeyConfigured;
+		private boolean publicKeyConfigured;
 	}
 }

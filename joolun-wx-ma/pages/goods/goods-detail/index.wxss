@@ -242,3 +242,4 @@
 .sku-popup__button--single{
   width: 100%;
 }
+.review-board{padding:28rpx}.review-board__header,.review-item__head{display:flex;justify-content:space-between}.review-board__title{font-size:30rpx;font-weight:700}.review-board__score,.review-item__rating{color:#f0a43b}.review-item{padding:24rpx 0;border-bottom:1rpx solid #f0f1f3}.review-item__content{margin-top:16rpx;color:#333;font-size:26rpx;line-height:1.7}.review-item__spec{margin-top:12rpx;color:#999;font-size:21rpx}.review-item__reply{margin-top:14rpx;padding:16rpx;border-radius:10rpx;background:#f7f8fa;color:#666;font-size:23rpx}.review-board__empty{padding:44rpx;text-align:center;color:#999}

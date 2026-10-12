@@ -26,7 +26,8 @@ public final class WxConfigKeyConstants {
 	public static final String MA_MSG_DATA_FORMAT = "wx.ma.msgDataFormat";
 	public static final String MA_MCH_ID = "wx.ma.mchId";
 	public static final String MA_API_V3_KEY = "wx.ma.apiV3Key";
-	public static final String MA_PKCS12_PATH = "wx.ma.pkcs12Path";
+	public static final String MA_PRIVATE_KEY_PATH = "wx.ma.privateKeyPath";
+	public static final String MA_CERT_SERIAL_NO = "wx.ma.certSerialNo";
 	public static final String MA_PUBLIC_KEY_ID = "wx.ma.publicKeyId";
 	public static final String MA_PUBLIC_KEY_PATH = "wx.ma.publicKeyPath";
 

@@ -43,6 +43,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * 单公众号运营能力：模板消息、渠道二维码、数据、客服、群发和评论。
@@ -52,6 +53,9 @@ import java.util.Map;
 @AllArgsConstructor
 @RequestMapping("/wxmp/operations")
 public class WxMpOperationsController extends BaseController {
+	private static final Pattern CUSTOMER_ACCOUNT_PATTERN = Pattern.compile("^[A-Za-z0-9_]{1,10}@[A-Za-z0-9_-]{1,30}$");
+	private static final String CUSTOMER_ACCOUNT_FORMAT_MESSAGE =
+			"客服账号格式不正确，请填写“账号前缀@公众号微信号”：前缀限1-10位英文、数字或下划线，@后必须是公众平台设置的公众号微信号（不是AppID、原始ID或公众号名称）";
 
 	private final WxMpService wxMpService;
 	private final WxUserService wxUserService;
@@ -143,14 +147,14 @@ public class WxMpOperationsController extends BaseController {
 
 	@PostMapping("/customer/accounts")
 	@PreAuthorize("@ss.hasPermi('wxmp:operations:edit')")
-	public AjaxResult addCustomerAccount(@RequestBody WxMpKfAccountRequest request) {
-		return invoke(() -> wxMpService.getKefuService().kfAccountAdd(request));
+	public AjaxResult addCustomerAccount(@RequestBody CustomerAccountRequest request) {
+		return invoke(() -> wxMpService.getKefuService().kfAccountAdd(request.toWxRequest()));
 	}
 
 	@PutMapping("/customer/accounts")
 	@PreAuthorize("@ss.hasPermi('wxmp:operations:edit')")
-	public AjaxResult updateCustomerAccount(@RequestBody WxMpKfAccountRequest request) {
-		return invoke(() -> wxMpService.getKefuService().kfAccountUpdate(request));
+	public AjaxResult updateCustomerAccount(@RequestBody CustomerAccountRequest request) {
+		return invoke(() -> wxMpService.getKefuService().kfAccountUpdate(request.toWxRequest()));
 	}
 
 	@DeleteMapping("/customer/accounts/{account}")
@@ -336,7 +340,12 @@ public class WxMpOperationsController extends BaseController {
 
 	private String resolveMessage(Exception e) {
 		if (e instanceof WxErrorException wxError && wxError.getError() != null) {
-			return wxError.getError().getErrorMsg();
+			String message = wxError.getError().getErrorMsg();
+			if (message != null && (message.contains("illegal custom service account")
+					|| message.contains("invalid kf_account"))) {
+				return CUSTOMER_ACCOUNT_FORMAT_MESSAGE;
+			}
+			return message;
 		}
 		return e.getMessage();
 	}
@@ -361,6 +370,24 @@ public class WxMpOperationsController extends BaseController {
 	}
 
 	public record SessionRequest(String openId, String account) {
+	}
+
+	public record CustomerAccountRequest(String kfAccount, String nickName, String inviteWx) {
+		WxMpKfAccountRequest toWxRequest() {
+			String account = kfAccount == null ? "" : kfAccount.trim();
+			String nickname = nickName == null ? "" : nickName.trim();
+			if (!CUSTOMER_ACCOUNT_PATTERN.matcher(account).matches()) {
+				throw new IllegalArgumentException(CUSTOMER_ACCOUNT_FORMAT_MESSAGE);
+			}
+			if (nickname.isEmpty()) {
+				throw new IllegalArgumentException("客服昵称不能为空");
+			}
+			return WxMpKfAccountRequest.builder()
+				.kfAccount(account)
+				.nickName(nickname)
+				.inviteWx(inviteWx == null || inviteWx.isBlank() ? null : inviteWx.trim())
+				.build();
+		}
 	}
 
 	public record CommentRequest(String msgDataId, Integer index, Long userCommentId, String content) {

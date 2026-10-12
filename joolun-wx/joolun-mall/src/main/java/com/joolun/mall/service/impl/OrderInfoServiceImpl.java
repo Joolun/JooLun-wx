@@ -21,6 +21,7 @@ import com.github.binarywang.wxpay.service.WxPayService;
 import com.joolun.mall.config.CommonConstants;
 import com.joolun.mall.config.MallRuntimeConfigService;
 import com.joolun.mall.constant.MallConstants;
+import com.joolun.mall.dto.CouponDiscountDTO;
 import com.joolun.mall.dto.PlaceOrderDTO;
 import com.joolun.mall.dto.PlaceOrderGoodsDTO;
 import com.joolun.mall.entity.GoodsSku;
@@ -34,11 +35,13 @@ import com.joolun.mall.entity.UserAddress;
 import com.joolun.mall.enums.OrderInfoEnum;
 import com.joolun.mall.enums.OrderLogisticsEnum;
 import com.joolun.mall.mapper.OrderInfoMapper;
+import com.joolun.mall.service.CouponService;
 import com.joolun.mall.service.GoodsSkuService;
 import com.joolun.mall.service.GoodsSpuService;
 import com.joolun.mall.service.MallTradeConfigService;
 import com.joolun.mall.service.MallUserOperateLogService;
 import com.joolun.mall.service.MallUserService;
+import com.joolun.mall.service.MemberLevelService;
 import com.joolun.mall.service.OrderInfoService;
 import com.joolun.mall.service.OrderItemService;
 import com.joolun.mall.service.OrderLogisticsService;
@@ -46,6 +49,7 @@ import com.joolun.mall.service.OrderOperateLogService;
 import com.joolun.mall.service.ShoppingCartService;
 import com.joolun.mall.service.UserAddressService;
 import com.joolun.mall.support.MallGoodsSkuSupport;
+import com.joolun.mall.support.MallPricingCalculator;
 import com.joolun.weixin.config.WxPayConfiguration;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -90,6 +94,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 	private final MallRuntimeConfigService mallRuntimeConfigService;
 	private final MallGoodsSkuSupport mallGoodsSkuSupport;
 	private final MallTradeConfigService mallTradeConfigService;
+	private final CouponService couponService;
+	private final MemberLevelService memberLevelService;
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -135,6 +141,11 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 	}
 
 	@Override
+	public IPage<OrderInfo> pageShipping(IPage<OrderInfo> page, OrderInfo orderInfo) {
+		return baseMapper.selectShippingPage(page, orderInfo);
+	}
+
+	@Override
 	public IPage<OrderInfo> page2(IPage<OrderInfo> page, OrderInfo orderInfo) {
 		return baseMapper.selectPage2(page, orderInfo);
 	}
@@ -164,6 +175,11 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 	@Override
 	public Map<String, Object> getAdminSummary(OrderInfo orderInfo) {
 		return baseMapper.selectSummary(orderInfo);
+	}
+
+	@Override
+	public Map<String, Object> getShippingSummary(OrderInfo orderInfo) {
+		return baseMapper.selectShippingSummary(orderInfo);
 	}
 
 	/**
@@ -210,6 +226,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 				}
 			});
 			baseMapper.updateById(orderInfo);
+			couponService.release(orderInfo.getCouponUserId(), orderInfo.getId());
 		}
 	}
 
@@ -245,11 +262,14 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 		// 3. 扣减 SKU 库存，并删除对应购物车记录。
 		OrderInfo orderInfo = new OrderInfo();
 		BeanUtil.copyProperties(placeOrderDTO, orderInfo);
+		orderInfo.setId(IdUtil.simpleUUID());
 		orderInfo.setIsPay(CommonConstants.NO);
 		orderInfo.setOrderNo(IdUtil.getSnowflake(0, 0).nextIdStr());
 		orderInfo.setSalesPrice(BigDecimal.ZERO);
 		orderInfo.setPaymentPrice(BigDecimal.ZERO);
 		orderInfo.setFreightPrice(BigDecimal.ZERO);
+		orderInfo.setMemberDiscountAmount(BigDecimal.ZERO);
+		orderInfo.setCouponDiscountAmount(BigDecimal.ZERO);
 		orderInfo.setCreateTime(LocalDateTime.now());
 
 		List<OrderItem> listOrderItem = new ArrayList<>();
@@ -284,6 +304,33 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 		}
 		if (listOrderItem.isEmpty()) {
 			return null;
+		}
+
+		List<MallPricingCalculator.PricingLine> pricingLines = new ArrayList<>(listOrderItem.size());
+		for (int index = 0; index < listOrderItem.size(); index++) {
+			OrderItem item = listOrderItem.get(index);
+			pricingLines.add(new MallPricingCalculator.PricingLine(String.valueOf(index),
+					item.getSalesPrice().multiply(BigDecimal.valueOf(item.getQuantity())), item.getFreightPrice()));
+		}
+		BigDecimal memberRate = memberLevelService.resolveDiscountRate(mallUser.getGrowthValue());
+		MallPricingCalculator.PricingResult memberPricing = MallPricingCalculator.calculate(
+				pricingLines, memberRate, BigDecimal.ZERO);
+		CouponDiscountDTO couponDiscount = couponService.lockForOrder(placeOrderDTO.getCouponUserId(),
+				mallUser.getId(), orderInfo.getId(),
+				memberPricing.salesAmount().subtract(memberPricing.memberDiscountAmount()));
+		MallPricingCalculator.PricingResult pricing = MallPricingCalculator.calculate(pricingLines, memberRate,
+				couponDiscount == null ? BigDecimal.ZERO : couponDiscount.getDiscountAmount());
+		orderInfo.setMemberDiscountAmount(pricing.memberDiscountAmount());
+		orderInfo.setCouponDiscountAmount(pricing.couponDiscountAmount());
+		orderInfo.setCouponUserId(couponDiscount == null ? null : couponDiscount.getCouponUserId());
+		orderInfo.setPaymentPrice(pricing.paymentAmount());
+		for (int index = 0; index < listOrderItem.size(); index++) {
+			OrderItem item = listOrderItem.get(index);
+			MallPricingCalculator.PricingLineResult line = pricing.lines().get(index);
+			item.setMemberDiscountAmount(line.memberDiscountAmount());
+			item.setCouponDiscountAmount(line.couponDiscountAmount());
+			item.setPaymentPrice(line.paymentAmount());
+			item.setReviewStatus("0");
 		}
 
 		UserAddress userAddress = userAddressService.getOne(Wrappers.<UserAddress>lambdaQuery()
@@ -344,7 +391,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 				resultList.get(goodsSpu.getId()).forEach(orderItem -> goodsSpu.setSaleNum(goodsSpu.getSaleNum() + orderItem.getQuantity()));
 				goodsSpuService.updateById(goodsSpu);
 			});
-			mallUserService.recordConsume(orderInfo.getUserId(), orderInfo.getPaymentPrice());
+			couponService.markUsed(orderInfo.getCouponUserId(), orderInfo.getId());
+			mallUserService.recordConsume(orderInfo.getUserId(), orderInfo.getPaymentPrice(), orderInfo.getId());
 			orderOperateLogService.saveOperateLog(orderInfo.getId(), null, "PAY_SUCCESS", "订单支付成功",
 					"系统已确认支付成功，支付金额 " + defaultDecimal(orderInfo.getPaymentPrice(), BigDecimal.ZERO) + " 元，支付流水号："
 							+ StrUtil.blankToDefault(orderInfo.getTransactionId(), "未记录"),
@@ -473,7 +521,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 			orderInfo.setStatus(OrderInfoEnum.STATUS_5.getValue());
 			baseMapper.updateById(orderInfo);
 		}
-		mallUserService.recordRefund(orderInfo.getUserId());
+		mallUserService.recordRefund(orderInfo.getUserId(), orderItem.getPaymentPrice(), orderItem.getId());
 		orderOperateLogService.saveOperateLog(orderInfo.getId(), orderItem.getId(), "REFUND_SUCCESS", "退款成功",
 				"系统已完成微信支付 API v3 退款回调，退款金额 " + defaultDecimal(orderItem.getPaymentPrice(), BigDecimal.ZERO) + " 元",
 				"SYSTEM", "0", "退款回调", null);

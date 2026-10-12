@@ -27,6 +27,9 @@
 		<result property="salesPrice" column="sales_price"/>
 		<result property="freightPrice" column="freight_price"/>
 		<result property="paymentPrice" column="payment_price"/>
+		<result property="memberDiscountAmount" column="member_discount_amount"/>
+		<result property="couponDiscountAmount" column="coupon_discount_amount"/>
+		<result property="reviewStatus" column="review_status"/>
 		<result property="remark" column="remark"/>
 		<result property="status" column="status"/>
 		<result property="isRefund" column="is_refund"/>
@@ -69,6 +72,9 @@
 		mall_order_item.`sales_price`,
 		mall_order_item.`freight_price`,
 		mall_order_item.`payment_price`,
+		mall_order_item.`member_discount_amount`,
+		mall_order_item.`coupon_discount_amount`,
+		mall_order_item.`review_status`,
 		mall_order_item.`remark`,
 		mall_order_item.`status`,
 		mall_order_item.`is_refund`,

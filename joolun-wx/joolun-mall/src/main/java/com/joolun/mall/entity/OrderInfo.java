@@ -100,6 +100,12 @@ public class OrderInfo extends Model<OrderInfo> {
 	 */
 	@Excel(name = "支付金额（销售金额+运费金额-积分抵扣金额-电子券抵扣金额）")
 	private BigDecimal paymentPrice;
+	/** 本单使用的用户优惠券主键。 */
+	private String couponUserId;
+	/** 优惠券减免金额。 */
+	private BigDecimal couponDiscountAmount;
+	/** 会员等级减免金额。 */
+	private BigDecimal memberDiscountAmount;
 	/**
 	 * 付款时间
 	 */
@@ -130,6 +136,24 @@ public class OrderInfo extends Model<OrderInfo> {
 	 */
 	@Excel(name = "支付交易ID")
 	private String transactionId;
+	/**
+	 * 微信发货同步状态：0未同步、1成功、2失败、3跳过。
+	 */
+	@Excel(name = "微信发货同步状态")
+	private String wxShippingStatus;
+	/**
+	 * 微信发货最后同步时间。
+	 */
+	@Excel(name = "微信发货同步时间")
+	private LocalDateTime wxShippingSyncTime;
+	/**
+	 * 微信发货最后一次失败或跳过原因。
+	 */
+	private String wxShippingError;
+	/**
+	 * 微信发货同步尝试次数。
+	 */
+	private Integer wxShippingRetryCount;
 	/**
 	 * 物流id
 	 */
@@ -214,6 +238,12 @@ public class OrderInfo extends Model<OrderInfo> {
 	 */
 	@TableField(exist = false)
 	private String afterSaleStatus;
+	/**
+	 * 微信发货中心综合搜索关键字。
+	 * 可匹配订单号、微信支付单号、会员信息和物流单号，不落库。
+	 */
+	@TableField(exist = false)
+	private String shippingKeyword;
 
 	/**
 	 * 订单操作日志。

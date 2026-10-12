@@ -43,7 +43,7 @@
     "condition": false
   },
   "compileType": "miniprogram",
-  "libVersion": "2.19.6",
+  "libVersion": "2.21.2",
   "appid": "wx0877cb082fa521bf",
   "projectname": "joolun-wx-ma",
   "simulatorType": "wechat",
@@ -52,5 +52,6 @@
   "editorSetting": {
     "tabIndent": "insertSpaces",
     "tabSize": 2
-  }
+  },
+  "isGameTourist": false
 }

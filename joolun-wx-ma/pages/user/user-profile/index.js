@@ -6,15 +6,23 @@
  */
 
 const app = getApp()
+const util = require('../../../utils/util.js')
 
 Page({
   data: {
     form: {
+      nickName: '',
       realName: '',
       sex: '0',
       birthday: ''
     },
     mallUser: {},
+    displayAvatarUrl: '',
+    maskedMobile: '未绑定',
+    registerSourceText: '其他',
+    regionText: '未同步',
+    avatarUploading: false,
+    phoneBinding: false,
     memberIdentityText: '未入会',
     memberTimeText: '未入会',
     sexOptions: [
@@ -44,19 +52,33 @@ Page({
       })
   },
   /**
-   * 更新微信头像和昵称。
+   * 使用微信官方 chooseAvatar 组件选择并上传头像。
    */
-  getUserProfile() {
-    wx.getUserProfile({
-      desc: '用于完善会员资料',
-      success: (detail) => {
-        app.api.mallUserSave(detail).then((res) => {
-          const mallUser = res.data || {}
-          app.globalData.mallUser = mallUser
-          this.applyMallUser(mallUser)
-        })
-      }
+  chooseAvatar(e) {
+    const avatarUrl = e.detail && e.detail.avatarUrl
+    if (!avatarUrl) {
+      return
+    }
+    this.setData({
+      avatarUploading: true,
+      displayAvatarUrl: avatarUrl
     })
+    app.api.mallUserUploadAvatar(avatarUrl)
+      .then((res) => {
+        const mallUser = res.data || {}
+        app.globalData.mallUser = mallUser
+        this.applyMallUser(mallUser)
+        wx.showToast({
+          title: '头像已更新',
+          icon: 'success'
+        })
+      })
+      .catch(() => {
+        this.applyMallUser(app.globalData.mallUser || {})
+      })
+      .finally(() => {
+        this.setData({ avatarUploading: false })
+      })
   },
   /**
    * 绑定手机号。
@@ -75,6 +97,8 @@ Page({
       }
       return
     }
+    const changing = Boolean(this.data.mallUser.mobile)
+    this.setData({ phoneBinding: true })
     app.api.mallUserBindPhone({
       code: detail.code,
       encryptedData: detail.encryptedData,
@@ -85,9 +109,21 @@ Page({
       app.globalData.mallUser = mallUser
       this.applyMallUser(mallUser)
       wx.showToast({
-        title: '绑定成功',
+        title: changing ? '手机号已更新' : '绑定成功',
         icon: 'success'
       })
+    }).catch(() => {
+      this.applyMallUser(app.globalData.mallUser || {})
+    }).finally(() => {
+      this.setData({ phoneBinding: false })
+    })
+  },
+  /**
+   * 接收微信官方昵称输入组件的值。
+   */
+  inputNickName(e) {
+    this.setData({
+      'form.nickName': e.detail.value
     })
   },
   /**
@@ -121,12 +157,22 @@ Page({
    */
   saveProfile() {
     const form = this.data.form
+    if (!String(form.nickName || '').trim()) {
+      wx.showToast({
+        title: '请填写微信昵称',
+        icon: 'none'
+      })
+      return
+    }
     app.api.mallUserUpdate({
+      nickName: form.nickName.trim(),
       realName: form.realName,
       sex: form.sex,
       birthday: form.birthday
     }).then((res) => {
-      app.globalData.mallUser = res.data || {}
+      const mallUser = res.data || {}
+      app.globalData.mallUser = mallUser
+      this.applyMallUser(mallUser)
       wx.showToast({
         title: '保存成功',
         icon: 'success'
@@ -145,10 +191,15 @@ Page({
     const sexIndex = this.findSexIndex(mallUser.sex)
     this.setData({
       mallUser: mallUser,
+      displayAvatarUrl: util.resolveResourceUrl(mallUser.avatarUrl),
+      maskedMobile: this.maskMobile(mallUser.mobile),
+      registerSourceText: this.formatRegisterSource(mallUser.registerSource),
+      regionText: this.buildRegion(mallUser),
       memberIdentityText: this.formatMemberIdentity(mallUser.memberFlag),
       memberTimeText: this.formatMemberTime(mallUser),
       sexIndex: sexIndex,
       form: {
+        nickName: mallUser.nickName || '',
         realName: mallUser.realName || '',
         sex: mallUser.sex || '0',
         birthday: mallUser.birthday || ''
@@ -176,9 +227,9 @@ Page({
   /**
    * 拼接地区文案。
    */
-  buildRegion() {
-    const mallUser = this.data.mallUser || {}
-    const region = [mallUser.country, mallUser.province, mallUser.city].filter(item => item)
+  buildRegion(mallUser) {
+    const user = mallUser || {}
+    const region = [user.country, user.province, user.city].filter(item => item)
     return region.length > 0 ? region.join(' / ') : '未同步'
   },
   /**

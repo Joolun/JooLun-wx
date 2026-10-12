@@ -61,8 +61,24 @@ page {
 
 .profile-auth {
   margin-top: 22rpx;
-  background: #221a14;
-  color: #fff;
+  padding: 0 36rpx;
+  background-color: #07c160 !important;
+  color: #ffffff !important;
+  border: 2rpx solid #059e4f;
+  box-shadow: 0 12rpx 24rpx rgba(7, 193, 96, 0.24);
+  font-weight: 600;
+}
+
+.profile-auth::after,
+.profile-save::after,
+.phone-bind-btn::after {
+  border: none;
+}
+
+.profile-input {
+  flex: 1;
+  text-align: right;
+  color: #303133;
 }
 
 .picker,
@@ -74,8 +90,10 @@ page {
 
 .phone-bind-btn {
   margin-left: 20rpx;
-  background: #c7863f;
-  color: #fff;
+  background-color: #e67e22 !important;
+  color: #ffffff !important;
+  border: 2rpx solid #cf6d13;
+  font-weight: 600;
 }
 
 .profile-tips {
@@ -101,6 +119,11 @@ page {
 
 .profile-save {
   margin-top: 28rpx;
-  background: #c7863f;
-  color: #fff;
+  min-height: 88rpx;
+  background-color: #1677ff !important;
+  color: #ffffff !important;
+  border: 2rpx solid #0f61d6;
+  box-shadow: 0 16rpx 30rpx rgba(22, 119, 255, 0.25);
+  font-size: 30rpx;
+  font-weight: 700;
 }

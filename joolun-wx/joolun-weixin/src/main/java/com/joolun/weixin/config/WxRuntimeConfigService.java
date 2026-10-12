@@ -66,7 +66,8 @@ public class WxRuntimeConfigService {
 				StringUtils.isEmpty(first.getMsgDataFormat()) ? "JSON" : first.getMsgDataFormat()));
 		first.setMchId(resolve(WxConfigKeyConstants.MA_MCH_ID, first.getMchId()));
 		first.setApiV3Key(resolve(WxConfigKeyConstants.MA_API_V3_KEY, first.getApiV3Key()));
-		first.setPkcs12Path(resolve(WxConfigKeyConstants.MA_PKCS12_PATH, first.getPkcs12Path()));
+		first.setPrivateKeyPath(resolve(WxConfigKeyConstants.MA_PRIVATE_KEY_PATH, first.getPrivateKeyPath()));
+		first.setCertSerialNo(resolve(WxConfigKeyConstants.MA_CERT_SERIAL_NO, first.getCertSerialNo()));
 		first.setPublicKeyId(resolve(WxConfigKeyConstants.MA_PUBLIC_KEY_ID, first.getPublicKeyId()));
 		first.setPublicKeyPath(resolve(WxConfigKeyConstants.MA_PUBLIC_KEY_PATH, first.getPublicKeyPath()));
 		return result;
@@ -95,7 +96,8 @@ public class WxRuntimeConfigService {
 		target.setMsgDataFormat(source.getMsgDataFormat());
 		target.setMchId(source.getMchId());
 		target.setApiV3Key(source.getApiV3Key());
-		target.setPkcs12Path(source.getPkcs12Path());
+		target.setPrivateKeyPath(source.getPrivateKeyPath());
+		target.setCertSerialNo(source.getCertSerialNo());
 		target.setPublicKeyId(source.getPublicKeyId());
 		target.setPublicKeyPath(source.getPublicKeyPath());
 		return target;

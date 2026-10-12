@@ -19,6 +19,8 @@ Page({
   data: {
     config: app.globalData.config,
     goodsSpu: null,
+    reviewSummary: { count: 0, averageRating: 0 },
+    recentReviews: [],
     serviceGuarantees: [
       '正品保障，商品信息以实际发货为准',
       '下单后可在订单详情查看售后进度',
@@ -63,8 +65,20 @@ Page({
     app.initPage()
       .then(() => {
         this.goodsGet(id, options.skuId)
+        this.loadReviews(id)
         this.shoppingCartCount()
       })
+  },
+  loadReviews(id) {
+    Promise.all([
+      app.api.goodsReviewSummary(id),
+      app.api.goodsReviewPage({ spuId: id, current: 1, size: 3 })
+    ]).then(([summary, reviews]) => {
+      this.setData({
+        reviewSummary: summary.data || { count: 0, averageRating: 0 },
+        recentReviews: reviews.data && reviews.data.records || []
+      })
+    }).catch(() => {})
   },
   onShareAppMessage() {
     const goodsSpu = this.data.goodsSpu

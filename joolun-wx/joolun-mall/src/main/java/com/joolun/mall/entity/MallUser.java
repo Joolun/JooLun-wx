@@ -97,6 +97,21 @@ public class MallUser extends Model<MallUser> {
 	 */
 	private LocalDateTime memberTime;
 
+	/** 当前会员等级主键，由成长值自动匹配。 */
+	private String levelId;
+
+	/** 成长值，支付成功按实付整数金额累计，退款时扣回。 */
+	private Integer growthValue;
+
+	/** 可展示积分，第一版暂不参与抵扣。 */
+	private Integer points;
+
+	@TableField(exist = false)
+	private String memberLevelName;
+
+	@TableField(exist = false)
+	private BigDecimal memberDiscountRate;
+
 	/**
 	 * 性别。
 	 * 0：未知，1：男，2：女。

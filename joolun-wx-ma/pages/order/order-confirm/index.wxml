@@ -64,6 +64,23 @@
             <view class="text-price">{{freightPrice}}</view>
           </view>
         </view>
+        <view class="cu-item margin-top-sm" wx:if="{{memberDiscountAmount > 0}}">
+          <text class="text-gray text-sm">会员优惠（{{memberRate}}%）</text>
+          <view class="action text-red">- ¥{{memberDiscountAmount}}</view>
+        </view>
+        <picker class="cu-item margin-top-sm coupon-picker" range="{{availableCoupons}}" range-key="couponName" value="{{selectedCouponIndex}}" bindchange="couponChange">
+          <view class="coupon-picker__content">
+            <text class="text-gray text-sm coupon-picker__label">优惠券</text>
+            <view class="coupon-picker__value">
+              <text class="coupon-picker__name">{{availableCoupons[selectedCouponIndex].couponName || '暂无可用'}}</text>
+              <text class="cuIcon-right coupon-picker__arrow"></text>
+            </view>
+          </view>
+        </picker>
+        <view class="cu-item margin-top-sm" wx:if="{{couponDiscountAmount > 0}}">
+          <text class="text-gray text-sm">优惠券减免</text>
+          <view class="action text-red">- ¥{{couponDiscountAmount}}</view>
+        </view>
       </view>
     </view>
   </view>

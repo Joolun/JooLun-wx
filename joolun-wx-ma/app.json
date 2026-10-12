@@ -10,7 +10,10 @@
     "pages/order/order-list/index",
     "pages/order/order-detail/index",
     "pages/order/after-sale-list/index",
+    "pages/order/order-review/index",
     "pages/user/user-center/index",
+    "pages/user/coupon-center/index",
+    "pages/user/member-center/index",
     "pages/user/user-profile/index",
     "pages/user/user-address/list/index",
     "pages/user/user-address/form/index"

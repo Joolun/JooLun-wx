@@ -1,0 +1,16 @@
+.git
+.agents
+.codex
+.codex-tmp
+.runtime-logs
+JooLun-wx.wiki
+deploy/backups
+deploy/dist
+deploy/secrets
+deploy/state
+joolun-wx/docker
+**/target
+**/node_modules
+**/.idea
+**/.vscode
+**/*.log

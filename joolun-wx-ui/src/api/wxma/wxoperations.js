@@ -54,3 +54,10 @@ export const queryShipping = (data) => request({ url: `${baseUrl}/shipping/query
 export const getShippingList = (data) => request({ url: `${baseUrl}/shipping/list`, method: "post", data });
 export const notifyConfirm = (data) => request({ url: `${baseUrl}/shipping/notify-confirm`, method: "post", data });
 export const setShippingJumpPath = (path) => request({ url: `${baseUrl}/shipping/jump-path`, method: "put", data: { path } });
+
+// 与商城订单关联的微信发货同步中心。
+export const getShippingOrderPage = (params) => request({ url: `${baseUrl}/shipping/orders`, method: "get", params });
+export const getShippingOrderSummary = (params) => request({ url: `${baseUrl}/shipping/orders/summary`, method: "get", params });
+export const syncShippingOrder = (id) => request({ url: `${baseUrl}/shipping/orders/${encodeURIComponent(id)}/sync`, method: "put" });
+export const batchSyncShippingOrders = (orderIds) => request({ url: `${baseUrl}/shipping/orders/sync`, method: "put", data: { orderIds } });
+export const getWechatShippingOrder = (id) => request({ url: `${baseUrl}/shipping/orders/${encodeURIComponent(id)}/wechat`, method: "get" });

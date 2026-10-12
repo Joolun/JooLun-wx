@@ -22,6 +22,11 @@ Page({
     salesPrice: 0,
     paymentPrice: 0,
     freightPrice: 0,
+    memberDiscountAmount: 0,
+    couponDiscountAmount: 0,
+    memberRate: 100,
+    availableCoupons: [{ id: '', couponName: '不使用优惠券', discountAmount: 0, available: true }],
+    selectedCouponIndex: 0,
     userAddress: null,
     orderSubParm: {
       paymentType: '1',
@@ -84,7 +89,38 @@ Page({
           paymentPrice: salesPrice,
           spuIds
         })
+        this.loadPricingBenefits(Number(salesPrice))
       }
+    })
+  },
+  loadPricingBenefits (salesPrice) {
+    return app.api.memberProfile().then((profileRes) => {
+      const profile = profileRes.data || {}
+      const memberRate = Number(profile.currentLevel && profile.currentLevel.discountRate || 100)
+      const memberDiscountAmount = Number((salesPrice * (100 - memberRate) / 100).toFixed(2))
+      const discountedSales = Number((salesPrice - memberDiscountAmount).toFixed(2))
+      return app.api.couponMine({ status: '0', orderAmount: discountedSales }).then((couponRes) => {
+        const coupons = [{ id: '', couponName: '不使用优惠券', discountAmount: 0, available: true }]
+          .concat((couponRes.data || []).filter(item => item.available))
+        this.setData({ memberRate, memberDiscountAmount, availableCoupons: coupons, selectedCouponIndex: 0 })
+        this.refreshBenefitAmount()
+      })
+    }).catch(() => {})
+  },
+  couponChange (e) {
+    const selectedCouponIndex = Number(e.detail.value || 0)
+    this.setData({ selectedCouponIndex })
+    this.refreshBenefitAmount()
+  },
+  refreshBenefitAmount () {
+    const coupon = this.data.availableCoupons[this.data.selectedCouponIndex] || {}
+    const salesPrice = Number(this.data.salesPrice || 0)
+    const memberDiscount = Number(this.data.memberDiscountAmount || 0)
+    const couponDiscount = Math.min(Number(coupon.discountAmount || 0), Math.max(0, salesPrice - memberDiscount))
+    this.setData({
+      couponDiscountAmount: couponDiscount.toFixed(2),
+      paymentPrice: Math.max(0, salesPrice - memberDiscount - couponDiscount).toFixed(2),
+      ['orderSubParm.couponUserId']: coupon.id || null
     })
   },
   countFreight (orderConfirm, freightTemplat, quantity) {

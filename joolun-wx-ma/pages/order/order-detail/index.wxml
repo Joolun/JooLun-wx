@@ -118,6 +118,10 @@
               {{item.status == '2' ? '重新申请退款' : '申请退款'}}
             </button>
           </view>
+          <view class="cu-item margin" wx:if="{{item.canReview}}">
+            <button class="cu-btn sm bg-blue" bindtap="goReview" data-item="{{item}}">评价商品</button>
+          </view>
+          <view class="cu-item margin text-gray" wx:if="{{item.reviewStatus === '1'}}">已评价</view>
         </view>
         <view class="cu-item margin-top-xs">
             <text class="text-gray font-weight">订单金额</text>
@@ -131,6 +135,8 @@
             + <text class="text-price">{{orderInfo.freightPrice}}</text>
           </view>
         </view>
+        <view class="cu-item margin-top-xs" wx:if="{{orderInfo.memberDiscountAmount > 0}}"><text class="text-gray font-weight">会员优惠</text><view class="action text-red">- ¥{{orderInfo.memberDiscountAmount}}</view></view>
+        <view class="cu-item margin-top-xs" wx:if="{{orderInfo.couponDiscountAmount > 0}}"><text class="text-gray font-weight">优惠券</text><view class="action text-red">- ¥{{orderInfo.couponDiscountAmount}}</view></view>
         <view class="cu-item margin-top-xs">
             <text class="text-gray font-weight">支付金额</text>
           <view class="action">

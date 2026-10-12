@@ -58,9 +58,12 @@ services:
       - "7500:7500"
     environment:
       - TZ=Asia/Shanghai
+      - JOOLUN_PROFILE=/home/joolun/uploadPath
+      - JOOLUN_CERT_PATH=/home/joolun/certs
     volumes:
       - ./joolun/logs:/home/joolun/logs
       - ./joolun/uploadPath:/home/joolun/uploadPath
+      - ./joolun/certs:/home/joolun/certs
     depends_on:
       - joolun-mysql
       - joolun-redis

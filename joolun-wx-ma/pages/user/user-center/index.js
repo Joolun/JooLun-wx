@@ -6,6 +6,7 @@
  */
 
 const app = getApp()
+const util = require('../../../utils/util.js')
 
 Page({
   data: {
@@ -61,21 +62,6 @@ Page({
    */
   settings() {
     wx.openSetting({})
-  },
-  /**
-   * 获取用户头像和昵称，并同步到商城用户档案。
-   */
-  getUserProfile() {
-    wx.getUserProfile({
-      desc: '用于完善会员资料',
-      success: (detail) => {
-        app.api.mallUserSave(detail).then((res) => {
-          const mallUser = res.data || {}
-          app.globalData.mallUser = mallUser
-          this.refreshPanels(mallUser)
-        })
-      }
-    })
   },
   /**
    * 绑定手机号。
@@ -193,7 +179,10 @@ Page({
    * @param {Object} mallUser 商城用户
    */
   refreshPanels(mallUser) {
-    const user = mallUser || {}
+    const originalUser = mallUser || {}
+    const user = Object.assign({}, originalUser, {
+      avatarUrl: util.resolveResourceUrl(originalUser.avatarUrl)
+    })
     this.setData({
       mallUser: user,
       memberIdentityText: this.formatMemberIdentity(user.memberFlag),
@@ -321,6 +310,18 @@ Page({
         desc: '完善真实姓名、性别和生日',
         url: '/pages/user/user-profile/index',
         icon: 'cuIcon-profile'
+      },
+      {
+        label: '会员中心',
+        desc: '查看等级、成长值和积分明细',
+        url: '/pages/user/member-center/index',
+        icon: 'cuIcon-vipcard'
+      },
+      {
+        label: '优惠券',
+        desc: '领券并查看可用优惠',
+        url: '/pages/user/coupon-center/index',
+        icon: 'cuIcon-ticket'
       },
       {
         label: '售后中心',

@@ -9,3 +9,5 @@
 /deploy/dist/
 /deploy/certs/*
 !/deploy/certs/.gitkeep
+/deploy
+/JooLun-wx.wiki

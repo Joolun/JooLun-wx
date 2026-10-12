@@ -91,7 +91,10 @@
 
     <el-dialog v-model="accountDialog" :title="accountEditing ? '编辑客服账号' : '新增客服账号'" width="520px">
       <el-form :model="accountForm" label-width="110px">
-        <el-form-item label="客服账号" required><el-input v-model="accountForm.kfAccount" :disabled="accountEditing" placeholder="name@公众号" /></el-form-item>
+        <el-form-item label="客服账号" required>
+          <el-input v-model.trim="accountForm.kfAccount" :disabled="accountEditing" placeholder="例如：service@公众号微信号" />
+          <div class="form-tip">完整格式为“账号前缀@公众号微信号”。前缀限 1-10 位英文、数字或下划线；@ 后填写公众平台设置的微信号，不是 AppID、原始 ID 或公众号名称。</div>
+        </el-form-item>
         <el-form-item label="客服昵称" required><el-input v-model="accountForm.nickName" /></el-form-item>
         <el-form-item label="邀请微信号"><el-input v-model="accountForm.inviteWx" placeholder="用于接收绑定邀请" /></el-form-item>
       </el-form>
@@ -125,6 +128,7 @@ const accountSaving = ref(false);
 const accountDialog = ref(false);
 const accountEditing = ref(false);
 const accountForm = reactive({ kfAccount: "", nickName: "", inviteWx: "" });
+const customerAccountPattern = /^[A-Za-z0-9_]{1,10}@[A-Za-z0-9_-]{1,30}$/;
 const sessionForm = reactive({ account: "", openId: "" });
 const messageForm = reactive({
   toUser: "", kfAccount: "", msgType: "text", content: "", mediaId: "", mpNewsMediaId: "",
@@ -163,9 +167,18 @@ function openAccountDialog(row) {
 }
 async function saveCustomer() {
   if (!requireValue(accountForm.kfAccount, "客服账号") || !requireValue(accountForm.nickName, "客服昵称")) return;
+  if (!customerAccountPattern.test(accountForm.kfAccount)) {
+    proxy.$modal.msgWarning("客服账号格式不正确，请填写“账号前缀@公众号微信号”；@ 后不是 AppID、原始 ID 或公众号名称");
+    return;
+  }
   accountSaving.value = true;
   try {
-    await (accountEditing.value ? updateCustomerAccount(accountForm) : addCustomerAccount(accountForm));
+    const body = {
+      kfAccount: accountForm.kfAccount.trim(),
+      nickName: accountForm.nickName.trim(),
+      inviteWx: accountForm.inviteWx.trim(),
+    };
+    await (accountEditing.value ? updateCustomerAccount(body) : addCustomerAccount(body));
     proxy.$modal.msgSuccess(accountEditing.value ? "客服账号已修改" : "客服账号已新增");
     accountDialog.value = false;
     loadCustomerAccounts();
@@ -241,4 +254,5 @@ loadCustomerAccounts();
 .query-form { margin-top: 6px; }
 .send-tip { margin-bottom: 18px; }
 .message-form { max-width: 1050px; }
+.form-tip { margin-top: 6px; color: var(--el-text-color-secondary); font-size: 12px; line-height: 1.6; }
 </style>

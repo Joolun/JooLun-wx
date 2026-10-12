@@ -1,5 +1,5 @@
 <img alt="JooLun" src="https://img.shields.io/badge/Java-21-brightgreen.svg"/>
-<img alt="JooLun" src="https://img.shields.io/badge/SpringBoot-4.0.6-green.svg"/>
+<img alt="JooLun" src="https://img.shields.io/badge/SpringBoot-4.1.1-green.svg"/>
 <a href="https://gitee.com/joolun/JooLun-wx" target="_blank">
     <img alt="JooLun" src="https://gitee.com/joolun/JooLun-wx/badge/star.svg"/>
 </a>

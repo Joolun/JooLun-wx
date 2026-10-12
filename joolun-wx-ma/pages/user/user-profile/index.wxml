@@ -7,13 +7,32 @@
 
 <view class="profile-page">
   <view class="profile-hero">
-    <view class="cu-avatar round xl profile-avatar" style="background-image:url({{mallUser.avatarUrl}})">
-      {{!mallUser.avatarUrl ? '头' : ''}}
+    <view class="cu-avatar round xl profile-avatar" style="background-image:url({{displayAvatarUrl}})">
+      {{!displayAvatarUrl ? '头' : ''}}
     </view>
-    <view class="profile-name">{{mallUser.nickName || '微信用户'}}</view>
+    <view class="profile-name">{{form.nickName || '微信用户'}}</view>
     <view class="profile-no">{{mallUser.memberFlag === '1' ? '会员编号' : '商城用户编号'}}：{{mallUser.userNo || '系统生成中'}}</view>
     <view class="profile-tag {{mallUser.memberFlag === '1' ? 'is-member' : 'is-guest'}}">{{memberIdentityText}}</view>
-    <button class="cu-btn round sm profile-auth" bindtap="getUserProfile">更新微信头像昵称</button>
+    <button
+      class="cu-btn round sm profile-auth"
+      open-type="chooseAvatar"
+      bindchooseavatar="chooseAvatar"
+      loading="{{avatarUploading}}"
+      disabled="{{avatarUploading}}"
+    >更新微信头像</button>
+  </view>
+
+  <view class="cu-form-group">
+    <view class="title">微信昵称</view>
+    <input
+      class="profile-input"
+      type="nickname"
+      maxlength="32"
+      placeholder="请输入或选择微信昵称"
+      value="{{form.nickName}}"
+      bindinput="inputNickName"
+      bindblur="inputNickName"
+    ></input>
   </view>
 
   <view class="cu-form-group">
@@ -37,14 +56,15 @@
 
   <view class="cu-form-group">
     <view class="title">手机号</view>
-    <view class="readonly-text">{{maskMobile(mallUser.mobile)}}</view>
+    <view class="readonly-text">{{maskedMobile}}</view>
     <button
-      wx:if="{{mallUser.memberFlag !== '1'}}"
       class="cu-btn sm phone-bind-btn"
       open-type="getPhoneNumber"
       bind:getphonenumber="bindPhoneNumber"
+      loading="{{phoneBinding}}"
+      disabled="{{phoneBinding}}"
     >
-      立即绑定
+      {{mallUser.mobile ? '更换号码' : '立即绑定'}}
     </button>
   </view>
 
@@ -60,19 +80,19 @@
 
   <view class="cu-form-group">
     <view class="title">注册来源</view>
-    <view class="readonly-text">{{formatRegisterSource(mallUser.registerSource)}}</view>
+    <view class="readonly-text">{{registerSourceText}}</view>
   </view>
 
   <view class="cu-form-group">
     <view class="title">所在地区</view>
-    <view class="readonly-text">{{buildRegion()}}</view>
+    <view class="readonly-text">{{regionText}}</view>
   </view>
 
   <view class="profile-tips">
     <view class="tips-title">说明</view>
-    <view class="tips-text">1. 微信头像和昵称通过上方按钮重新授权同步。</view>
+    <view class="tips-text">1. 头像使用微信官方头像选择组件，昵称使用微信官方昵称输入组件。</view>
     <view class="tips-text">2. 当前项目以绑定手机号作为会员认定标准，绑定成功后会自动转为会员。</view>
-    <view class="tips-text">3. 手机号当前通过微信手机号授权组件获取，绑定后会同步到商城用户档案。</view>
+    <view class="tips-text">3. 手机号通过微信官方手机号组件获取；已绑定后仍可点击“更换号码”。</view>
   </view>
 
   <button class="cu-btn block profile-save" bindtap="saveProfile">保存资料</button>

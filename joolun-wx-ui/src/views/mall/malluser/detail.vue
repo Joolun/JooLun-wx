@@ -56,6 +56,15 @@
             账号状态：{{ detail.status === "1" ? "禁用" : "正常" }}
           </div>
           <div class="detail-profile-sub">
+            会员等级：{{ formatMemberLevel(detail) }}
+            <span class="detail-divider">|</span>
+            成长值：{{ Number(detail.growthValue || 0) }}
+            <span class="detail-divider">|</span>
+            积分：{{ Number(detail.points || 0) }}
+            <span class="detail-divider">|</span>
+            等级折扣：{{ formatMemberDiscount(detail) }}
+          </div>
+          <div class="detail-profile-sub">
             注册来源：{{ formatRegisterSource(detail.registerSource) }}
             <span class="detail-divider">|</span>
             最近下单：{{ formatDateTime(detail.lastOrderTime) }}
@@ -264,6 +273,10 @@
             <span v-else>未打标签</span>
           </el-descriptions-item>
           <el-descriptions-item label="会员身份">{{ formatMemberIdentity(detail.memberFlag) }}</el-descriptions-item>
+          <el-descriptions-item label="会员等级">{{ formatMemberLevel(detail) }}</el-descriptions-item>
+          <el-descriptions-item label="成长值">{{ Number(detail.growthValue || 0) }}</el-descriptions-item>
+          <el-descriptions-item label="积分">{{ Number(detail.points || 0) }}</el-descriptions-item>
+          <el-descriptions-item label="等级折扣">{{ formatMemberDiscount(detail) }}</el-descriptions-item>
           <el-descriptions-item label="入会时间">{{ formatDateTime(detail.memberTime) }}</el-descriptions-item>
           <el-descriptions-item label="生日">{{ detail.birthday || "未填写" }}</el-descriptions-item>
           <el-descriptions-item label="性别">{{ formatSex(detail.sex) }}</el-descriptions-item>
@@ -1038,6 +1051,36 @@ function formatSex(sex) {
  */
 function formatMemberIdentity(memberFlag) {
   return memberFlag === "1" ? "已入会" : "未入会";
+}
+
+/**
+ * 格式化商城用户当前会员等级。
+ *
+ * @param {Object} row 商城用户
+ * @returns {string}
+ */
+function formatMemberLevel(row) {
+  if (row?.memberFlag !== "1") {
+    return "未入会";
+  }
+  return row?.memberLevelName || "未匹配等级";
+}
+
+/**
+ * 格式化当前等级折扣百分比。
+ *
+ * @param {Object} row 商城用户
+ * @returns {string}
+ */
+function formatMemberDiscount(row) {
+  if (row?.memberFlag !== "1") {
+    return "不适用";
+  }
+  if (row?.memberDiscountRate === null || row?.memberDiscountRate === undefined || row?.memberDiscountRate === "") {
+    return "未配置";
+  }
+  const discountRate = Number(row?.memberDiscountRate);
+  return Number.isFinite(discountRate) ? `${discountRate}%` : "未配置";
 }
 
 /**

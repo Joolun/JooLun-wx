@@ -80,8 +80,17 @@ Page({
     nextItem.afterSaleStatusText = this.buildAfterSaleStatusText(orderItem)
     nextItem.afterSaleVisible = nextItem.isRefund === '1' || nextItem.status === '1' || nextItem.status === '2' || nextItem.status === '3'
     nextItem.canApplyRefund = orderInfo.isPay === '1' && nextItem.isRefund === '0' && (nextItem.status === '0' || nextItem.status === '2')
+    nextItem.canReview = orderInfo.status === '3' && nextItem.isRefund === '0' && nextItem.reviewStatus !== '1'
     nextItem.afterSaleTimeline = this.buildAfterSaleTimeline(orderItem)
     return nextItem
+  },
+  goReview (e) {
+    const item = e.currentTarget.dataset.item || {}
+    wx.navigateTo({
+      url: '/pages/order/order-review/index?orderItemId=' + item.id
+        + '&spuName=' + encodeURIComponent(item.spuName || '')
+        + '&specInfo=' + encodeURIComponent(item.specInfo || '')
+    })
   },
   /**
    * 生成订单项售后状态文案。

@@ -17,6 +17,30 @@ export function updateWxAccountConfig(data) {
   })
 }
 
+// 上传微信支付商户 API 私钥
+export function uploadWxPayMerchantPrivateKey(file) {
+  const data = new FormData()
+  data.append('file', file)
+  return request({
+    url: '/system/app-config/wx/merchant-private-key',
+    method: 'post',
+    headers: { 'Content-Type': 'multipart/form-data' },
+    data
+  })
+}
+
+// 上传微信支付公钥
+export function uploadWechatPayPublicKey(file) {
+  const data = new FormData()
+  data.append('file', file)
+  return request({
+    url: '/system/app-config/wx/wechat-pay-public-key',
+    method: 'post',
+    headers: { 'Content-Type': 'multipart/form-data' },
+    data
+  })
+}
+
 // 查询商城配置
 export function getMallConfig() {
   return request({

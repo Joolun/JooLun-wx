@@ -21,6 +21,7 @@ import com.joolun.mall.dto.MallUserExportDTO;
 import com.joolun.mall.entity.MallUser;
 import com.joolun.mall.entity.MallUserOperateLog;
 import com.joolun.mall.entity.MallUserTag;
+import com.joolun.mall.entity.MemberLevel;
 import com.joolun.mall.entity.OrderInfo;
 import com.joolun.mall.entity.OrderItem;
 import com.joolun.mall.entity.ShoppingCart;
@@ -28,6 +29,7 @@ import com.joolun.mall.entity.UserAddress;
 import com.joolun.mall.service.MallUserOperateLogService;
 import com.joolun.mall.service.MallUserService;
 import com.joolun.mall.service.MallUserTagService;
+import com.joolun.mall.service.MemberLevelService;
 import com.joolun.mall.service.OrderInfoService;
 import com.joolun.mall.service.OrderItemService;
 import com.joolun.mall.service.ShoppingCartService;
@@ -70,6 +72,7 @@ public class MallUserController extends BaseController {
 	private final MallUserService mallUserService;
 	private final MallUserOperateLogService mallUserOperateLogService;
 	private final MallUserTagService mallUserTagService;
+	private final MemberLevelService memberLevelService;
 	private final OrderInfoService orderInfoService;
 	private final OrderItemService orderItemService;
 	private final ShoppingCartService shoppingCartService;
@@ -88,6 +91,7 @@ public class MallUserController extends BaseController {
 	@PreAuthorize("@ss.hasPermi('mall:malluser:index')")
 	public AjaxResult getMallUserPage(Page<MallUser> page, MallUser mallUser) {
 		IPage<MallUser> resultPage = mallUserService.page(page, buildMallUserQueryWrapper(mallUser));
+		fillMemberLevelInfo(resultPage.getRecords());
 		maskMallUserPage(resultPage);
 		return AjaxResult.success(resultPage);
 	}
@@ -320,6 +324,7 @@ public class MallUserController extends BaseController {
 		if (mallUser == null) {
 			return AjaxResult.success();
 		}
+		fillMemberLevelInfo(List.of(mallUser));
 		fillMallUserDetail(mallUser);
 		maskMallUser(mallUser);
 		return AjaxResult.success(mallUser);
@@ -710,6 +715,50 @@ public class MallUserController extends BaseController {
 			return new ArrayList<>();
 		}
 		return mallUserService.listByIds(validIds);
+	}
+
+	/**
+	 * 补齐后台展示需要的当前会员等级信息。
+	 * 等级按成长值实时匹配，确保管理员调整等级门槛后，列表展示与下单折扣口径一致。
+	 * 一次查询全部启用等级，避免分页列表逐行查询产生 N+1 问题。
+	 *
+	 * @param mallUsers 商城用户列表
+	 */
+	private void fillMemberLevelInfo(List<MallUser> mallUsers) {
+		if (mallUsers == null || mallUsers.isEmpty()) {
+			return;
+		}
+		List<MemberLevel> enabledLevels = memberLevelService.list(Wrappers.<MemberLevel>lambdaQuery()
+				.eq(MemberLevel::getStatus, "1")
+				.orderByAsc(MemberLevel::getMinGrowth));
+		for (MallUser mallUser : mallUsers) {
+			MemberLevel currentLevel = resolveCurrentMemberLevel(mallUser, enabledLevels);
+			mallUser.setMemberLevelName(currentLevel == null ? null : currentLevel.getName());
+			mallUser.setMemberDiscountRate(currentLevel == null ? null : currentLevel.getDiscountRate());
+		}
+	}
+
+	/**
+	 * 从已启用等级中匹配不高于用户成长值的最高等级。
+	 *
+	 * @param mallUser 商城用户
+	 * @param enabledLevels 按最低成长值升序排列的启用等级
+	 * @return 当前生效等级，无可用等级时返回 null
+	 */
+	private MemberLevel resolveCurrentMemberLevel(MallUser mallUser, List<MemberLevel> enabledLevels) {
+		if (mallUser == null || enabledLevels == null || enabledLevels.isEmpty()) {
+			return null;
+		}
+		int growthValue = mallUser.getGrowthValue() == null ? 0 : mallUser.getGrowthValue();
+		MemberLevel currentLevel = null;
+		for (MemberLevel level : enabledLevels) {
+			int minGrowth = level.getMinGrowth() == null ? 0 : level.getMinGrowth();
+			if (minGrowth > growthValue) {
+				break;
+			}
+			currentLevel = level;
+		}
+		return currentLevel;
 	}
 
 	/**

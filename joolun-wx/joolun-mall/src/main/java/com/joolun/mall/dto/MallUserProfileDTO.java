@@ -18,6 +18,12 @@ import lombok.Data;
 public class MallUserProfileDTO {
 
 	/**
+	 * 微信昵称。
+	 * 由小程序 input type="nickname" 组件取得。
+	 */
+	private String nickName;
+
+	/**
 	 * 真实姓名。
 	 */
 	private String realName;

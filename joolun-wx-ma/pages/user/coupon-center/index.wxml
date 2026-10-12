@@ -1,0 +1,19 @@
+<view class="page">
+  <view class="tabs"><view class="tab {{tab === 'center' ? 'active' : ''}}" data-tab="center" bindtap="changeTab">领券中心</view><view class="tab {{tab === 'mine' ? 'active' : ''}}" data-tab="mine" bindtap="changeTab">我的优惠券</view></view>
+  <view wx:if="{{tab === 'center'}}">
+    <view class="coupon" wx:for="{{coupons}}" wx:key="id">
+      <view class="amount"><text class="currency">¥</text>{{item.discountAmount}}</view>
+      <view class="info"><view class="name">{{item.name}}</view><view class="desc">满 {{item.thresholdAmount}} 元可用 · {{item.description || '全场商品可用'}}</view><view class="time">{{item.startTime}} 至 {{item.endTime}}</view></view>
+      <button class="action" disabled="{{item.received}}" data-id="{{item.id}}" bindtap="claim">{{item.received ? '已领取' : '领取'}}</button>
+    </view>
+    <view class="empty" wx:if="{{!loading && coupons.length === 0}}">暂无可领取优惠券</view>
+  </view>
+  <view wx:else>
+    <view class="coupon" wx:for="{{mine}}" wx:key="id">
+      <view class="amount"><text class="currency">¥</text>{{item.discountAmount}}</view>
+      <view class="info"><view class="name">{{item.couponName}}</view><view class="desc">满 {{item.thresholdAmount}} 元可用</view><view class="time">有效期至 {{item.endTime}}</view></view>
+      <view class="state">{{item.status === '2' ? '已使用' : item.status === '1' ? '使用中' : item.available ? '可使用' : '暂不可用'}}</view>
+    </view>
+    <view class="empty" wx:if="{{!loading && mine.length === 0}}">还没有优惠券</view>
+  </view>
+</view>

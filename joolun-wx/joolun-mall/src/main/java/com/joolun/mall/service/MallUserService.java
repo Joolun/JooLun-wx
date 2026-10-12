@@ -52,14 +52,14 @@ public interface MallUserService extends IService<MallUser> {
 	 * @param mallUserId 商城用户主键
 	 * @param amount 本次支付金额
 	 */
-	void recordConsume(String mallUserId, BigDecimal amount);
+	void recordConsume(String mallUserId, BigDecimal amount, String orderId);
 
 	/**
 	 * 记录一次退款成功行为。
 	 *
 	 * @param mallUserId 商城用户主键
 	 */
-	void recordRefund(String mallUserId);
+	void recordRefund(String mallUserId, BigDecimal amount, String orderItemId);
 
 	/**
 	 * 查询后台会员概览统计。

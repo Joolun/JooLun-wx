@@ -193,6 +193,15 @@ export const tableOption = {
       addDisplay: false,
     },
     {
+      label: "会员等级",
+      prop: "memberLevelName",
+      minWidth: 130,
+      slot: true,
+      display: false,
+      editDisplay: false,
+      addDisplay: false,
+    },
+    {
       label: "入会时间",
       prop: "memberTime",
       type: "datetime",

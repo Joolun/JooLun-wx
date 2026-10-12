@@ -24,6 +24,9 @@ public class JooLunConfig
     /** 上传路径 */
     private static String profile;
 
+    /** 私密证书存储路径（不得位于公开上传路径内） */
+    private static String certPath;
+
     /** 获取地址开关 */
     private static boolean addressEnabled;
 
@@ -71,6 +74,16 @@ public class JooLunConfig
     public void setProfile(String profile)
     {
         JooLunConfig.profile = profile;
+    }
+
+    public static String getCertPath()
+    {
+        return certPath;
+    }
+
+    public void setCertPath(String certPath)
+    {
+        JooLunConfig.certPath = certPath;
     }
 
     public static boolean isAddressEnabled()

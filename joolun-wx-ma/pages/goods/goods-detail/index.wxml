@@ -101,6 +101,17 @@
     </view>
   </view>
 
+  <view class="review-board bg-white margin-top-sm">
+    <view class="review-board__header"><text class="review-board__title">商品评价（{{reviewSummary.count}}）</text><text class="review-board__score">{{reviewSummary.averageRating || 0}} 分</text></view>
+    <view class="review-item" wx:for="{{recentReviews}}" wx:key="id">
+      <view class="review-item__head"><text>{{item.nickName || '微信用户'}}</text><text class="review-item__rating">{{item.rating}} 星</text></view>
+      <view class="review-item__content">{{item.content || '用户未填写文字评价'}}</view>
+      <view class="review-item__spec">{{item.specInfo || '默认规格'}} · {{item.createTime}}</view>
+      <view class="review-item__reply" wx:if="{{item.replyContent}}">商家回复：{{item.replyContent}}</view>
+    </view>
+    <view class="review-board__empty" wx:if="{{recentReviews.length === 0}}">暂无评价，期待你的分享</view>
+  </view>
+
   <view class="cu-bar bg-white margin-top-sm">
     <view class="content">商品信息</view>
   </view>

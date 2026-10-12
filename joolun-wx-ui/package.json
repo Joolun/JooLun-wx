@@ -1,6 +1,6 @@
 {
   "name": "JooLun",
-  "version": "3.9.1",
+  "version": "3.9.2",
   "description": "JooLun微信商城管理系统",
   "author": "Joolun",
   "license": "MIT",
@@ -35,7 +35,8 @@
     "vue": "3.4.31",
     "vue-cropper": "1.1.1",
     "vue-router": "4.4.0",
-    "vue-video-player": "^6.0.0"
+    "vue-video-player": "^6.0.0",
+    "vuedraggable": "4.1.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "5.0.5",

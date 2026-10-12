@@ -35,6 +35,11 @@ public interface OrderInfoService extends IService<OrderInfo> {
 
 	IPage<OrderInfo> page2(IPage<OrderInfo> page, OrderInfo orderInfo);
 
+	/**
+	 * 分页查询微信发货同步中心订单。
+	 */
+	IPage<OrderInfo> pageShipping(IPage<OrderInfo> page, OrderInfo orderInfo);
+
 	OrderInfo getById2(Serializable id);
 
 	/**
@@ -44,6 +49,11 @@ public interface OrderInfoService extends IService<OrderInfo> {
 	 * @return 统计结果
 	 */
 	Map<String, Object> getAdminSummary(OrderInfo orderInfo);
+
+	/**
+	 * 查询微信发货同步中心统计。
+	 */
+	Map<String, Object> getShippingSummary(OrderInfo orderInfo);
 
 	/**
 	 * 取消订单

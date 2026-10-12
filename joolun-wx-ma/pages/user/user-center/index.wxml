@@ -28,9 +28,6 @@
       >
         绑定手机号
       </button>
-      <button class="cu-btn round sm hero-button primary" bindtap="getUserProfile">
-        {{!mallUser.nickName ? '获取昵称' : '更新昵称'}}
-      </button>
       <button class="cu-btn round sm hero-button secondary" bindtap="goProfilePage">
         资料编辑
       </button>

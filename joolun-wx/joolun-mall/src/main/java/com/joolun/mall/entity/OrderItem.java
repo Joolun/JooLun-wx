@@ -77,6 +77,15 @@ public class OrderItem extends Model<OrderItem> {
 	/** 当前明细最终支付金额 = 销售价 * 数量 + 运费。 */
 	private BigDecimal paymentPrice;
 
+	/** 分摊到当前订单项的会员优惠。 */
+	private BigDecimal memberDiscountAmount;
+
+	/** 分摊到当前订单项的优惠券优惠。 */
+	private BigDecimal couponDiscountAmount;
+
+	/** 0待评价，1已评价。 */
+	private String reviewStatus;
+
 	@Excel(name = "remark")
 	private String remark;
 

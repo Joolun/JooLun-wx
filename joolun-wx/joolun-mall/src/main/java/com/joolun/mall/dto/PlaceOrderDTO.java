@@ -59,6 +59,9 @@ public class PlaceOrderDTO extends Model<ShoppingCart> {
 	@Excel(name = "订单类型")
 	private String orderType;
 
+	/** 用户选择的已领取优惠券，不传表示不使用。 */
+	private String couponUserId;
+
 	@Excel(name = "商品")
 	private List<PlaceOrderGoodsDTO> skus;
 }

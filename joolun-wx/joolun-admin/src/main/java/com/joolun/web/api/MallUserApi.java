@@ -7,7 +7,10 @@
 package com.joolun.web.api;
 
 import cn.hutool.core.util.StrUtil;
+import com.joolun.common.config.JooLunConfig;
 import com.joolun.common.core.domain.AjaxResult;
+import com.joolun.common.utils.file.FileUploadUtils;
+import com.joolun.common.utils.file.MimeTypeUtils;
 import com.joolun.mall.dto.MallUserProfileDTO;
 import com.joolun.mall.entity.MallUser;
 import com.joolun.mall.service.MallUserService;
@@ -26,7 +29,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -42,6 +47,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @RequestMapping({"/weixin/api/ma/malluser", "/weixin/api/ma/wxuser"})
 public class MallUserApi {
+	private static final long MAX_AVATAR_SIZE = 2L * 1024 * 1024;
 
 	private final WxUserService wxUserService;
 	private final MallUserService mallUserService;
@@ -105,9 +111,49 @@ public class MallUserApi {
 	@PutMapping
 	public AjaxResult updateMallUserProfile(@RequestBody MallUserProfileDTO mallUserProfileDTO) {
 		MallUser mallUser = mallUserSessionService.getCurrentMallUser();
+		String nickName = StrUtil.trim(mallUserProfileDTO.getNickName());
+		if (StrUtil.isBlank(nickName)) {
+			throw new IllegalArgumentException("微信昵称不能为空");
+		}
+		if (nickName.length() > 32) {
+			throw new IllegalArgumentException("微信昵称不能超过32个字符");
+		}
+		WxUser wxUser = new WxUser();
+		wxUser.setId(mallUser.getWxUserId());
+		wxUser.setNickName(nickName);
+		wxUserService.updateById(wxUser);
+		mallUser.setNickName(nickName);
 		mallUser.setRealName(StrUtil.emptyToNull(StrUtil.trim(mallUserProfileDTO.getRealName())));
 		mallUser.setSex(resolveSex(mallUserProfileDTO.getSex()));
 		mallUser.setBirthday(parseBirthday(mallUserProfileDTO.getBirthday()));
+		mallUserService.updateById(mallUser);
+		return AjaxResult.success(mallUserService.getById(mallUser.getId()));
+	}
+
+	/**
+	 * 上传并更新当前小程序用户头像。
+	 * 头像文件来自小程序 button open-type="chooseAvatar" 官方组件。
+	 *
+	 * @param file 微信头像临时文件
+	 * @return 更新后的商城用户
+	 * @throws Exception 文件保存失败
+	 */
+	@PostMapping("/avatar")
+	public AjaxResult uploadAvatar(@RequestParam("file") MultipartFile file) throws Exception {
+		if (file == null || file.isEmpty()) {
+			return AjaxResult.error("请选择头像");
+		}
+		if (file.getSize() > MAX_AVATAR_SIZE) {
+			return AjaxResult.error("头像大小不能超过2MB");
+		}
+		String avatarUrl = FileUploadUtils.upload(JooLunConfig.getAvatarPath(), file, MimeTypeUtils.IMAGE_EXTENSION);
+		String wxUserId = mallUserSessionService.getCurrentWxUserId();
+		WxUser wxUser = new WxUser();
+		wxUser.setId(wxUserId);
+		wxUser.setHeadimgUrl(avatarUrl);
+		wxUserService.updateById(wxUser);
+		MallUser mallUser = mallUserService.syncByWxUserId(wxUserId);
+		mallUser.setAvatarUrl(avatarUrl);
 		mallUserService.updateById(mallUser);
 		return AjaxResult.success(mallUserService.getById(mallUser.getId()));
 	}
@@ -129,7 +175,9 @@ public class MallUserApi {
 		wxPhoneNumberDTO.setSessionKey(mallUserSessionService.getCurrentSessionKey());
 		WxUser wxUser = wxUserService.bindPhoneNumber(wxPhoneNumberDTO);
 		MallUser mallUser = mallUserService.syncByWxUserId(wxUser.getId());
-		return AjaxResult.success(mallUser);
+		mallUser.setMobile(wxUser.getPhone());
+		mallUserService.updateById(mallUser);
+		return AjaxResult.success(mallUserService.getById(mallUser.getId()));
 	}
 
 	/**

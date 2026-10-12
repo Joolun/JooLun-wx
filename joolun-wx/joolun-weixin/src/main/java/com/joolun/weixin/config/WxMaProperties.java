@@ -58,9 +58,14 @@ public class WxMaProperties {
         private String apiV3Key;
 
         /**
-         * 商户 API PKCS#12 证书路径，证书密码为商户号。
+         * 商户 API 私钥 apiclient_key.pem 路径。
          */
-        private String pkcs12Path;
+        private String privateKeyPath;
+
+        /**
+         * 商户 API 证书序列号。
+         */
+        private String certSerialNo;
 
         /**
          * 微信支付公钥 ID（公钥模式）。

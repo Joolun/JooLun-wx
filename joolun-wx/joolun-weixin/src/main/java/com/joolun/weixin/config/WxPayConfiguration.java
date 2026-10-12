@@ -42,8 +42,8 @@ public class WxPayConfiguration {
 		payConfig.setAppId(config.getAppId());
 		payConfig.setMchId(config.getMchId());
 		payConfig.setApiV3Key(config.getApiV3Key());
-		// WxJava 4.8.0 会在 API v3 初始化时从 PKCS#12 中读取商户私钥和证书序列号。
-		payConfig.setKeyPath(config.getPkcs12Path());
+		payConfig.setPrivateKeyPath(config.getPrivateKeyPath());
+		payConfig.setCertSerialNo(config.getCertSerialNo());
 		payConfig.setPublicKeyId(config.getPublicKeyId());
 		payConfig.setPublicKeyPath(config.getPublicKeyPath());
 		payConfig.setFullPublicKeyModel(true);
@@ -53,9 +53,10 @@ public class WxPayConfiguration {
     }
 
 	private static void validateApiV3Config(WxMaProperties.Config config) {
-		if (StrUtil.hasBlank(config.getAppId(), config.getMchId(), config.getApiV3Key(), config.getPkcs12Path(),
+		if (StrUtil.hasBlank(config.getAppId(), config.getMchId(), config.getApiV3Key(), config.getPrivateKeyPath(),
+				config.getCertSerialNo(),
 				config.getPublicKeyId(), config.getPublicKeyPath())) {
-			throw new IllegalStateException("微信支付 API v3 配置不完整，请在“系统管理 -> 微信账号配置”中配置商户号、API v3 密钥、PKCS#12 商户证书、微信支付公钥 ID 和公钥文件");
+			throw new IllegalStateException("微信支付 API v3 配置不完整，请在“系统管理 -> 微信账号配置”中配置商户号、API v3 密钥、apiclient_key.pem、商户 API 证书序列号、微信支付公钥 ID 和公钥文件");
 		}
 	}
 

@@ -11,8 +11,12 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.joolun.mall.entity.MallUser;
+import com.joolun.mall.entity.MemberLevel;
+import com.joolun.mall.entity.MemberPointLog;
 import com.joolun.mall.mapper.MallUserMapper;
 import com.joolun.mall.service.MallUserService;
+import com.joolun.mall.service.MemberLevelService;
+import com.joolun.mall.service.MemberPointLogService;
 import com.joolun.weixin.entity.WxUser;
 import com.joolun.weixin.service.WxUserService;
 import lombok.AllArgsConstructor;
@@ -48,6 +52,8 @@ public class MallUserServiceImpl extends ServiceImpl<MallUserMapper, MallUser> i
 	private static final String DEFAULT_REMARK = "由 wx_user 自动建档";
 
 	private final WxUserService wxUserService;
+	private final MemberLevelService memberLevelService;
+	private final MemberPointLogService memberPointLogService;
 
 	@Override
 	public MallUser getByWxUserId(String wxUserId) {
@@ -105,25 +111,27 @@ public class MallUserServiceImpl extends ServiceImpl<MallUserMapper, MallUser> i
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void recordConsume(String mallUserId, BigDecimal amount) {
+	public void recordConsume(String mallUserId, BigDecimal amount, String orderId) {
 		MallUser mallUser = getById(mallUserId);
 		if (mallUser == null) {
 			return;
 		}
 		mallUser.setConsumeCount(defaultInt(mallUser.getConsumeCount()) + 1);
 		mallUser.setConsumeAmount(defaultDecimal(mallUser.getConsumeAmount()).add(defaultDecimal(amount)));
+		changePointsAndGrowth(mallUser, defaultDecimal(amount).intValue(), "PAY", orderId, "订单支付奖励");
 		touchMallUser(mallUser);
 		updateById(mallUser);
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void recordRefund(String mallUserId) {
+	public void recordRefund(String mallUserId, BigDecimal amount, String orderItemId) {
 		MallUser mallUser = getById(mallUserId);
 		if (mallUser == null) {
 			return;
 		}
 		mallUser.setRefundCount(defaultInt(mallUser.getRefundCount()) + 1);
+		changePointsAndGrowth(mallUser, -defaultDecimal(amount).intValue(), "REFUND", orderItemId, "订单退款扣回");
 		touchMallUser(mallUser);
 		updateById(mallUser);
 	}
@@ -177,6 +185,8 @@ public class MallUserServiceImpl extends ServiceImpl<MallUserMapper, MallUser> i
 		mallUser.setConsumeAmount(BigDecimal.ZERO);
 		mallUser.setMemberFlag(DEFAULT_MEMBER_FLAG);
 		mallUser.setMemberTime(null);
+		mallUser.setGrowthValue(0);
+		mallUser.setPoints(0);
 		mallUser.setStatus(DEFAULT_STATUS);
 		mallUser.setRemark(DEFAULT_REMARK);
 		mallUser.setCreateTime(registerTime);
@@ -219,6 +229,32 @@ public class MallUserServiceImpl extends ServiceImpl<MallUserMapper, MallUser> i
 		mallUser.setConsumeCount(defaultInt(mallUser.getConsumeCount()));
 		mallUser.setRefundCount(defaultInt(mallUser.getRefundCount()));
 		mallUser.setConsumeAmount(defaultDecimal(mallUser.getConsumeAmount()));
+		mallUser.setGrowthValue(defaultInt(mallUser.getGrowthValue()));
+		mallUser.setPoints(defaultInt(mallUser.getPoints()));
+		MemberLevel level = memberLevelService.findCurrent(mallUser.getGrowthValue());
+		mallUser.setLevelId(level == null ? null : level.getId());
+	}
+
+	private void changePointsAndGrowth(MallUser mallUser, int requestedChange, String sourceType,
+			String sourceId, String remark) {
+		int oldPoints = defaultInt(mallUser.getPoints());
+		int oldGrowth = defaultInt(mallUser.getGrowthValue());
+		int actualChange = requestedChange < 0 ? Math.max(requestedChange, -oldPoints) : requestedChange;
+		mallUser.setPoints(Math.max(0, oldPoints + actualChange));
+		mallUser.setGrowthValue(Math.max(0, oldGrowth + actualChange));
+		MemberLevel level = memberLevelService.findCurrent(mallUser.getGrowthValue());
+		mallUser.setLevelId(level == null ? null : level.getId());
+		if (actualChange != 0) {
+			MemberPointLog log = new MemberPointLog();
+			log.setUserId(mallUser.getId());
+			log.setChangeValue(actualChange);
+			log.setBalance(mallUser.getPoints());
+			log.setSourceType(sourceType);
+			log.setSourceId(sourceId);
+			log.setRemark(remark);
+			log.setCreateTime(LocalDateTime.now());
+			memberPointLogService.save(log);
+		}
 	}
 
 	/**

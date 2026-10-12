@@ -103,16 +103,48 @@
             :placeholder="secretPlaceholder(form.ma.apiV3KeyConfigured, 'API v3 密钥')"
           />
         </el-form-item>
-        <el-form-item label="商户 API 证书" prop="ma.pkcs12Path">
-          <el-input v-model.trim="form.ma.pkcs12Path" maxlength="500" placeholder="apiclient_cert.p12 的绝对路径或 classpath: 路径" />
-          <div class="form-tip">仅支持 PKCS#12 格式，证书密码使用上方填写的微信支付商户号。</div>
+        <el-form-item label="商户 API 私钥" prop="ma.privateKeyConfigured">
+          <div class="certificate-upload">
+            <el-tag :type="form.ma.privateKeyConfigured ? 'success' : 'danger'" effect="plain">
+              {{ form.ma.privateKeyConfigured ? '已配置' : '未配置' }}
+            </el-tag>
+            <el-upload
+              :show-file-list="false"
+              accept=".pem"
+              :before-upload="beforePrivateKeyUpload"
+              :http-request="handlePrivateKeyUpload"
+            >
+              <el-button type="primary" plain :loading="uploadingPrivateKey" v-hasPermi="['system:wxconfig:edit']">
+                {{ form.ma.privateKeyConfigured ? '重新上传' : '上传 apiclient_key.pem' }}
+              </el-button>
+            </el-upload>
+          </div>
+          <div class="form-tip">仅接受微信支付下载的未加密 RSA 私钥 apiclient_key.pem；文件保存在服务器非公开证书目录，私钥内容不会回显。</div>
+        </el-form-item>
+        <el-form-item label="商户证书序列号" prop="ma.certSerialNo">
+          <el-input v-model.trim="form.ma.certSerialNo" maxlength="64" placeholder="请输入与商户私钥对应的 API 证书序列号" />
+          <div class="form-tip">序列号不能从私钥推导，请在微信支付商户平台的 API 证书信息中查看。</div>
         </el-form-item>
         <el-form-item label="微信支付公钥 ID" prop="ma.publicKeyId">
           <el-input v-model.trim="form.ma.publicKeyId" maxlength="128" placeholder="请输入 PUB_KEY_ID_ 开头的微信支付公钥 ID" />
         </el-form-item>
-        <el-form-item label="微信支付公钥路径" prop="ma.publicKeyPath">
-          <el-input v-model.trim="form.ma.publicKeyPath" maxlength="500" placeholder="pub_key.pem 的绝对路径或 classpath: 路径" />
-          <div class="form-tip">必须使用商户平台下载的微信支付公钥，不能填写商户 API 证书或商户私钥。</div>
+        <el-form-item label="微信支付公钥" prop="ma.publicKeyConfigured">
+          <div class="certificate-upload">
+            <el-tag :type="form.ma.publicKeyConfigured ? 'success' : 'danger'" effect="plain">
+              {{ form.ma.publicKeyConfigured ? '已配置' : '未配置' }}
+            </el-tag>
+            <el-upload
+              :show-file-list="false"
+              accept=".pem"
+              :before-upload="beforePublicKeyUpload"
+              :http-request="handlePublicKeyUpload"
+            >
+              <el-button type="primary" plain :loading="uploadingPublicKey" v-hasPermi="['system:wxconfig:edit']">
+                {{ form.ma.publicKeyConfigured ? '重新上传' : '上传 pub_key.pem' }}
+              </el-button>
+            </el-upload>
+          </div>
+          <div class="form-tip">必须上传与上方 PUB_KEY_ID 对应的微信支付公钥，不能使用商户 API 证书或商户私钥。</div>
         </el-form-item>
       </el-card>
 
@@ -127,11 +159,18 @@
 </template>
 
 <script setup name="WxConfig">
-import { getWxAccountConfig, updateWxAccountConfig } from '@/api/system/appConfig'
+import {
+  getWxAccountConfig,
+  updateWxAccountConfig,
+  uploadWxPayMerchantPrivateKey,
+  uploadWechatPayPublicKey
+} from '@/api/system/appConfig'
 
 const { proxy } = getCurrentInstance()
 const loading = ref(false)
 const saving = ref(false)
+const uploadingPrivateKey = ref(false)
+const uploadingPublicKey = ref(false)
 const form = reactive(createEmptyForm())
 
 const requiredSecret = (configuredField, label) => (_rule, value, callback) => {
@@ -149,9 +188,13 @@ const rules = {
   'ma.secret': [{ validator: requiredSecret(() => form.ma.secretConfigured, '小程序 AppSecret'), trigger: 'blur' }],
   'ma.mchId': [{ required: true, message: '微信支付商户号不能为空', trigger: 'blur' }],
   'ma.apiV3Key': [{ validator: requiredSecret(() => form.ma.apiV3KeyConfigured, 'API v3 密钥'), trigger: 'blur' }],
-  'ma.pkcs12Path': [{ required: true, message: '商户 API 证书路径不能为空', trigger: 'blur' }],
+  'ma.privateKeyConfigured': [{ validator: requiredSecret(() => false, '商户 API 私钥'), trigger: 'change' }],
+  'ma.certSerialNo': [
+    { required: true, message: '商户 API 证书序列号不能为空', trigger: 'blur' },
+    { pattern: /^[0-9a-fA-F]+$/, message: '商户 API 证书序列号只能包含十六进制字符', trigger: 'blur' }
+  ],
   'ma.publicKeyId': [{ required: true, message: '微信支付公钥 ID 不能为空', trigger: 'blur' }],
-  'ma.publicKeyPath': [{ required: true, message: '微信支付公钥路径不能为空', trigger: 'blur' }]
+  'ma.publicKeyConfigured': [{ validator: requiredSecret(() => false, '微信支付公钥'), trigger: 'change' }]
 }
 
 function createEmptyForm() {
@@ -173,19 +216,64 @@ function createEmptyForm() {
       msgDataFormat: 'JSON',
       mchId: '',
       apiV3Key: '',
-      pkcs12Path: '',
+      certSerialNo: '',
       publicKeyId: '',
-      publicKeyPath: '',
       secretConfigured: false,
       tokenConfigured: false,
       aesKeyConfigured: false,
-      apiV3KeyConfigured: false
+      apiV3KeyConfigured: false,
+      privateKeyConfigured: false,
+      publicKeyConfigured: false
     }
   }
 }
 
 function secretPlaceholder(configured, label) {
   return configured ? `${label} 已配置，留空则不修改` : `请输入${label}`
+}
+
+function beforePrivateKeyUpload(file) {
+  return validatePemUpload(file, '商户 API 私钥')
+}
+
+function beforePublicKeyUpload(file) {
+  return validatePemUpload(file, '微信支付公钥')
+}
+
+function validatePemUpload(file, label) {
+  if (!file.name.toLowerCase().endsWith('.pem')) {
+    proxy.$modal.msgError(`只能上传 .pem 格式的${label}`)
+    return false
+  }
+  if (file.size > 16 * 1024) {
+    proxy.$modal.msgError(`${label}文件不能超过 16KB`)
+    return false
+  }
+  return true
+}
+
+function handlePrivateKeyUpload(options) {
+  uploadingPrivateKey.value = true
+  return uploadWxPayMerchantPrivateKey(options.file).then(response => {
+    form.ma.privateKeyConfigured = true
+    proxy.$refs.configRef?.clearValidate('ma.privateKeyConfigured')
+    proxy.$modal.msgSuccess('apiclient_key.pem 上传成功')
+    return response
+  }).finally(() => {
+    uploadingPrivateKey.value = false
+  })
+}
+
+function handlePublicKeyUpload(options) {
+  uploadingPublicKey.value = true
+  return uploadWechatPayPublicKey(options.file).then(response => {
+    form.ma.publicKeyConfigured = true
+    proxy.$refs.configRef?.clearValidate('ma.publicKeyConfigured')
+    proxy.$modal.msgSuccess('微信支付公钥上传成功')
+    return response
+  }).finally(() => {
+    uploadingPublicKey.value = false
+  })
 }
 
 function loadConfig() {
@@ -239,6 +327,12 @@ loadConfig()
   color: var(--el-text-color-secondary);
   font-size: 12px;
   line-height: 20px;
+}
+
+.certificate-upload {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .form-actions {

@@ -71,6 +71,61 @@ const request = (url, method, data, showLoading) => {
   })
 }
 
+/**
+ * 上传小程序本地文件。
+ * wx.uploadFile 不走 wx.request，这里统一补齐小程序登录态和错误提示。
+ */
+const upload = (url, filePath) => {
+  const basePath = String(__config.basePath || '').replace(/\/$/, '')
+  return new Promise((resolve, reject) => {
+    wx.showLoading({
+      title: '上传中...'
+    })
+    wx.uploadFile({
+      url: basePath + url,
+      filePath: filePath,
+      name: 'file',
+      header: {
+        'app-id': wx.getAccountInfoSync().miniProgram.appId,
+        'third-session': getApp().globalData.thirdSession != null ? getApp().globalData.thirdSession : ''
+      },
+      success(res) {
+        let responseData
+        try {
+          responseData = JSON.parse(res.data)
+        } catch (error) {
+          wx.showModal({
+            title: '提示',
+            content: '头像上传响应格式不正确'
+          })
+          reject(error)
+          return
+        }
+        if (res.statusCode === 200 && responseData.code === 200) {
+          resolve(responseData)
+          return
+        }
+        const message = responseData.msg || '头像上传失败'
+        wx.showModal({
+          title: '提示',
+          content: message
+        })
+        reject(new Error(message))
+      },
+      fail(error) {
+        wx.showModal({
+          title: '提示',
+          content: '头像上传失败：' + error.errMsg
+        })
+        reject(error)
+      },
+      complete() {
+        wx.hideLoading()
+      }
+    })
+  })
+}
+
 module.exports = {
   request,
   login: (data) => {
@@ -87,6 +142,10 @@ module.exports = {
   // 更新商城用户基础资料。
   mallUserUpdate: (data) => {
     return request('/weixin/api/ma/malluser', 'put', data, true)
+  },
+  // 上传微信官方头像组件返回的本地临时文件。
+  mallUserUploadAvatar: (filePath) => {
+    return upload('/weixin/api/ma/malluser/avatar', filePath)
   },
   // 绑定小程序手机号，并刷新商城会员身份。
   mallUserBindPhone: (data) => {
@@ -148,6 +207,30 @@ module.exports = {
   },
   unifiedOrder: (data) => {
     return request('/weixin/api/ma/orderinfo/unifiedOrder', 'post', data, true)
+  },
+  couponCenter: () => {
+    return request('/weixin/api/ma/coupon/center', 'get', null, false)
+  },
+  couponMine: (data) => {
+    return request('/weixin/api/ma/coupon/mine', 'get', data, false)
+  },
+  couponClaim: (id) => {
+    return request('/weixin/api/ma/coupon/' + id + '/claim', 'post', null, true)
+  },
+  memberProfile: () => {
+    return request('/weixin/api/ma/member/profile', 'get', null, false)
+  },
+  memberPoints: (data) => {
+    return request('/weixin/api/ma/member/points', 'get', data, false)
+  },
+  goodsReviewPage: (data) => {
+    return request('/weixin/api/ma/goodsreview/page', 'get', data, false)
+  },
+  goodsReviewSummary: (spuId) => {
+    return request('/weixin/api/ma/goodsreview/summary/' + spuId, 'get', null, false)
+  },
+  goodsReviewSubmit: (data) => {
+    return request('/weixin/api/ma/goodsreview', 'post', data, true)
   },
   userAddressPage: (data) => {
     return request('/weixin/api/ma/useraddress/page', 'get', data, false)

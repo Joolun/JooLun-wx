@@ -96,6 +96,34 @@
 .cu-list.menu>.cu-item {
   min-height: unset !important
 }
+.coupon-picker__content{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-width: 0;
+}
+.coupon-picker__label{
+  flex-shrink: 0;
+}
+.coupon-picker__value{
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+  margin-left: 24rpx;
+}
+.coupon-picker__name{
+  max-width: 360rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.coupon-picker__arrow{
+  flex-shrink: 0;
+  margin-left: 12rpx;
+  color: #909399;
+}
 .delivery-way{
   justify-content: unset !important
 }

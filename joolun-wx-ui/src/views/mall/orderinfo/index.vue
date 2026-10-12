@@ -487,12 +487,12 @@
             发货
           </el-button>
           <el-button
-            v-if="checkPermi(['mall:orderinfo:edit']) && (scope.row.deliveryTime || scope.row.status == '2')"
+            v-if="checkPermi(['wxma:operations:query']) && (scope.row.deliveryTime || scope.row.status == '2')"
             type="primary"
             link
-            @click="syncShippingF(scope.row)"
+            @click="openShippingCenter(scope.row)"
           >
-            同步微信发货
+            微信发货
           </el-button>
           <el-button
             v-if="checkPermi(['mall:orderinfo:edit']) && scope.row.isPay == '0' && !scope.row.status"
@@ -580,7 +580,7 @@
 
 <script setup name="OrderInfo">
 import { checkPermi } from "@/utils/permission";
-import { doOrderRefunds, getObj, getPage, getSummary, orderCancel, putObj, syncShipping } from "@/api/mall/orderinfo";
+import { doOrderRefunds, getObj, getPage, getSummary, orderCancel, putObj } from "@/api/mall/orderinfo";
 import { tableOption } from "@/const/crud/mall/orderinfo";
 import { resolveMallImageUrl } from "@/utils/mall-image";
 
@@ -1378,18 +1378,17 @@ function delivery(formModel, done) {
 }
 
 /**
- * 手动补偿同步微信发货信息。
+ * 打开与当前商城订单关联的微信发货同步中心。
  *
  * @param {Object} row 订单行
  */
-function syncShippingF(row) {
-  proxy.$modal.confirm("确认将该订单的物流信息重新同步到微信吗？")
-    .then(() => syncShipping(row.id))
-    .then((response) => {
-      proxy.$message.success(response.data || "微信发货信息同步成功");
-      refreshOrderPage(row.id);
-    })
-    .catch(() => {});
+function openShippingCenter(row) {
+  router.push({
+    path: "/wxma/shipping",
+    query: {
+      orderNo: row.orderNo,
+    },
+  });
 }
 
 /**

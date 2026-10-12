@@ -30,10 +30,15 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Locale;
 
 /**
  * application.yml 业务配置管理。
@@ -53,6 +58,7 @@ public class ApplicationConfigController extends BaseController {
 	private final WxMaConfiguration wxMaConfiguration;
 	private final WxMpService wxMpService;
 	private final MallRuntimeConfigService mallRuntimeConfigService;
+	private final WxPayPemStorageService wxPayPemStorageService;
 
 	@PreAuthorize("@ss.hasPermi('system:wxconfig:query')")
 	@GetMapping("/wx")
@@ -72,9 +78,10 @@ public class ApplicationConfigController extends BaseController {
 		result.getMa().setMchId(ma.getMchId());
 		result.getMa().setSecretConfigured(StringUtils.isNotEmpty(ma.getSecret()));
 		result.getMa().setApiV3KeyConfigured(StringUtils.isNotEmpty(ma.getApiV3Key()));
-		result.getMa().setPkcs12Path(ma.getPkcs12Path());
+		result.getMa().setPrivateKeyConfigured(StringUtils.isNotEmpty(ma.getPrivateKeyPath()));
+		result.getMa().setCertSerialNo(ma.getCertSerialNo());
 		result.getMa().setPublicKeyId(ma.getPublicKeyId());
-		result.getMa().setPublicKeyPath(ma.getPublicKeyPath());
+		result.getMa().setPublicKeyConfigured(StringUtils.isNotEmpty(ma.getPublicKeyPath()));
 		return success(result);
 	}
 
@@ -89,6 +96,8 @@ public class ApplicationConfigController extends BaseController {
 		ensureSensitiveValue(config.getMp().getSecret(), currentMp.getSecret(), "公众号 AppSecret");
 		ensureSensitiveValue(config.getMa().getSecret(), currentMa.getSecret(), "小程序 AppSecret");
 		ensureSensitiveValue(config.getMa().getApiV3Key(), currentMa.getApiV3Key(), "微信支付 API v3 密钥");
+		ensureSensitiveValue(null, currentMa.getPrivateKeyPath(), "商户 API 私钥 apiclient_key.pem");
+		ensureSensitiveValue(null, currentMa.getPublicKeyPath(), "微信支付公钥 pub_key.pem");
 
 		String username = getUsername();
 		save(WxConfigKeyConstants.MP_APP_ID, config.getMp().getAppId(), "微信公众号 AppID", username, "对应 wx.mp.configs[0].appId");
@@ -104,13 +113,33 @@ public class ApplicationConfigController extends BaseController {
 				"微信小程序消息格式", username, "对应 wx.ma.configs[0].msgDataFormat");
 		save(WxConfigKeyConstants.MA_MCH_ID, config.getMa().getMchId(), "微信支付商户号", username, "对应 wx.ma.configs[0].mchId");
 		saveSensitive(WxConfigKeyConstants.MA_API_V3_KEY, config.getMa().getApiV3Key(), "微信支付 API v3 密钥", username, "对应 wx.ma.configs[0].apiV3Key");
-		save(WxConfigKeyConstants.MA_PKCS12_PATH, config.getMa().getPkcs12Path(), "商户 API PKCS#12 证书路径", username, "对应 wx.ma.configs[0].pkcs12Path");
+		save(WxConfigKeyConstants.MA_CERT_SERIAL_NO, config.getMa().getCertSerialNo().toUpperCase(Locale.ROOT),
+				"商户 API 证书序列号", username, "对应 wx.ma.configs[0].certSerialNo");
 		save(WxConfigKeyConstants.MA_PUBLIC_KEY_ID, config.getMa().getPublicKeyId(), "微信支付公钥 ID", username, "对应 wx.ma.configs[0].publicKeyId");
-		save(WxConfigKeyConstants.MA_PUBLIC_KEY_PATH, config.getMa().getPublicKeyPath(), "微信支付公钥路径", username, "对应 wx.ma.configs[0].publicKeyPath");
 
 		wxMpConfiguration.refresh(wxMpService);
 		wxMaConfiguration.refresh();
 		return success();
+	}
+
+	@PreAuthorize("@ss.hasPermi('system:wxconfig:edit')")
+	@Log(title = "微信支付商户私钥", businessType = BusinessType.UPDATE, excludeParamNames = {"file"})
+	@PostMapping("/wx/merchant-private-key")
+	public AjaxResult uploadMerchantPrivateKey(@RequestParam("file") MultipartFile file) {
+		String privateKeyPath = wxPayPemStorageService.storeMerchantPrivateKey(file);
+		save(WxConfigKeyConstants.MA_PRIVATE_KEY_PATH, privateKeyPath, "微信支付商户 API 私钥路径",
+				getUsername(), "后台上传的 apiclient_key.pem，仅保存服务器内部路径");
+		return success("apiclient_key.pem 上传成功");
+	}
+
+	@PreAuthorize("@ss.hasPermi('system:wxconfig:edit')")
+	@Log(title = "微信支付公钥", businessType = BusinessType.UPDATE, excludeParamNames = {"file"})
+	@PostMapping("/wx/wechat-pay-public-key")
+	public AjaxResult uploadWechatPayPublicKey(@RequestParam("file") MultipartFile file) {
+		String publicKeyPath = wxPayPemStorageService.storeWechatPayPublicKey(file);
+		save(WxConfigKeyConstants.MA_PUBLIC_KEY_PATH, publicKeyPath, "微信支付公钥路径",
+				getUsername(), "后台上传的 pub_key.pem，仅保存服务器内部路径");
+		return success("微信支付公钥上传成功");
 	}
 
 	@PreAuthorize("@ss.hasPermi('system:mallconfig:query')")
