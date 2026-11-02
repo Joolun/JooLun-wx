@@ -73,6 +73,9 @@ public class OrderItem extends Model<OrderItem> {
 	@Excel(name = "freightPrice")
 	private BigDecimal freightPrice;
 
+	/** 计算运费时使用的运费模板ID快照，便于对账和客诉追溯。 */
+	private String freightTemplateId;
+
 	@Excel(name = "paymentPrice")
 	/** 当前明细最终支付金额 = 销售价 * 数量 + 运费。 */
 	private BigDecimal paymentPrice;

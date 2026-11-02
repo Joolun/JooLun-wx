@@ -311,7 +311,11 @@ Page({
           salesPrice: shoppingCart.goodsSpu.salesPrice || shoppingCart.addPrice,
           spuName: shoppingCart.goodsSpu.name,
           picUrl: shoppingCart.picUrl || (shoppingCart.goodsSpu.picUrls ? shoppingCart.goodsSpu.picUrls[0] : ''),
-          specInfo: shoppingCart.specInfo || ''
+          specInfo: shoppingCart.specInfo || '',
+          // 运费模板和 SKU 重量体积一并带过去，结算页才能按模板分组算运费。
+          freightTemplat: shoppingCart.goodsSpu.freightTemplat || null,
+          weight: (shoppingCart.goodsSku && shoppingCart.goodsSku.weight) || 0,
+          volume: (shoppingCart.goodsSku && shoppingCart.goodsSku.volume) || 0
         })
       }
     })

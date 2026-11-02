@@ -31,6 +31,7 @@
 		<result property="createTime" column="create_time"/>
 		<result property="updateTime" column="update_time"/>
 		<result property="specType" column="spec_type"/>
+		<result property="freightTemplateId" column="freight_template_id"/>
 		<result property="delFlag" column="del_flag"/>
 		<result property="version" column="version"/>
 		<result property="salesPrice" column="sales_price"/>
@@ -57,6 +58,7 @@
 		mall_goods_spu.`create_time`,
 		mall_goods_spu.`update_time`,
 		mall_goods_spu.`spec_type`,
+		mall_goods_spu.`freight_template_id`,
 		mall_goods_spu.`del_flag`,
 		mall_goods_spu.`version`,
 		IFNULL((
@@ -107,6 +109,7 @@
 		mall_goods_spu.`create_time`,
 		mall_goods_spu.`update_time`,
 		mall_goods_spu.`spec_type`,
+		mall_goods_spu.`freight_template_id`,
 		mall_goods_spu.`del_flag`,
 		mall_goods_spu.`version`,
 		IFNULL((

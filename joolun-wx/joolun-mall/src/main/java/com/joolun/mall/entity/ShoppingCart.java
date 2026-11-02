@@ -77,4 +77,8 @@ public class ShoppingCart extends Model<ShoppingCart> {
 	@TableField(exist = false)
 	/** 关联查询出的商品信息，页面渲染时会再补齐当前 SKU 的展示字段。 */
 	private GoodsSpu goodsSpu;
+
+	@TableField(exist = false)
+	/** 关联查询出的 SKU，结算页需要用它的重量、体积计算运费。 */
+	private GoodsSku goodsSku;
 }

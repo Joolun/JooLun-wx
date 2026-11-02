@@ -19,6 +19,7 @@
 		<result property="salesPrice" column="sales_price"/>
 		<result property="freightPrice" column="freight_price"/>
 		<result property="paymentWay" column="payment_way"/>
+		<result property="deliveryWay" column="delivery_way"/>
 		<result property="paymentPrice" column="payment_price"/>
 		<result property="couponUserId" column="coupon_user_id"/>
 		<result property="couponDiscountAmount" column="coupon_discount_amount"/>
@@ -83,6 +84,7 @@
 		mall_order_info.`sales_price`,
 		mall_order_info.`freight_price`,
 		mall_order_info.`payment_way`,
+		mall_order_info.`delivery_way`,
 		mall_order_info.`payment_price`,
 		mall_order_info.`coupon_user_id`,
 		mall_order_info.`coupon_discount_amount`,

@@ -142,3 +142,10 @@
 4. 06 脚本删除已废弃的 wx.ma.pkcs12Path 配置。升级后请在【系统管理】-【微信账号配置】中重新上传 apiclient_key.pem，并填写对应的商户 API 证书序列号。
 5. 使用微信支付公钥模式时，还需填写 PUB_KEY_ID，并上传与该 ID 对应的 pub_key.pem。
 6. 新增菜单后，请为非管理员角色重新分配优惠券、会员等级、商品评价和微信发货同步相关权限。
+
+
+3.9.3
+一、新增功能
+
+1. 新增运费模板功能
+   - 文档：https://wiki.joolun.com/doc-wiki#/page/show?pageId=151

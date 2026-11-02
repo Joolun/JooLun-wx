@@ -193,6 +193,25 @@ export const tableOption = {
           ],
         },
         {
+          label: "运费模板",
+          prop: "freightTemplateId",
+          type: "select",
+          filterable: true,
+          dicUrl: "/freighttemplat/list",
+          props: {
+            label: "name",
+            value: "id",
+          },
+          tip: "模板决定商品收取多少运费；按重量/按体积计费时还需要填写 SKU 的重量和体积",
+          rules: [
+            {
+              required: true,
+              message: "请选择运费模板",
+              trigger: "change",
+            },
+          ],
+        },
+        {
           label: "商品编码",
           prop: "spuCode",
           rules: [

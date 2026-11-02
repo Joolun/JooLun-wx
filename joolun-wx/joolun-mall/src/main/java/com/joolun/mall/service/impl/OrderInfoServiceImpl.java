@@ -36,6 +36,7 @@ import com.joolun.mall.enums.OrderInfoEnum;
 import com.joolun.mall.enums.OrderLogisticsEnum;
 import com.joolun.mall.mapper.OrderInfoMapper;
 import com.joolun.mall.service.CouponService;
+import com.joolun.mall.service.FreightTemplatService;
 import com.joolun.mall.service.GoodsSkuService;
 import com.joolun.mall.service.GoodsSpuService;
 import com.joolun.mall.service.MallTradeConfigService;
@@ -48,6 +49,7 @@ import com.joolun.mall.service.OrderLogisticsService;
 import com.joolun.mall.service.OrderOperateLogService;
 import com.joolun.mall.service.ShoppingCartService;
 import com.joolun.mall.service.UserAddressService;
+import com.joolun.mall.support.FreightCalculator;
 import com.joolun.mall.support.MallGoodsSkuSupport;
 import com.joolun.mall.support.MallPricingCalculator;
 import com.joolun.weixin.config.WxPayConfiguration;
@@ -64,8 +66,10 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -96,6 +100,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 	private final MallTradeConfigService mallTradeConfigService;
 	private final CouponService couponService;
 	private final MemberLevelService memberLevelService;
+	private final FreightTemplatService freightTemplatService;
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -259,12 +264,18 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 		// 提交流程：
 		// 1. 将每一个下单项解析到具体 SKU，并校验库存。
 		// 2. 按当前 SPU / SKU 状态生成订单快照。
-		// 3. 扣减 SKU 库存，并删除对应购物车记录。
+		// 3. 由服务端按运费模板计算运费（不采信前端传值）。
+		// 4. 扣减 SKU 库存，并删除对应购物车记录。
 		OrderInfo orderInfo = new OrderInfo();
 		BeanUtil.copyProperties(placeOrderDTO, orderInfo);
 		orderInfo.setId(IdUtil.simpleUUID());
 		orderInfo.setIsPay(CommonConstants.NO);
 		orderInfo.setOrderNo(IdUtil.getSnowflake(0, 0).nextIdStr());
+		// 配送方式由服务端判定，不采信前端传值：
+		// 当前小程序没有上门自提入口，也没有自提点数据，如果直接采信前端，
+		// 伪造 deliveryWay=2 就能把运费改成 0，等于把刚收回服务端的算价权又交了出去。
+		// 后续接入自提时，这里应改为根据自提点/门店数据判定，而不是读取请求参数。
+		orderInfo.setDeliveryWay(MallConstants.DELIVERY_WAY_1);
 		orderInfo.setSalesPrice(BigDecimal.ZERO);
 		orderInfo.setPaymentPrice(BigDecimal.ZERO);
 		orderInfo.setFreightPrice(BigDecimal.ZERO);
@@ -274,6 +285,9 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 
 		List<OrderItem> listOrderItem = new ArrayList<>();
 		List<GoodsSku> listGoodsSku = new ArrayList<>();
+		// 运费计算需要商品绑定的模板和 SKU 的重量体积，循环内顺带缓存，避免重复查询。
+		Map<String, GoodsSpu> spuMap = new LinkedHashMap<>();
+		Map<String, GoodsSku> skuMap = new LinkedHashMap<>();
 		for (PlaceOrderGoodsDTO orderGoods : placeOrderDTO.getSkus()) {
 			// skuId 才是真正用于结算的主键。
 			// spuId 主要用于校验归属关系，以及补齐商品名称等 SPU 级快照字段。
@@ -292,11 +306,11 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 
 			BigDecimal itemSalesTotal = goodsSku.getSalesPrice().multiply(BigDecimal.valueOf(orderGoods.getQuantity()));
 			orderInfo.setSalesPrice(orderInfo.getSalesPrice().add(itemSalesTotal));
-			orderInfo.setFreightPrice(orderInfo.getFreightPrice().add(orderItem.getFreightPrice()));
-			orderInfo.setPaymentPrice(orderInfo.getPaymentPrice().add(orderItem.getPaymentPrice()));
 
 			goodsSku.setStock(goodsSku.getStock() - orderItem.getQuantity());
 			listGoodsSku.add(goodsSku);
+			spuMap.put(goodsSpu.getId(), goodsSpu);
+			skuMap.put(goodsSku.getId(), goodsSku);
 
 			shoppingCartService.remove(Wrappers.<ShoppingCart>lambdaQuery()
 					.eq(ShoppingCart::getSkuId, goodsSku.getId())
@@ -305,6 +319,9 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 		if (listOrderItem.isEmpty()) {
 			return null;
 		}
+
+		// 运费在会员折扣、优惠券之前确定：两种优惠都只作用于商品金额，不参与运费。
+		applyFreight(orderInfo, listOrderItem, spuMap, skuMap);
 
 		List<MallPricingCalculator.PricingLine> pricingLines = new ArrayList<>(listOrderItem.size());
 		for (int index = 0; index < listOrderItem.size(); index++) {
@@ -324,6 +341,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 		orderInfo.setCouponDiscountAmount(pricing.couponDiscountAmount());
 		orderInfo.setCouponUserId(couponDiscount == null ? null : couponDiscount.getCouponUserId());
 		orderInfo.setPaymentPrice(pricing.paymentAmount());
+		orderInfo.setFreightPrice(pricing.freightAmount());
 		for (int index = 0; index < listOrderItem.size(); index++) {
 			OrderItem item = listOrderItem.get(index);
 			MallPricingCalculator.PricingLineResult line = pricing.lines().get(index);
@@ -548,12 +566,64 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 		orderItem.setPicUrl(StrUtil.blankToDefault(goodsSku.getPicUrl(), firstPic(goodsSpu.getPicUrls())));
 		orderItem.setQuantity(orderGoods.getQuantity());
 		orderItem.setSalesPrice(goodsSku.getSalesPrice());
-		orderItem.setFreightPrice(defaultDecimal(orderGoods.getFreightPrice(), BigDecimal.ZERO));
-		orderItem.setPaymentPrice(goodsSku.getSalesPrice()
-				.multiply(BigDecimal.valueOf(orderGoods.getQuantity()))
-				.add(orderItem.getFreightPrice()));
+		// 运费不采信前端传值，统一由 applyFreight 按服务端运费模板计算后回填。
+		orderItem.setFreightPrice(BigDecimal.ZERO);
+		orderItem.setPaymentPrice(goodsSku.getSalesPrice().multiply(BigDecimal.valueOf(orderGoods.getQuantity())));
 		orderItem.setSpecInfo(mallGoodsSkuSupport.buildSpecInfo(goodsSku.getId()));
 		return orderItem;
+	}
+
+	/**
+	 * 按运费模板计算订单运费并回填到每个订单项。
+	 *
+	 * <p>规则与小程序结算页保持一致：同模板商品合并计算首件与续件，不同模板各收首运费，
+	 * 模板运费按计费量占比分摊到明细。自提订单不计运费。</p>
+	 *
+	 * @param orderInfo 订单
+	 * @param listOrderItem 订单项
+	 * @param spuMap 商品ID -> 商品
+	 * @param skuMap SKU ID -> SKU
+	 */
+	private void applyFreight(OrderInfo orderInfo, List<OrderItem> listOrderItem,
+			Map<String, GoodsSpu> spuMap, Map<String, GoodsSku> skuMap) {
+		boolean chargeFreight = !MallConstants.DELIVERY_WAY_2.equals(orderInfo.getDeliveryWay());
+		List<FreightCalculator.FreightLine> freightLines = new ArrayList<>(listOrderItem.size());
+		Map<String, FreightCalculator.FreightRule> ruleMap = Collections.emptyMap();
+		if (chargeFreight) {
+			Set<String> templateIds = new LinkedHashSet<>();
+			for (OrderItem orderItem : listOrderItem) {
+				String templateId = resolveFreightTemplateId(spuMap.get(orderItem.getSpuId()));
+				if (StrUtil.isNotBlank(templateId)) {
+					templateIds.add(templateId);
+				}
+			}
+			ruleMap = freightTemplatService.getRuleMap(templateIds);
+		}
+		for (int index = 0; index < listOrderItem.size(); index++) {
+			OrderItem orderItem = listOrderItem.get(index);
+			GoodsSku goodsSku = skuMap.get(orderItem.getSkuId());
+			String templateId = resolveFreightTemplateId(spuMap.get(orderItem.getSpuId()));
+			orderItem.setFreightTemplateId(templateId);
+			freightLines.add(new FreightCalculator.FreightLine(String.valueOf(index), templateId,
+					orderItem.getQuantity() == null ? 0 : orderItem.getQuantity(),
+					goodsSku == null ? null : goodsSku.getWeight(),
+					goodsSku == null ? null : goodsSku.getVolume(),
+					orderItem.getSalesPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity()))));
+		}
+		FreightCalculator.FreightResult freightResult = FreightCalculator.calculate(freightLines, ruleMap, chargeFreight);
+		for (int index = 0; index < listOrderItem.size(); index++) {
+			OrderItem orderItem = listOrderItem.get(index);
+			BigDecimal freightPrice = freightResult.lines().get(index).freightAmount();
+			orderItem.setFreightPrice(freightPrice);
+			orderItem.setPaymentPrice(orderItem.getSalesPrice()
+					.multiply(BigDecimal.valueOf(orderItem.getQuantity()))
+					.add(freightPrice));
+		}
+		orderInfo.setFreightPrice(freightResult.totalAmount());
+	}
+
+	private String resolveFreightTemplateId(GoodsSpu goodsSpu) {
+		return goodsSpu == null ? null : goodsSpu.getFreightTemplateId();
 	}
 
 	private BigDecimal defaultDecimal(BigDecimal value, BigDecimal defaultValue) {

@@ -10,16 +10,25 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.joolun.mall.entity.FreightTemplat;
 import com.joolun.mall.entity.GoodsSku;
 import com.joolun.mall.entity.GoodsSpu;
 import com.joolun.mall.entity.ShoppingCart;
 import com.joolun.mall.mapper.ShoppingCartMapper;
+import com.joolun.mall.service.FreightTemplatService;
 import com.joolun.mall.service.GoodsSpuService;
 import com.joolun.mall.service.ShoppingCartService;
 import com.joolun.mall.support.MallGoodsSkuSupport;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 购物车服务。
@@ -33,6 +42,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
 
 	private final GoodsSpuService goodsSpuService;
 	private final MallGoodsSkuSupport mallGoodsSkuSupport;
+	private final FreightTemplatService freightTemplatService;
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -72,8 +82,31 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
 		// 保持原有页面返回结构，但把 goodsSpu 上的临时价格、库存补成当前 SKU 的值，
 		// 这样旧页面代码仍可直接读取 goodsSpu.salesPrice / stock。
 		IPage<ShoppingCart> result = baseMapper.selectPage2(page, shoppingCart);
-		result.getRecords().forEach(this::fillPageSkuData);
+		Map<String, FreightTemplat> freightTemplatMap = loadFreightTemplatMap(result.getRecords());
+		result.getRecords().forEach(record -> fillPageSkuData(record, freightTemplatMap));
 		return result;
+	}
+
+	/**
+	 * 一次性加载当前页商品绑定的运费模板，避免逐行查库。
+	 *
+	 * @param records 购物车记录
+	 * @return 模板ID -> 模板
+	 */
+	private Map<String, FreightTemplat> loadFreightTemplatMap(List<ShoppingCart> records) {
+		if (records == null || records.isEmpty()) {
+			return Collections.emptyMap();
+		}
+		Set<String> templateIds = records.stream()
+				.map(ShoppingCart::getGoodsSpu)
+				.filter(spu -> spu != null && StrUtil.isNotBlank(spu.getFreightTemplateId()))
+				.map(GoodsSpu::getFreightTemplateId)
+				.collect(Collectors.toSet());
+		if (templateIds.isEmpty()) {
+			return Collections.emptyMap();
+		}
+		return freightTemplatService.listByIds(templateIds).stream()
+				.collect(Collectors.toMap(FreightTemplat::getId, Function.identity(), (left, right) -> left));
 	}
 
 	/**
@@ -110,14 +143,17 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
 
 	/**
 	 * 兼容旧页面结构，把当前 SKU 的展示数据补到关联商品对象中。
+	 * 同时把 SKU 和运费模板带到购物车行上，供结算页计算运费。
 	 *
 	 * @param shoppingCart 购物车记录
+	 * @param freightTemplatMap 模板ID -> 运费模板
 	 */
-	private void fillPageSkuData(ShoppingCart shoppingCart) {
+	private void fillPageSkuData(ShoppingCart shoppingCart, Map<String, FreightTemplat> freightTemplatMap) {
 		GoodsSku goodsSku = mallGoodsSkuSupport.resolveSku(shoppingCart.getSpuId(), shoppingCart.getSkuId(), false);
 		if (goodsSku == null || shoppingCart.getGoodsSpu() == null) {
 			return;
 		}
+		shoppingCart.setGoodsSku(goodsSku);
 		shoppingCart.setAddPrice(goodsSku.getSalesPrice());
 		shoppingCart.setPicUrl(StrUtil.blankToDefault(goodsSku.getPicUrl(), shoppingCart.getPicUrl()));
 		shoppingCart.setSpecInfo(mallGoodsSkuSupport.buildSpecInfo(goodsSku.getId()));
@@ -125,6 +161,10 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
 		shoppingCart.getGoodsSpu().setMarketPrice(goodsSku.getMarketPrice());
 		shoppingCart.getGoodsSpu().setCostPrice(goodsSku.getCostPrice());
 		shoppingCart.getGoodsSpu().setStock(goodsSku.getStock());
+		String templateId = shoppingCart.getGoodsSpu().getFreightTemplateId();
+		if (StrUtil.isNotBlank(templateId)) {
+			shoppingCart.getGoodsSpu().setFreightTemplat(freightTemplatMap.get(templateId));
+		}
 	}
 
 	private String firstPic(String[] picUrls) {

@@ -196,6 +196,8 @@ CREATE TABLE `mall_goods_sku` (
   `market_price` decimal(10,2) DEFAULT NULL COMMENT 'market price',
   `cost_price` decimal(10,2) DEFAULT NULL COMMENT 'cost price',
   `stock` int NOT NULL DEFAULT '0' COMMENT 'stock',
+  `weight` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '重量(kg)，按重量计费的运费模板使用',
+  `volume` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '体积(m³)，按体积计费的运费模板使用',
   `enable` char(2) NOT NULL DEFAULT '1' COMMENT '0=disabled,1=enabled',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
@@ -266,6 +268,33 @@ CREATE TABLE `mall_goods_spec_value` (
 
 insert  into `mall_goods_spec_value`(`id`,`spec_id`,`name`,`del_flag`,`create_time`,`update_time`) values ('2043980863821225986','2043980863758311425','3','0','2026-04-14 17:13:09','2026-04-14 17:13:09'),('2043980863821225987','2043980863758311425','4','0','2026-04-14 17:13:09','2026-04-14 17:13:09'),('2043980863951249409','2043980863892529153','8','0','2026-04-14 17:13:09','2026-04-14 17:13:09'),('2043980863951249410','2043980863892529153','t','0','2026-04-14 17:13:09','2026-04-14 17:13:09');
 
+/*Table structure for table `mall_freight_templat` */
+
+DROP TABLE IF EXISTS `mall_freight_templat`;
+
+CREATE TABLE `mall_freight_templat` (
+  `id` varchar(32) NOT NULL COMMENT 'PK',
+  `name` varchar(100) NOT NULL COMMENT '模板名称',
+  `type` char(1) NOT NULL DEFAULT '1' COMMENT '模板类型1买家承担运费、2卖家包邮',
+  `charge_type` char(1) NOT NULL DEFAULT '1' COMMENT '计费方式1按件数、2按重量、3按体积',
+  `first_num` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '首件、首重量(kg)、首体积(m³)',
+  `first_freight` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '首运费',
+  `continue_num` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '续件、续重量(kg)、续体积(m³)',
+  `continue_freight` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '续运费',
+  `sort` int NOT NULL DEFAULT '0' COMMENT '排序字段',
+  `status` char(1) NOT NULL DEFAULT '1' COMMENT '状态0停用、1启用',
+  `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+  `del_flag` char(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除标记0显示、1隐藏',
+  PRIMARY KEY (`id`),
+  KEY `idx_mall_freight_templat_status_sort` (`status`,`sort`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='运费模板';
+
+/*Data for the table `mall_freight_templat` */
+
+insert  into `mall_freight_templat`(`id`,`name`,`type`,`charge_type`,`first_num`,`first_freight`,`continue_num`,`continue_freight`,`sort`,`status`,`remark`,`create_time`,`update_time`,`del_flag`) values ('freight_default_free','默认包邮','2','1','0.00','0.00','0.00','0.00',0,'1','系统内置模板，存量商品默认绑定，保证升级不涨价','2026-11-02 00:00:00','2026-11-02 00:00:00','0');
+
 /*Table structure for table `mall_goods_spu` */
 
 DROP TABLE IF EXISTS `mall_goods_spu`;
@@ -287,6 +316,7 @@ CREATE TABLE `mall_goods_spu` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
   `spec_type` char(2) NOT NULL DEFAULT '0' COMMENT '0=single sku,1=multi sku',
+  `freight_template_id` varchar(32) NOT NULL DEFAULT 'freight_default_free' COMMENT '运费模板ID',
   `del_flag` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '0' COMMENT '逻辑删除标记（0：显示；1：隐藏）',
   `version` int DEFAULT '0' COMMENT '版本号',
   PRIMARY KEY (`id`) USING BTREE
@@ -422,6 +452,7 @@ CREATE TABLE `mall_order_info` (
   `user_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '商城用户ID',
   `order_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '订单单号',
   `payment_way` char(2) NOT NULL COMMENT '支付方式1、货到付款；2、在线支付',
+  `delivery_way` char(2) NOT NULL DEFAULT '1' COMMENT '配送方式1普通快递、2上门自提',
   `is_pay` char(2) NOT NULL COMMENT '是否支付0、未支付 1、已支付',
   `name` varchar(255) DEFAULT NULL COMMENT '订单名',
   `status` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '订单状态1、待发货 2、待收货 3、确认收货/已完成 5、已关闭',
@@ -479,6 +510,7 @@ CREATE TABLE `mall_order_item` (
   `quantity` int NOT NULL COMMENT '商品数量',
   `sales_price` decimal(10,2) NOT NULL COMMENT '购买单价',
   `freight_price` decimal(10,2) DEFAULT '0.00' COMMENT '运费金额',
+  `freight_template_id` varchar(32) DEFAULT NULL COMMENT '运费模板ID快照',
   `payment_price` decimal(10,2) DEFAULT '0.00' COMMENT '支付金额（购买单价*商品数量+运费金额）',
   `member_discount_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '会员优惠分摊',
   `coupon_discount_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '优惠券优惠分摊',
@@ -1442,6 +1474,39 @@ CREATE TABLE `wx_user` (
 /*Data for the table `wx_user` */
 
 insert  into `wx_user`(`id`,`create_id`,`create_time`,`update_id`,`update_time`,`remark`,`del_flag`,`app_type`,`subscribe`,`subscribe_scene`,`subscribe_time`,`subscribe_num`,`cancel_subscribe_time`,`open_id`,`nick_name`,`sex`,`city`,`country`,`province`,`phone`,`language`,`headimg_url`,`union_id`,`group_id`,`tagid_list`,`qr_scene_str`,`latitude`,`longitude`,`precision`,`session_key`) values ('1352168072700571649',NULL,'2021-01-21 16:16:05',NULL,'2021-01-21 16:37:22',NULL,'0','1',NULL,NULL,NULL,NULL,NULL,'ol3ea5DyEplVd0B5lD9gLwCme8zw','JL','1','深圳','中国','广东',NULL,'zh_CN','https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTKRsdzV55M85n8DAsVhH7wrS05ficLFjQMLlZUdUichYqZKKCB2GyibRGJNZ3JvPzVWg5hVVRx9hACEw/132',NULL,NULL,'[]',NULL,NULL,NULL,NULL,'CNKq11a69WSezik2aobqsA=='),('1352233320682930178',NULL,'2021-01-21 20:35:21',NULL,'2021-01-21 21:16:01',NULL,'0','1',NULL,NULL,NULL,NULL,NULL,'ol3ea5HBFdkSYTC4uzf9gvW3cutU','NULL','1','长沙','中国','湖南',NULL,'zh_CN','https://thirdwx.qlogo.cn/mmopen/vi_32/chMqczIChvg1AXBmBran0EzkD4f52jKEpRFmIweBDN1QpeC4JPN5HKE3fgUYFNAFN4warrIQhEj69SCkY2zyYA/132',NULL,NULL,'[]',NULL,NULL,NULL,NULL,'jSa/lKtJmYPVHZcTl7r5kw=='),('1352572935968165889',NULL,'2021-01-22 19:04:52',NULL,'2021-01-22 19:05:20',NULL,'0','1',NULL,NULL,NULL,NULL,NULL,'ol3ea5HWkzS2_iL2nBoao-nsxlgI','Ethan.D','1','益阳','中国','湖南',NULL,'zh_CN','https://thirdwx.qlogo.cn/mmopen/vi_32/5DPIvtrqFPv2hcU09UmW3fGQXzIwmO8iciajsHNTzz1NrlwBeVm5ou8HCaO7kXIDmVwhoqnicIibI4BXf8GlKFN7YA/132',NULL,NULL,'[]',NULL,NULL,NULL,NULL,'G87A8PJ+HeqJzeVxW/tYpA=='),('1354473059078176770',NULL,'2021-01-28 00:55:16',NULL,'2026-04-12 17:12:41',NULL,'0','1',NULL,NULL,NULL,NULL,NULL,'oJ-q55T2ZXs-p68eMcouJR7IFVQw','joke','0','','','','18608419761','zh_CN','https://thirdwx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEIEmtx0ookgCclA9g7XUxtvXhyKOIaleg1VtyibtRxkBfVkCSpiaXLXtESAHwfibtzefqVo2w4fMFDiasSFutGYSeiboiaD1iaKfEMEy94VzKrww8xzw/132',NULL,NULL,'[]',NULL,NULL,NULL,NULL,'iZgOdUNZBc+pcE8bEt+4vA=='),('1355406809988345857',NULL,'2021-01-30 14:45:40',NULL,'2021-01-30 14:50:37',NULL,'0','1',NULL,NULL,NULL,NULL,NULL,'oJ-q55eVbz74-EiU2f-j1Rie_BwM','NULL','1','长沙','中国','湖南',NULL,'zh_CN','https://thirdwx.qlogo.cn/mmopen/vi_32/cuTB5LL4dia7CJLqAxV2ibE8OiawFCcF4yRduugIxZTnJBmye7wddrErqShW1JkmXgYibDSKgib2cicURicLaPPknGGjw/132',NULL,NULL,'[]',NULL,NULL,NULL,NULL,'YM7Jk6qAfQ3yr8jNNbj2ww=='),('1356171782972882945',NULL,'2021-02-01 17:25:25',NULL,'2021-02-02 22:44:21',NULL,'0','1',NULL,NULL,NULL,NULL,NULL,'oJ-q55a_buCs7ozlJOBHYgm6b_ko','Ethan.D','1','益阳','中国','湖南',NULL,'zh_CN','https://thirdwx.qlogo.cn/mmopen/vi_32/XdqjFObB4mmxQMURhIr5XzUgicRic3qOuXhz74OQnmHg4wKf5NUSm11ib0rXBsaIsJxGjicz1AY3a2Pz46iacqibfNqg/132',NULL,NULL,'[]',NULL,NULL,NULL,NULL,'oknUXi+2mvSjisq3vyGrtw=='),('1357673320701546498',NULL,'2021-02-05 20:51:57',NULL,NULL,'','0','2','1','ADD_SCENE_QR_CODE','2020-01-06 14:14:44',1,NULL,'o3QwG1QnY-BOe4M724t0dvVQaUUo','魂散','0','','','',NULL,'zh_CN','http://thirdwx.qlogo.cn/mmopen/PiajxSqBRaEK4NgUCJLPziclZYMfTnaYFXvz1GajlxariavaOkbKsXzXMoVHO6E5LKUWaaxxQccLVaicYR2Zqv5ZnA/132',NULL,'{}','[]','1',NULL,NULL,NULL,NULL),('1357673320701546499',NULL,'2021-02-05 20:51:57',NULL,NULL,'','0','2','1','ADD_SCENE_QR_CODE','2020-10-29 23:34:34',1,NULL,'o3QwG1YepdGeVJZv_2bfIEjwnb_I','愈辉','1','','亚美尼亚','',NULL,'zh_CN','http://thirdwx.qlogo.cn/mmopen/lV0d907m3OWXHibcSriareU9XpBCdBgkOd286EialAX0BtrWEdrhunepPEUq82E6wneLbtNttjKDMJSM7Y9HOnaRA/132',NULL,'{}','[]','1',NULL,NULL,NULL,NULL),('1357673320714129409',NULL,'2021-02-05 20:51:57',NULL,NULL,'','0','2','1','ADD_SCENE_QR_CODE','2020-11-09 11:36:47',1,NULL,'o3QwG1ThD7gJ-qIXTDF88rly1VHg','八爪鱼','1','','中国','北京',NULL,'zh_CN','http://thirdwx.qlogo.cn/mmopen/lV0d907m3OW2BkZicF01PtUQera34FdW1Ga68DhZxQ7MlGMLDG3DZIBMm2Cibjueb6NMDvRMMRZFqjMVEogD9Oibw/132',NULL,'{}','[]','1',NULL,NULL,NULL,NULL),('1357673320722518017',NULL,'2021-02-05 20:51:58',NULL,NULL,'','0','2','1','ADD_SCENE_QR_CODE','2020-12-05 16:04:40',1,NULL,'o3QwG1ZP0s_alsf-PuhDU7CmLQ24','十万伏特','1','成都','中国','四川',NULL,'zh_CN','http://thirdwx.qlogo.cn/mmopen/J6c32680OdZUtzqT9zvNO2QR8jG1jdPiaFFQVA91Szrnpke0ga7UCCXGTKqZIppyibuhv6NTRX3OXqPtSQey8Ww0qgzhqicUgGR/132',NULL,'{}','[]','1',NULL,NULL,NULL,NULL),('1357673320730906626',NULL,'2021-02-05 20:51:58',NULL,NULL,'备注','0','2','1','ADD_SCENE_QR_CODE','2021-01-23 11:54:59',1,NULL,'o3QwG1Z4EZBdLwtKbK9TozDunLZw','Allen','1','成都','中国','四川',NULL,'zh_CN','http://thirdwx.qlogo.cn/mmopen/OT05QvwvgZZ3KeIaQ25CrjHF9rQTpZhO4RM1szUEcUdfLjEcFoicD3snicPq8GIqiayc1Ned8CIY5Gk5kCInF4TrR07Isicn4gFS/132',NULL,'{}','[]','1',NULL,NULL,NULL,NULL),('1357673320739295234',NULL,'2021-02-05 20:51:58',NULL,NULL,'','0','2','1','ADD_SCENE_QR_CODE','2021-01-18 14:27:13',1,NULL,'o3QwG1UuAz7VYM24e9rmihxyKJvg','JL','1','深圳','中国','广东',NULL,'zh_CN','http://thirdwx.qlogo.cn/mmopen/dMKNvxZfIaEco8NogUXngnPhXrEEzLoY69XP5ymS2RWFIyXpOGE8trxiaqydnIibicluloYMWO06qmmibuvZR6GEbYR1HmVCq41R/132',NULL,'{}','[107,2]','1',NULL,NULL,NULL,NULL),('1357673320747683841',NULL,'2021-02-05 20:51:58',NULL,NULL,'99','0','2','1','ADD_SCENE_QR_CODE','2021-01-11 17:43:37',1,NULL,'o3QwG1XWOtVl_ifcXYbPuiaPPnMc','redis','1','','中国','',NULL,'zh_CN','http://thirdwx.qlogo.cn/mmopen/lV0d907m3OU18kicFJhIBibV0XlvEnWzKN09tvVz3wyryA2cysGibW8BarSLyia8HeuOx8YDibGE192BibXG1xTtfC2nXf0x3MZS1x/132',NULL,'{}','[]','1',NULL,NULL,NULL,NULL),('1357673320747683842',NULL,'2021-02-05 20:51:58',NULL,NULL,'','0','2','1','ADD_SCENE_QR_CODE','2020-03-16 10:32:31',1,NULL,'o3QwG1ecy727RcaP3XyevHbPK33M','、','1','厦门','中国','福建',NULL,'zh_CN','http://thirdwx.qlogo.cn/mmopen/OT05QvwvgZYuck1R4BqYzwFzicuAicDHSeJTKI21VvxgrUxEWnVxiaEseEVLnM2tzibxTIfUiaZ1aSLn4hJ8FSgu7EBgeID2LCh9s/132',NULL,'{}','[2]','1',NULL,NULL,NULL,NULL),('1357673320747683843',NULL,'2021-02-05 20:51:58',NULL,NULL,'','0','2','1','ADD_SCENE_QR_CODE','2020-11-09 20:41:24',1,NULL,'o3QwG1RLqJDTP-KZfNxMrMOKpl1U','gameover!!!','1','武汉','中国','湖北',NULL,'zh_CN','http://thirdwx.qlogo.cn/mmopen/upjJ1bex0ocf0rsbPbSW6yorFpT2SicGibyia5bYRjqLpWDgnYR4icEtQ87TcDibO3qujm8wkhDib4CPQCldShq1FHovW9J2ibSsfFH/132',NULL,'{}','[]','1',NULL,NULL,NULL,NULL),('1357673320747683844',NULL,'2021-02-05 20:51:58',NULL,NULL,'','0','2','1','ADD_SCENE_QR_CODE','2020-10-14 14:32:49',1,NULL,'o3QwG1f7sT5V_FV_EVj4kaQ09Zzs','壹杯淸茶。','1','青岛','中国','山东',NULL,'zh_CN','http://thirdwx.qlogo.cn/mmopen/ajNVdqHZLLCYmmGPrvvXcib0iaiaGQba4yFtwt35zEUgOAzGwPcwG2GIqmejmo8fxRibwQzSDibejrXV4dia1uiaanvXrZ3SKZyZiaEo3G2K8WhDTjs/132',NULL,'{}','[]','1',NULL,NULL,NULL,NULL),('1357673320756072449',NULL,'2021-02-05 20:51:58',NULL,NULL,'','0','2','1','ADD_SCENE_QR_CODE','2020-02-24 16:49:28',1,NULL,'o3QwG1eaqyTxxW4VisfbaKL0BcWY','.Llkoi','1','长沙','中国','湖南',NULL,'zh_CN','http://thirdwx.qlogo.cn/mmopen/TBfgdHR2VFWloL25J3r1DfDE3a5R3yctJD3wc5CSoe3xWmy4lZPzxRZpj2x14dl87ndzlRXAN1ZN2W7w1n8bYtKWOMxG8ahq/132',NULL,'{}','[2]','1',NULL,NULL,NULL,NULL),('1357673320760266753',NULL,'2021-02-05 20:51:58',NULL,NULL,'','0','2','1','ADD_SCENE_QR_CODE','2020-06-17 22:14:41',1,NULL,'o3QwG1d4Bq8lg-NbUOOYdaaVWhnE','Quentin','1','南京','中国','江苏',NULL,'zh_CN','http://thirdwx.qlogo.cn/mmopen/ceebSkrkkFTBe1cSDicrLGq05uMsfRkzNWhKp3JY6eISxwCoiagt6q2L4RGcGh61jnWWTI3xeXsAmFCEpozdSIDQKBhNosic8TY/132',NULL,'{}','[]','1',NULL,NULL,NULL,NULL),('1357673320760266754',NULL,'2021-02-05 20:51:58',NULL,NULL,'后来','0','2','1','ADD_SCENE_QR_CODE','2019-06-04 22:22:21',1,NULL,'o3QwG1aKxN5AMEaNSbDV-vHJHtvM','安安晨晨','2','益阳','中国','湖南',NULL,'zh_CN','http://thirdwx.qlogo.cn/mmopen/ceebSkrkkFTRWgtVgYzPOETJtkqz0TIOzpVber8ic5DlUTky6zpgTGJHic6gG4wH7B7iay12QHo7BF3Iv0r6vTfS2GkcdywCmN8/132',NULL,'{}','[]','1',NULL,NULL,NULL,NULL),('1632267995788124162',NULL,'2023-03-05 14:33:10',NULL,'2023-03-05 14:51:53','','0','2','1','ADD_SCENE_QR_CODE','2023-03-05 14:55:09',4,'2023-03-05 14:54:59','obe_Pt4Ot_pap7RZwkVAfqBDoAQM',NULL,NULL,NULL,NULL,NULL,NULL,'zh_CN',NULL,NULL,'{}','[]','jl-wiki:1677999301202',NULL,NULL,NULL,NULL);
+
+/*Table structure for table `mall_freight_templat` 的菜单权限，按需补齐，重复执行不会产生脏数据 */
+
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `route_name`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`)
+SELECT 2120, '运费模板', 2033, 90, 'freighttemplat', 'mall/freighttemplat/index', NULL, 'MallFreightTemplat', 1, 0, 'C', '0', '0', 'mall:freighttemplat:index', 'money', 'admin', NOW(), '', NULL, '商城运费模板'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_menu` WHERE `menu_id` = 2120);
+
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `route_name`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`)
+SELECT 2121, '运费模板查询', 2120, 0, '', NULL, NULL, '', 1, 0, 'F', '0', '0', 'mall:freighttemplat:get', '#', 'admin', NOW(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM `sys_menu` WHERE `menu_id` = 2121);
+
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `route_name`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`)
+SELECT 2122, '运费模板新增', 2120, 0, '', NULL, NULL, '', 1, 0, 'F', '0', '0', 'mall:freighttemplat:add', '#', 'admin', NOW(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM `sys_menu` WHERE `menu_id` = 2122);
+
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `route_name`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`)
+SELECT 2123, '运费模板修改', 2120, 0, '', NULL, NULL, '', 1, 0, 'F', '0', '0', 'mall:freighttemplat:edit', '#', 'admin', NOW(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM `sys_menu` WHERE `menu_id` = 2123);
+
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `route_name`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`)
+SELECT 2124, '运费模板删除', 2120, 0, '', NULL, NULL, '', 1, 0, 'F', '0', '0', 'mall:freighttemplat:del', '#', 'admin', NOW(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM `sys_menu` WHERE `menu_id` = 2124);
+
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`)
+SELECT 2, 2120 WHERE NOT EXISTS (SELECT 1 FROM `sys_role_menu` WHERE `role_id` = 2 AND `menu_id` = 2120);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`)
+SELECT 2, 2121 WHERE NOT EXISTS (SELECT 1 FROM `sys_role_menu` WHERE `role_id` = 2 AND `menu_id` = 2121);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`)
+SELECT 2, 2122 WHERE NOT EXISTS (SELECT 1 FROM `sys_role_menu` WHERE `role_id` = 2 AND `menu_id` = 2122);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`)
+SELECT 2, 2123 WHERE NOT EXISTS (SELECT 1 FROM `sys_role_menu` WHERE `role_id` = 2 AND `menu_id` = 2123);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`)
+SELECT 2, 2124 WHERE NOT EXISTS (SELECT 1 FROM `sys_role_menu` WHERE `role_id` = 2 AND `menu_id` = 2124);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

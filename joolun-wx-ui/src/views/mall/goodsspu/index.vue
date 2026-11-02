@@ -289,6 +289,28 @@
                   />
                 </template>
               </el-table-column>
+              <el-table-column label="重量(kg)" min-width="120">
+                <template #default="{ row }">
+                  <el-input-number
+                    v-model="row.weight"
+                    :disabled="isViewMode(scope.type)"
+                    :min="0"
+                    :precision="2"
+                    controls-position="right"
+                  />
+                </template>
+              </el-table-column>
+              <el-table-column label="体积(m³)" min-width="120">
+                <template #default="{ row }">
+                  <el-input-number
+                    v-model="row.volume"
+                    :disabled="isViewMode(scope.type)"
+                    :min="0"
+                    :precision="4"
+                    controls-position="right"
+                  />
+                </template>
+              </el-table-column>
               <el-table-column label="启用" width="90">
                 <template #default="{ row }">
                   <el-switch
@@ -371,6 +393,8 @@ function createDefaultForm() {
     picUrls: [],
     categoryId: [],
     saleNum: 0,
+    // 运费模板必填，默认指向系统内置的包邮模板，避免运营漏选后保存失败。
+    freightTemplateId: "freight_default_free",
     spuSpec: [createSpecRow()],
     skus: [createSingleSku()],
   };
@@ -399,6 +423,9 @@ function createSingleSku(payload = {}) {
     marketPrice: payload.marketPrice ?? 0,
     costPrice: payload.costPrice ?? 0,
     stock: payload.stock ?? 0,
+    // 重量、体积用于按重量/按体积计费的运费模板。
+    weight: payload.weight ?? 0,
+    volume: payload.volume ?? 0,
     enable: payload.enable || "1",
     specs: Array.isArray(payload.specs) ? payload.specs : [],
     specDisplay: payload.specDisplay || {},

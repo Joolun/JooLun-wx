@@ -61,7 +61,8 @@
         <view class="cu-item margin-top-sm">
           <text class="text-gray text-sm">运费金额</text>
           <view class="action">
-            <view class="text-price">{{freightPrice}}</view>
+            <view class="text-price" wx:if="{{!freeShipping}}">{{freightPrice}}</view>
+            <view class="text-red" wx:else>包邮</view>
           </view>
         </view>
         <view class="cu-item margin-top-sm" wx:if="{{memberDiscountAmount > 0}}">

@@ -66,7 +66,7 @@
       </view>
       <view class="flex-treble text-sm">
         <text class="cuIcon-location text-black" wx:if="{{goodsSpu.deliveryPlace}}">{{goodsSpu.deliveryPlace.place}} | </text>
-        <text class="text-black" wx:if="{{goodsSpu.freightTemplat}}">运费：全国包邮</text>
+        <text class="text-black" wx:if="{{goodsSpu.freightTemplat}}">运费：{{goodsSpu.freightTemplat.type == '2' ? '全国包邮' : '￥' + goodsSpu.freightTemplat.firstFreight + '起'}}</text>
       </view>
       <view class="flex-sub text-sm text-gray text-right margin-right-sm">销量{{goodsSpu.saleNum}}</view>
     </view>

@@ -131,9 +131,10 @@
         </view>
         <view class="cu-item margin-top-xs">
             <text class="text-gray font-weight">运费金额</text>
-          <view class="action">
+          <view class="action" wx:if="{{orderInfo.freightPrice > 0}}">
             + <text class="text-price">{{orderInfo.freightPrice}}</text>
           </view>
+          <view class="action text-red" wx:else>包邮</view>
         </view>
         <view class="cu-item margin-top-xs" wx:if="{{orderInfo.memberDiscountAmount > 0}}"><text class="text-gray font-weight">会员优惠</text><view class="action text-red">- ¥{{orderInfo.memberDiscountAmount}}</view></view>
         <view class="cu-item margin-top-xs" wx:if="{{orderInfo.couponDiscountAmount > 0}}"><text class="text-gray font-weight">优惠券</text><view class="action text-red">- ¥{{orderInfo.couponDiscountAmount}}</view></view>

@@ -147,7 +147,8 @@
             <el-table-column align="left" prop="salesPrice" label="订单金额" width="220">
               <template #default="scope">
                 <div>订单金额：￥{{ scope.row.salesPrice }}</div>
-                <div>运费金额：+ ￥{{ scope.row.freightPrice }}</div>
+                <div>配送方式：{{ scope.row.deliveryWay === '2' ? '上门自提' : '普通快递' }}</div>
+                <div>运费金额：{{ scope.row.freightPrice > 0 ? '+ ￥' + scope.row.freightPrice : '包邮' }}</div>
                 <div class="price-highlight">支付金额：￥{{ scope.row.paymentPrice }}</div>
               </template>
             </el-table-column>
@@ -462,7 +463,8 @@
         <template #salesPrice="scope">
           <div class="amount-cell">
             <div class="grid-content">订单金额：￥{{ scope.row.salesPrice }}</div>
-            <div class="grid-content">运费金额：+ ￥{{ scope.row.freightPrice }}</div>
+            <div class="grid-content">配送方式：{{ scope.row.deliveryWay === '2' ? '上门自提' : '普通快递' }}</div>
+            <div class="grid-content">运费金额：{{ scope.row.freightPrice > 0 ? '+ ￥' + scope.row.freightPrice : '包邮' }}</div>
             <div class="grid-content price-highlight">支付金额：￥{{ scope.row.paymentPrice }}</div>
           </div>
         </template>

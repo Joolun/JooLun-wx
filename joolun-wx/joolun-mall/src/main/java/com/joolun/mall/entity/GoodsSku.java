@@ -57,6 +57,12 @@ public class GoodsSku extends Model<GoodsSku> {
 	/** SKU 级别库存。 */
 	private Integer stock;
 
+	/** SKU 重量（kg），按重量计费的运费模板使用。 */
+	private BigDecimal weight;
+
+	/** SKU 体积（m³），按体积计费的运费模板使用。 */
+	private BigDecimal volume;
+
 	/** 启用状态，用于过滤禁用或无效的 SKU。 */
 	private String enable;
 

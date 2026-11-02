@@ -341,7 +341,11 @@ Page({
       salesPrice: selectedSku.salesPrice,
       spuName: goodsSpu.name,
       picUrl: selectedSku.picUrl || util.getFirstPicUrl(goodsSpu.picUrls, ''),
-      specInfo: selectedSku.specInfo || this.buildSpecInfoBySpecs(selectedSku.specs)
+      specInfo: selectedSku.specInfo || this.buildSpecInfoBySpecs(selectedSku.specs),
+      // 结算页按运费模板分组计算运费，这里把模板和计费依据一并带到结算快照里。
+      freightTemplat: goodsSpu.freightTemplat || null,
+      weight: selectedSku.weight || 0,
+      volume: selectedSku.volume || 0
     }
   },
   confirmSkuAction(e) {

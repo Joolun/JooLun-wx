@@ -40,6 +40,6 @@ public class PlaceOrderGoodsDTO implements Serializable {
 	private BigDecimal paymentPrice;
 
 	@Excel(name = "freightPrice")
-	/** 前端传来的运费快照，保留是为了兼容旧的提交结构。 */
+	/** 前端传来的运费展示值，服务端不采信：下单时按商品绑定的运费模板重新计算并覆盖。 */
 	private BigDecimal freightPrice;
 }

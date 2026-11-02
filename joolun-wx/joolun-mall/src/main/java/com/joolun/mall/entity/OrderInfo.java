@@ -71,6 +71,11 @@ public class OrderInfo extends Model<OrderInfo> {
 	@Excel(name = "支付方式")
 	private String paymentWay;
 	/**
+	 * 配送方式1、普通快递；2、上门自提
+	 */
+	@Excel(name = "配送方式1、普通快递；2、上门自提")
+	private String deliveryWay;
+	/**
 	 * 是否支付0、未支付 1、已支付
 	 */
 	@Excel(name = "是否支付0、未支付 1、已支付")

@@ -90,6 +90,10 @@ public class GoodsSpu extends Model<GoodsSpu> {
 	/** 规格模式：0 表示单规格，1 表示多规格。 */
 	private String specType;
 
+	@Excel(name = "freightTemplateId")
+	/** 绑定的运费模板ID，商品维度必填。 */
+	private String freightTemplateId;
+
 	@Excel(name = "delFlag")
 	private String delFlag;
 
@@ -103,6 +107,10 @@ public class GoodsSpu extends Model<GoodsSpu> {
 	@TableField(exist = false)
 	/** 当前商品绑定的规格组定义，供管理端编辑和详情回显。 */
 	private List<SpuSpecDTO> spuSpec;
+
+	@TableField(exist = false)
+	/** 绑定的运费模板，商品详情和小程序结算页展示运费时使用。 */
+	private FreightTemplat freightTemplat;
 
 	@TableField(exist = false)
 	/** 兼容旧结构的销售价字段，通常由默认 SKU 或选中 SKU 回填。 */

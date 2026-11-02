@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.joolun.mall.config.CommonConstants;
 import com.joolun.mall.dto.SpuSpecDTO;
+import com.joolun.mall.entity.FreightTemplat;
 import com.joolun.mall.entity.GoodsSku;
 import com.joolun.mall.entity.GoodsSkuSpecValue;
 import com.joolun.mall.entity.GoodsSpec;
@@ -19,6 +20,7 @@ import com.joolun.mall.entity.GoodsSpecValue;
 import com.joolun.mall.entity.GoodsSpu;
 import com.joolun.mall.entity.GoodsSpuSpec;
 import com.joolun.mall.mapper.GoodsSpuMapper;
+import com.joolun.mall.service.FreightTemplatService;
 import com.joolun.mall.service.GoodsSkuService;
 import com.joolun.mall.service.GoodsSkuSpecValueService;
 import com.joolun.mall.service.GoodsSpecService;
@@ -66,6 +68,7 @@ public class GoodsSpuServiceImpl extends ServiceImpl<GoodsSpuMapper, GoodsSpu> i
 	private final GoodsSpecValueService goodsSpecValueService;
 	private final GoodsSpuSpecService goodsSpuSpecService;
 	private final GoodsSkuSpecValueService goodsSkuSpecValueService;
+	private final FreightTemplatService freightTemplatService;
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -108,6 +111,7 @@ public class GoodsSpuServiceImpl extends ServiceImpl<GoodsSpuMapper, GoodsSpu> i
 	public GoodsSpu getById1(String id) {
 		GoodsSpu goodsSpu = baseMapper.selectById1(id);
 		fillSkuAndSpecData(goodsSpu);
+		fillFreightTemplat(goodsSpu);
 		return goodsSpu;
 	}
 
@@ -115,10 +119,13 @@ public class GoodsSpuServiceImpl extends ServiceImpl<GoodsSpuMapper, GoodsSpu> i
 	public GoodsSpu getById2(String id) {
 		GoodsSpu goodsSpu = baseMapper.selectById2(id);
 		fillSkuAndSpecData(goodsSpu);
+		fillFreightTemplat(goodsSpu);
 		return goodsSpu;
 	}
 
 	private void normalizeIncomingSpu(GoodsSpu goodsSpu) {
+		// 运费模板是商品维度必填项。
+		validateFreightTemplat(goodsSpu.getFreightTemplateId());
 		// 保证至少存在一条 SKU，避免保存时再区分“旧单规格结构”和“新多规格结构”。
 		List<GoodsSku> skus = new ArrayList<>(safeList(goodsSpu.getSkus()));
 		if (skus.isEmpty()) {
@@ -134,6 +141,13 @@ public class GoodsSpuServiceImpl extends ServiceImpl<GoodsSpuMapper, GoodsSpu> i
 			if (sku.getStock() == null) {
 				sku.setStock(0);
 			}
+			// 重量、体积是按重量/按体积计费的依据，未填写时统一按 0 落库，避免空值参与运算。
+			if (sku.getWeight() == null || sku.getWeight().signum() < 0) {
+				sku.setWeight(BigDecimal.ZERO);
+			}
+			if (sku.getVolume() == null || sku.getVolume().signum() < 0) {
+				sku.setVolume(BigDecimal.ZERO);
+			}
 		}
 		goodsSpu.setSkus(skus);
 		if (safeList(goodsSpu.getSpuSpec()).isEmpty()) {
@@ -141,6 +155,36 @@ public class GoodsSpuServiceImpl extends ServiceImpl<GoodsSpuMapper, GoodsSpu> i
 		} else {
 			goodsSpu.setSpecType(SPEC_TYPE_MULTI);
 		}
+	}
+
+	/**
+	 * 校验商品绑定的运费模板。
+	 *
+	 * @param freightTemplateId 运费模板ID
+	 */
+	private void validateFreightTemplat(String freightTemplateId) {
+		if (StrUtil.isBlank(freightTemplateId)) {
+			throw new IllegalArgumentException("请选择商品运费模板");
+		}
+		FreightTemplat freightTemplat = freightTemplatService.getById(freightTemplateId);
+		if (freightTemplat == null || !CommonConstants.NO.equals(freightTemplat.getDelFlag())) {
+			throw new IllegalArgumentException("商品运费模板不存在");
+		}
+		if (!"1".equals(freightTemplat.getStatus())) {
+			throw new IllegalArgumentException("商品运费模板已停用，请重新选择");
+		}
+	}
+
+	/**
+	 * 回填商品绑定的运费模板，供管理端编辑回显和小程序结算展示。
+	 *
+	 * @param goodsSpu 商品
+	 */
+	private void fillFreightTemplat(GoodsSpu goodsSpu) {
+		if (goodsSpu == null || StrUtil.isBlank(goodsSpu.getFreightTemplateId())) {
+			return;
+		}
+		goodsSpu.setFreightTemplat(freightTemplatService.getById(goodsSpu.getFreightTemplateId()));
 	}
 
 	private GoodsSku buildDefaultSku(GoodsSpu goodsSpu) {
@@ -153,6 +197,8 @@ public class GoodsSpuServiceImpl extends ServiceImpl<GoodsSpuMapper, GoodsSpu> i
 		goodsSku.setMarketPrice(defaultDecimal(goodsSpu.getMarketPrice(), goodsSpu.getPriceUp(), goodsSpu.getSalesPrice(), goodsSpu.getPriceDown()));
 		goodsSku.setCostPrice(defaultDecimal(goodsSpu.getCostPrice(), goodsSpu.getSalesPrice(), goodsSpu.getPriceDown()));
 		goodsSku.setStock(goodsSpu.getStock() == null ? 0 : goodsSpu.getStock());
+		goodsSku.setWeight(BigDecimal.ZERO);
+		goodsSku.setVolume(BigDecimal.ZERO);
 		goodsSku.setEnable(CommonConstants.YES);
 		return goodsSku;
 	}

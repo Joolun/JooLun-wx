@@ -16,12 +16,18 @@
 const util = require('../../../utils/util.js')
 const app = getApp()
 
+/** 金额统一保留两位，避免浮点误差在分摊时被放大。 */
+function round2 (value) {
+  return Math.round(Number(value || 0) * 100) / 100
+}
+
 Page({
   data: {
     orderConfirmData: [],
     salesPrice: 0,
     paymentPrice: 0,
     freightPrice: 0,
+    freeShipping: true,
     memberDiscountAmount: 0,
     couponDiscountAmount: 0,
     memberRate: 100,
@@ -55,11 +61,12 @@ Page({
       })
   },
   deliveryWayChange (e) {
+    // 上门自提不计运费，切换配送方式后必须重算。
     this.setData({
-      ['orderSubParm.deliveryWay']: e.detail.value,
-      freightMap: null
+      ['orderSubParm.deliveryWay']: e.detail.value
+    }, () => {
+      this.refreshFreight()
     })
-    this.orderConfirmDo()
   },
   orderConfirmDo () {
     // 读取商品详情页或购物车页提前写入的临时结算快照。
@@ -67,27 +74,26 @@ Page({
       key: 'param-orderConfirm',
       success: (res) => {
         const orderConfirmData = (res.data || []).map((item) => {
+          const currentPrice = Number(item.salesPrice || item.addPrice || 0)
           return Object.assign({}, item, {
-            picUrl: util.resolveResourceUrl(item.picUrl, '/public/img/no_pic.png')
+            picUrl: util.resolveResourceUrl(item.picUrl, '/public/img/no_pic.png'),
+            paymentPrice: (currentPrice * item.quantity).toFixed(2),
+            freightPrice: 0
           })
         })
         let salesPrice = 0
-        let freightPrice = 0
         let spuIds = ''
         orderConfirmData.forEach((orderConfirm) => {
           spuIds = spuIds ? `${spuIds},${orderConfirm.spuId}` : orderConfirm.spuId
-          const currentPrice = Number(orderConfirm.salesPrice || orderConfirm.addPrice || 0)
-          salesPrice = (Number(salesPrice) + currentPrice * orderConfirm.quantity).toFixed(2)
-          orderConfirm.paymentPrice = (currentPrice * orderConfirm.quantity).toFixed(2)
-          orderConfirm.freightPrice = 0
-          freightPrice = (Number(freightPrice) + Number(orderConfirm.freightPrice)).toFixed(2)
+          salesPrice = round2(salesPrice + Number(orderConfirm.paymentPrice))
         })
         this.setData({
           orderConfirmData,
-          salesPrice,
-          freightPrice,
-          paymentPrice: salesPrice,
+          salesPrice: salesPrice.toFixed(2),
+          paymentPrice: salesPrice.toFixed(2),
           spuIds
+        }, () => {
+          this.refreshFreight()
         })
         this.loadPricingBenefits(Number(salesPrice))
       }
@@ -123,7 +129,101 @@ Page({
       ['orderSubParm.couponUserId']: coupon.id || null
     })
   },
-  countFreight (orderConfirm, freightTemplat, quantity) {
+  /**
+   * 重新计算整单运费。
+   * 规则与服务端 FreightCalculator 保持一致：
+   * 1. 同一运费模板的商品合并计算首件/续件，不同模板各自收取首运费；
+   * 2. 模板运费按计费量占比回摊到明细，保证明细运费之和等于模板运费；
+   * 3. 上门自提不计运费。
+   */
+  refreshFreight () {
+    const items = (this.data.orderConfirmData || []).map((item) => Object.assign({}, item))
+    const chargeFreight = this.data.orderSubParm.deliveryWay !== '2'
+    const groups = {}
+    const groupOrder = []
+    items.forEach((item, index) => {
+      item.freightPrice = 0
+      if (!chargeFreight || !item.freightTemplat || !item.freightTemplat.id) {
+        return
+      }
+      const templateId = item.freightTemplat.id
+      if (!groups[templateId]) {
+        groups[templateId] = { templat: item.freightTemplat, indexes: [] }
+        groupOrder.push(templateId)
+      }
+      groups[templateId].indexes.push(index)
+    })
+    groupOrder.forEach((templateId) => {
+      const group = groups[templateId]
+      const billableOf = (item) => {
+        const quantity = Number(item.quantity || 0)
+        if (group.templat.chargeType === '2') {
+          return round2(Number(item.weight || 0) * quantity)
+        }
+        if (group.templat.chargeType === '3') {
+          return round2(Number(item.volume || 0) * quantity)
+        }
+        return quantity
+      }
+      let totalBillable = 0
+      group.indexes.forEach((index) => {
+        totalBillable = round2(totalBillable + billableOf(items[index]))
+      })
+      this.allocateFreight(this.countFreight(group.templat, totalBillable), items, group.indexes, billableOf)
+    })
+    let freightPrice = 0
+    items.forEach((item) => {
+      freightPrice = round2(freightPrice + Number(item.freightPrice || 0))
+    })
+    this.setData({
+      orderConfirmData: items,
+      freightPrice: freightPrice.toFixed(2),
+      freeShipping: freightPrice <= 0
+    })
+  },
+  /** 按首件 + 续件规则计算单个运费模板的运费。 */
+  countFreight (freightTemplat, billable) {
+    if (!freightTemplat || freightTemplat.type === '2') {
+      return 0
+    }
+    const firstNum = Number(freightTemplat.firstNum || 0)
+    const firstFreight = Number(freightTemplat.firstFreight || 0)
+    const continueNum = Number(freightTemplat.continueNum || 0)
+    const continueFreight = Number(freightTemplat.continueFreight || 0)
+    if (continueNum <= 0 || billable <= firstNum) {
+      return round2(firstFreight)
+    }
+    const steps = Math.ceil(round2(billable - firstNum) / continueNum)
+    return round2(firstFreight + steps * continueFreight)
+  },
+  /** 把模板运费按计费量占比回摊到明细，最后一条吃掉舍入差额。 */
+  allocateFreight (groupFreight, items, indexes, billableOf) {
+    const total = round2(groupFreight)
+    if (total <= 0) {
+      return
+    }
+    let weights = indexes.map((index) => billableOf(items[index]))
+    let totalWeight = weights.reduce((sum, value) => round2(sum + value), 0)
+    if (totalWeight <= 0) {
+      // 计费量全为 0（例如按重量计费但商品没填重量）时退化用商品金额分摊。
+      weights = indexes.map((index) => round2(Number(items[index].paymentPrice || 0)))
+      totalWeight = weights.reduce((sum, value) => round2(sum + value), 0)
+    }
+    if (totalWeight <= 0) {
+      items[indexes[0]].freightPrice = total
+      return
+    }
+    let allocated = 0
+    indexes.forEach((index, position) => {
+      let share
+      if (position === indexes.length - 1) {
+        share = round2(total - allocated)
+      } else {
+        share = Math.max(Math.min(round2(total * weights[position] / totalWeight), round2(total - allocated)), 0)
+        allocated = round2(allocated + share)
+      }
+      items[index].freightPrice = share
+    })
   },
   userAddressPage () {
     // 快递配送时优先带出默认收货地址，减少用户下单前的重复操作。
@@ -201,7 +301,18 @@ Page({
       loading: true
     })
     const orderSubParm = this.data.orderSubParm
-    orderSubParm.skus = this.data.orderConfirmData
+    // 只提交下单需要的字段：运费由服务端按运费模板重新计算，
+    // 这里带的 freightPrice 仅作为展示值，服务端不会采信。
+    orderSubParm.skus = this.data.orderConfirmData.map((item) => ({
+      spuId: item.spuId,
+      skuId: item.skuId,
+      quantity: item.quantity,
+      salesPrice: item.salesPrice,
+      spuName: item.spuName,
+      picUrl: item.picUrl,
+      specInfo: item.specInfo,
+      freightPrice: item.freightPrice
+    }))
     app.api.orderSub(Object.assign(
       {},
       { userAddressId: this.data.orderSubParm.deliveryWay === '1' ? userAddress.id : null },
