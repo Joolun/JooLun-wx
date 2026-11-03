@@ -1,6 +1,6 @@
 package com.joolun.mall.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.spring.service.IService;
 import com.joolun.mall.dto.CouponDiscountDTO;
 import com.joolun.mall.entity.Coupon;
 import com.joolun.mall.entity.CouponUser;

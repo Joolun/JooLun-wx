@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.baomidou.mybatisplus.spring.activerecord.Model;
 import com.joolun.common.annotation.Excel;
 import com.joolun.mall.config.CommonConstants;
 import com.joolun.mall.enums.OrderInfoEnum;
@@ -111,6 +111,12 @@ public class OrderInfo extends Model<OrderInfo> {
 	private BigDecimal couponDiscountAmount;
 	/** 会员等级减免金额。 */
 	private BigDecimal memberDiscountAmount;
+	/** 累计改价金额：正数表示加价，负数表示减价。 */
+	private BigDecimal adjustAmount;
+	/** 最近一次改价说明。 */
+	private String adjustRemark;
+	/** 最近一次改价时间。 */
+	private LocalDateTime adjustTime;
 	/**
 	 * 付款时间
 	 */
@@ -141,6 +147,12 @@ public class OrderInfo extends Model<OrderInfo> {
 	 */
 	@Excel(name = "支付交易ID")
 	private String transactionId;
+	/**
+	 * 当前支付单号。
+	 * 为空表示还未发起过支付，直接使用订单号；订单改价后微信侧旧预支付单金额已失效，
+	 * 需要换用新的支付单号重新下单，否则会报“商户订单号重复、amount/total 不一致”。
+	 */
+	private String payTradeNo;
 	/**
 	 * 微信发货同步状态：0未同步、1成功、2失败、3跳过。
 	 */

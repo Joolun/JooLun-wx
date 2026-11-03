@@ -145,7 +145,39 @@
 
 
 3.9.3
+
 一、新增功能
 
 1. 新增运费模板功能
    - 文档：https://wiki.joolun.com/doc-wiki#/page/show?pageId=151
+
+2. 新增后台订单改价功能。
+   - 用户下单未支付时，后台可把订单应付金额调整为任意大于 0 的金额，用户按新金额支付。
+   - 改价差额按订单项金额占比分摊回明细，保证订单项实付之和等于订单实付，退款金额不失真。
+   - 订单记录累计改价金额、最近一次改价说明与时间，并写入订单日志和会员服务日志。
+
+二、技术升级
+
+1. Spring Boot 升级至 4.1.2，MyBatis-Plus 升级至 3.5.18.1，继续使用 Java 21 和 Spring Boot 4 适配组件。
+2. 基础依赖同步升级：PageHelper 4.1.1、SpringDoc 3.2.0、Hutool 5.8.48、Fastjson2 2.0.66、Commons IO 2.22.0、OSHI 7.7.3、Apache POI 5.5.1、MySQL Connector/J 9.7.0、WxJava 4.8.6.B。
+3. 构建工具链支持 JDK 25：显式声明 Lombok 注解处理器路径，解决 JDK 23 起 javac 默认不执行 classpath 注解处理器、导致编译报大量“找不到符号: log”的问题。源码与产物仍为 Java 21 基线，部署镜像保持 eclipse-temurin-21。
+
+三、升级说明
+
+1. 从 3.9.2 升级时，请执行 joolun-wx/sql/3.9.2升级3.9.3 目录中的脚本：
+   - 01_mall_freight_templat.sql
+   - 02_mall_order_price_adjust.sql
+   - 03_mall_order_pay_trade_no.sql
+2. 01 脚本新增运费模板表 mall_freight_templat，为 mall_goods_spu 增加 freight_template_id，为 mall_goods_sku 增加 weight、volume，为 mall_order_info 增加 delivery_way，为 mall_order_item 增加 freight_template_id。
+3. 02 脚本为 mall_order_info 增加 adjust_amount、adjust_remark、adjust_time 三个字段，用于记录订单改价；03 脚本增加 pay_trade_no，用于改价后更换微信支付单号。两个脚本均只加字段，无数据迁移动作。
+4. 脚本同时写入系统内置的“默认包邮”模板，并把存量商品统一绑定到该模板。升级后老商品运费仍为 0 元，不会因为新增运费模块而涨价。
+5. 脚本中的建表与加字段语句均做了存在性判断，可重复执行，不会重复创建表或字段。
+6. 升级后保存商品时必须选择运费模板；按重量或按体积计费的模板，还需要在商品 SKU 上维护重量、体积，否则该维度按 0 参与计算。
+7. 新增菜单后，请为非管理员角色分配【商城管理】-【运费模板】的菜单权限。
+8. 系统内置的“默认包邮”模板不允许删除，被商品引用的模板也不允许删除，需要先把商品改绑到其它模板再删除。
+9. Spring Boot 4.1.2 无额外升级动作，按原有流程重新构建并部署后端即可。
+10. 新装环境直接使用 joolun-wx/sql/joolun_ry.sql 基线，其中已包含运费模板表、相关字段和后台菜单。
+11. 本次同时升级了 Excel、数据库驱动和微信 SDK 依赖，部署后建议回归 Excel 导入导出、数据库连接，以及公众号、小程序和支付主链路。
+12. MyBatis-Plus 3.5.18 调整了基础类包路径：IService、ServiceImpl 由 com.baomidou.mybatisplus.extension.service 迁移到 com.baomidou.mybatisplus.spring.service，Model 由 com.baomidou.mybatisplus.extension.activerecord 迁移到 com.baomidou.mybatisplus.spring.activerecord。项目内 77 个文件已同步调整，二开代码需一并修改 import。
+13. MyBatis-Plus 3.5.18.1 默认携带 JSqlParser 5.4，与 PageHelper 6.1.x 不兼容，分页查询会抛 NoSuchMethodError（Select.getASTNode 返回类型由 SimpleNode 变为 Node）。项目已改用官方提供的 mybatis-plus-jsqlparser-4.9 变体，将 JSqlParser 统一到 4.9。二开时不要改回 mybatis-plus-jsqlparser，否则历史问题会复现。
+14. MyBatis-Plus 3.5.18 的 getOne 改为按 RowBounds(0, 2) 取数，PageHelper 会把 RowBounds 翻译成 LIMIT 追加到 SQL 末尾。若在 getOne 的条件构造器上再写 last("limit 1")，就会生成两个 LIMIT 而报 SQL 语法错误。项目内 5 处 getOne 已去掉 last("limit 1") 并改为 getOne(wrapper, false)，二开时同样不要再给 getOne 追加 limit 语句。

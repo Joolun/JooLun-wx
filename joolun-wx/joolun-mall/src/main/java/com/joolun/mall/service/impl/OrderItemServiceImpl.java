@@ -7,7 +7,7 @@
 package com.joolun.mall.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.joolun.mall.entity.OrderItem;
 import com.joolun.mall.mapper.OrderItemMapper;
 import com.joolun.mall.service.OrderItemService;

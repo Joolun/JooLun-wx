@@ -8,7 +8,7 @@ package com.joolun.mall.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.joolun.common.constant.CacheConstants;
 import com.joolun.common.core.redis.RedisCache;
 import com.joolun.common.exception.ServiceException;

@@ -8,7 +8,7 @@ package com.joolun.mall.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.joolun.mall.config.CommonConstants;
 import com.joolun.mall.entity.GoodsCategory;
 import com.joolun.mall.entity.GoodsCategoryTree;

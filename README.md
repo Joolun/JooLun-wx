@@ -1,5 +1,5 @@
 <img alt="JooLun" src="https://img.shields.io/badge/Java-21-brightgreen.svg"/>
-<img alt="JooLun" src="https://img.shields.io/badge/SpringBoot-4.1.1-green.svg"/>
+<img alt="JooLun" src="https://img.shields.io/badge/SpringBoot-4.1.2-green.svg"/>
 <a href="https://gitee.com/joolun/JooLun-wx" target="_blank">
     <img alt="JooLun" src="https://gitee.com/joolun/JooLun-wx/badge/star.svg"/>
 </a>
@@ -10,7 +10,7 @@
 
 ### [阿里云服务器低至￥91.80/年](https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=wnw8gle1)
 ### MIT真开源！！！如果对您有帮助，记得点右上角 "Star" ❤️ 支持一下哦 谢谢！
-#### 该项目已实时托管置Gitee，请直接使用main分支；遇到问题或发现bug请统一到Gitee发[Issues](https://gitee.com/joolun/JooLun-wx/issues)提出来，我们会定期处理
+#### 请直接使用main分支；遇到问题或发现bug请发Issues提出来，我们会定期处理
 ### 平台简介
 * 本项目已全面支持SpringBoot4生态
 * 基于[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue) 版本二开，集成了[MybatisPlus](https://github.com/baomidou/mybatis-plus)、[Avue](https://gitee.com/smallweigit/avue)、[WxJava](https://gitee.com/binary/weixin-java-tools) SDK
@@ -36,7 +36,7 @@
 ![输入图片说明](joolun-wx/doc/Joolun_Plus_11.png)
 
 ### 系统需求
-* JDK = 21
+* JDK = 21/25
 * MySQL = 8
 * Maven >= 3.0
 
@@ -99,7 +99,7 @@
 
 ### 项目截图
 ![输入图片说明](joolun-wx/doc/img/QQ20260415-111451.png)
-![输入图片说明](joolun-wx/doc/img/QQ20260415-111805.png)
+![输入图片说明](joolun-wx/doc/img/QQ20261022-165957.png)
 ![输入图片说明](joolun-wx/doc/img/QQ20260415-111818.png)
 ![输入图片说明](joolun-wx/doc/img/QQ20260415-111839.png)
 <table>

@@ -9,7 +9,7 @@ package com.joolun.mall.service.impl;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.joolun.mall.entity.MallUser;
 import com.joolun.mall.entity.MallUserTag;
 import com.joolun.mall.mapper.MallUserMapper;
@@ -164,11 +164,12 @@ public class MallUserTagServiceImpl extends ServiceImpl<MallUserTagMapper, MallU
 	 * @return 排序值
 	 */
 	private Integer resolveNextSort() {
+		// getOne 内部用 RowBounds(0, 2) 取数，PageHelper 会把它翻译成 LIMIT，
+		// 这里不能再写 last("limit 1")，否则 SQL 会同时出现两个 LIMIT。
 		MallUserTag lastTag = getOne(Wrappers.<MallUserTag>lambdaQuery()
 				.eq(MallUserTag::getDelFlag, DEFAULT_DEL_FLAG)
 				.orderByDesc(MallUserTag::getSort)
-				.orderByDesc(MallUserTag::getCreateTime)
-				.last("limit 1"));
+				.orderByDesc(MallUserTag::getCreateTime), false);
 		if (lastTag == null || lastTag.getSort() == null) {
 			return 0;
 		}

@@ -9,7 +9,7 @@ package com.joolun.mall.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.joolun.mall.config.CommonConstants;
 import com.joolun.mall.dto.SpuSpecDTO;
 import com.joolun.mall.entity.FreightTemplat;

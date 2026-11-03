@@ -138,6 +138,15 @@
         </view>
         <view class="cu-item margin-top-xs" wx:if="{{orderInfo.memberDiscountAmount > 0}}"><text class="text-gray font-weight">会员优惠</text><view class="action text-red">- ¥{{orderInfo.memberDiscountAmount}}</view></view>
         <view class="cu-item margin-top-xs" wx:if="{{orderInfo.couponDiscountAmount > 0}}"><text class="text-gray font-weight">优惠券</text><view class="action text-red">- ¥{{orderInfo.couponDiscountAmount}}</view></view>
+        <view class="cu-item margin-top-xs" wx:if="{{orderInfo.adjustAmount && orderInfo.adjustAmount != '0.00'}}">
+            <text class="text-gray font-weight">商家改价</text>
+          <view class="action" wx:if="{{orderInfo.adjustAmount > 0}}">
+            + <text class="text-price">{{orderInfo.adjustAmount}}</text>
+          </view>
+          <view class="action text-red" wx:else>
+            <text class="text-price">{{orderInfo.adjustAmount}}</text>
+          </view>
+        </view>
         <view class="cu-item margin-top-xs">
             <text class="text-gray font-weight">支付金额</text>
           <view class="action">

@@ -208,7 +208,10 @@ public class OrderInfoApi {
 		wxPayUnifiedOrderRequest.setMchid(wxPayService.getConfig().getMchId());
 		String body = StrUtil.maxLength(StrUtil.blankToDefault(orderInfo.getName(), "商城订单"), 120);
 		wxPayUnifiedOrderRequest.setDescription(body);
-		wxPayUnifiedOrderRequest.setOutTradeNo(orderInfo.getOrderNo());
+		// 改价后支付单号会换新，未改价订单仍沿用订单号。
+		// 微信要求同一商户订单号的下单金额保持一致，复用订单号会导致改价后无法再次下单。
+		String outTradeNo = orderInfoService.resolvePayTradeNo(orderInfo);
+		wxPayUnifiedOrderRequest.setOutTradeNo(outTradeNo);
 		wxPayUnifiedOrderRequest.setNotifyUrl(mallRuntimeConfigService.getNotifyHost() + "/weixin/api/ma/orderinfo/notify-order");
 		WxPayUnifiedOrderV3Request.Amount amount = new WxPayUnifiedOrderV3Request.Amount();
 		amount.setTotal(orderInfo.getPaymentPrice().movePointRight(2).intValueExact());
@@ -244,7 +247,10 @@ public class OrderInfoApi {
 					|| !wxPayService.getConfig().getMchId().equals(result.getMchid())) {
 				return WxPayNotifyV3Response.fail("支付状态或商户信息不匹配");
 			}
+			// 未改价订单用 order_no 下单，改价后的订单用 pay_trade_no 下单，两种都要能匹配。
 			OrderInfo orderInfo = orderInfoService.getOne(Wrappers.<OrderInfo>lambdaQuery()
+					.eq(OrderInfo::getPayTradeNo, result.getOutTradeNo())
+					.or()
 					.eq(OrderInfo::getOrderNo, result.getOutTradeNo()));
 			if (orderInfo == null) {
 				return WxPayNotifyV3Response.fail("无此订单");

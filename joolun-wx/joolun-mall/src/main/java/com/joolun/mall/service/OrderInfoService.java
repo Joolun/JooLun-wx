@@ -8,9 +8,10 @@ package com.joolun.mall.service;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.spring.service.IService;
 import com.github.binarywang.wxpay.bean.notify.WxPayRefundNotifyV3Result;
 import com.joolun.mall.dto.PlaceOrderDTO;
+import com.joolun.mall.dto.OrderPriceAdjustDTO;
 import com.joolun.mall.entity.OrderInfo;
 import com.joolun.mall.entity.OrderItem;
 
@@ -90,4 +91,23 @@ public interface OrderInfoService extends IService<OrderInfo> {
 	 * @param notifyResult 已验签并解密的退款结果
 	 */
 	void notifyRefundsV3(WxPayRefundNotifyV3Result.DecryptNotifyResult notifyResult);
+
+	/**
+	 * 后台调整订单应付金额。
+	 * 仅允许未支付且未取消的订单改价，改价差额按订单项金额占比分摊回明细。
+	 *
+	 * @param dto 改价参数
+	 * @return 改价后的订单
+	 */
+	OrderInfo adjustPrice(OrderPriceAdjustDTO dto);
+
+	/**
+	 * 解析本次支付使用的商户订单号，并持久化到订单。
+	 * 未改价订单沿用订单号；改价过的订单使用独立支付单号，
+	 * 避免微信“同一订单号下单金额必须一致”的限制。
+	 *
+	 * @param orderInfo 订单
+	 * @return 支付单号
+	 */
+	String resolvePayTradeNo(OrderInfo orderInfo);
 }

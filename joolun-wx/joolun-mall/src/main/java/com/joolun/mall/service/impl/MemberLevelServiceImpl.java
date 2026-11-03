@@ -1,7 +1,7 @@
 package com.joolun.mall.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.joolun.mall.entity.MemberLevel;
 import com.joolun.mall.mapper.MemberLevelMapper;
 import com.joolun.mall.service.MemberLevelService;
@@ -14,11 +14,12 @@ public class MemberLevelServiceImpl extends ServiceImpl<MemberLevelMapper, Membe
 
 	@Override
 	public MemberLevel findCurrent(Integer growthValue) {
+		// getOne 内部用 RowBounds(0, 2) 取数，PageHelper 会把它翻译成 LIMIT，
+		// 这里不能再写 last("limit 1")，否则 SQL 会同时出现两个 LIMIT。
 		return getOne(Wrappers.<MemberLevel>lambdaQuery()
 				.eq(MemberLevel::getStatus, "1")
 				.le(MemberLevel::getMinGrowth, defaultGrowth(growthValue))
-				.orderByDesc(MemberLevel::getMinGrowth)
-				.last("limit 1"));
+				.orderByDesc(MemberLevel::getMinGrowth), false);
 	}
 
 	@Override
@@ -26,8 +27,7 @@ public class MemberLevelServiceImpl extends ServiceImpl<MemberLevelMapper, Membe
 		return getOne(Wrappers.<MemberLevel>lambdaQuery()
 				.eq(MemberLevel::getStatus, "1")
 				.gt(MemberLevel::getMinGrowth, defaultGrowth(growthValue))
-				.orderByAsc(MemberLevel::getMinGrowth)
-				.last("limit 1"));
+				.orderByAsc(MemberLevel::getMinGrowth), false);
 	}
 
 	@Override

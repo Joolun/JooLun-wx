@@ -149,6 +149,7 @@
                 <div>订单金额：￥{{ scope.row.salesPrice }}</div>
                 <div>配送方式：{{ scope.row.deliveryWay === '2' ? '上门自提' : '普通快递' }}</div>
                 <div>运费金额：{{ scope.row.freightPrice > 0 ? '+ ￥' + scope.row.freightPrice : '包邮' }}</div>
+                <div v-if="scope.row.adjustAmount != 0">商家改价：{{ formatAdjustAmount(scope.row.adjustAmount) }}</div>
                 <div class="price-highlight">支付金额：￥{{ scope.row.paymentPrice }}</div>
               </template>
             </el-table-column>
@@ -465,6 +466,7 @@
             <div class="grid-content">订单金额：￥{{ scope.row.salesPrice }}</div>
             <div class="grid-content">配送方式：{{ scope.row.deliveryWay === '2' ? '上门自提' : '普通快递' }}</div>
             <div class="grid-content">运费金额：{{ scope.row.freightPrice > 0 ? '+ ￥' + scope.row.freightPrice : '包邮' }}</div>
+            <div class="grid-content" v-if="scope.row.adjustAmount != 0">商家改价：{{ formatAdjustAmount(scope.row.adjustAmount) }}</div>
             <div class="grid-content price-highlight">支付金额：￥{{ scope.row.paymentPrice }}</div>
           </div>
         </template>
@@ -495,6 +497,15 @@
             @click="openShippingCenter(scope.row)"
           >
             微信发货
+          </el-button>
+          <el-button
+            v-if="checkPermi(['mall:orderinfo:edit']) && scope.row.isPay == '0' && !scope.row.status"
+            icon="el-icon-edit-outline"
+            type="warning"
+            link
+            @click="openPriceAdjustDialog(scope.row)"
+          >
+            改价
           </el-button>
           <el-button
             v-if="checkPermi(['mall:orderinfo:edit']) && scope.row.isPay == '0' && !scope.row.status"
@@ -577,12 +588,56 @@
         </span>
       </template>
     </el-dialog>
+
+    <el-dialog v-model="priceAdjustDialog.visible" title="订单改价" width="480px" @closed="resetPriceAdjustDialog">
+      <el-alert
+        title="仅未支付订单可以改价。改价后用户按新金额支付，差额会按商品金额占比分摊到订单项。"
+        type="info"
+        :closable="false"
+        show-icon
+      />
+      <el-form label-width="96px" style="margin-top: 16px">
+        <el-form-item label="订单编号">
+          <div>{{ priceAdjustDialog.row.orderNo || "-" }}</div>
+        </el-form-item>
+        <el-form-item label="当前应付">
+          <div class="price-highlight">￥{{ priceAdjustDialog.row.paymentPrice }}</div>
+        </el-form-item>
+        <el-form-item label="调整后应付">
+          <el-input-number
+            v-model="priceAdjustDialog.form.paymentPrice"
+            :min="0.01"
+            :precision="2"
+            :step="1"
+            controls-position="right"
+            style="width: 220px"
+          />
+        </el-form-item>
+        <el-form-item label="改价差额">
+          <div :class="{ 'price-highlight': priceAdjustDiff.amount !== 0 }">{{ priceAdjustDiff.text }}</div>
+        </el-form-item>
+        <el-form-item label="改价说明">
+          <el-input
+            v-model="priceAdjustDialog.form.remark"
+            type="textarea"
+            :rows="3"
+            maxlength="200"
+            show-word-limit
+            placeholder="例如：客户协商优惠、补运费差价"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="priceAdjustDialog.visible = false">取消</el-button>
+        <el-button type="primary" :loading="priceAdjustDialog.submitting" @click="submitPriceAdjust">确认改价</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup name="OrderInfo">
 import { checkPermi } from "@/utils/permission";
-import { doOrderRefunds, getObj, getPage, getSummary, orderCancel, putObj } from "@/api/mall/orderinfo";
+import { doOrderRefunds, editPrice, getObj, getPage, getSummary, orderCancel, putObj } from "@/api/mall/orderinfo";
 import { tableOption } from "@/const/crud/mall/orderinfo";
 import { resolveMallImageUrl } from "@/utils/mall-image";
 
@@ -644,6 +699,15 @@ const data = reactive({
       id: "",
       status: "3",
       refundAuditRemark: "",
+    },
+  },
+  priceAdjustDialog: {
+    visible: false,
+    submitting: false,
+    row: {},
+    form: {
+      paymentPrice: 0,
+      remark: "",
     },
   },
   logisticsForm: {
@@ -721,7 +785,7 @@ const data = reactive({
   },
 });
 
-const { form, page, tableData, tableLoading, status, dialogLogistics, logisticsForm, logisticsOption, refundAuditDialog } = toRefs(data);
+const { form, page, tableData, tableLoading, status, dialogLogistics, logisticsForm, logisticsOption, refundAuditDialog, priceAdjustDialog } = toRefs(data);
 
 /**
  * 当前是否处于会员定向筛选模式。
@@ -1318,6 +1382,88 @@ function orderCancelF(row) {
       getPageF(data.page);
     })
     .catch(() => {});
+}
+
+/**
+ * 格式化改价金额。
+ *
+ * @param {number|string} amount 改价金额
+ * @returns {string}
+ */
+function formatAdjustAmount(amount) {
+  const value = Number(amount || 0);
+  if (!value) {
+    return "￥0.00";
+  }
+  return value > 0 ? `+ ￥${value.toFixed(2)}` : `- ￥${Math.abs(value).toFixed(2)}`;
+}
+
+/**
+ * 改价差额展示。
+ */
+const priceAdjustDiff = computed(() => {
+  const target = Number(data.priceAdjustDialog.form.paymentPrice || 0);
+  const current = Number(data.priceAdjustDialog.row.paymentPrice || 0);
+  const amount = Math.round((target - current) * 100) / 100;
+  if (amount === 0) {
+    return { amount: 0, text: "与原应付金额一致" };
+  }
+  return {
+    amount,
+    text: amount > 0 ? `加价 ￥${amount.toFixed(2)}` : `减价 ￥${Math.abs(amount).toFixed(2)}`,
+  };
+});
+
+/**
+ * 打开改价弹窗。
+ *
+ * @param {Object} row 订单行数据
+ */
+function openPriceAdjustDialog(row) {
+  data.priceAdjustDialog.row = row || {};
+  data.priceAdjustDialog.form.paymentPrice = Number((row && row.paymentPrice) || 0);
+  data.priceAdjustDialog.form.remark = "";
+  data.priceAdjustDialog.submitting = false;
+  data.priceAdjustDialog.visible = true;
+}
+
+/**
+ * 关闭改价弹窗时复位提交状态。
+ */
+function resetPriceAdjustDialog() {
+  data.priceAdjustDialog.submitting = false;
+}
+
+/**
+ * 提交改价。
+ */
+function submitPriceAdjust() {
+  const row = data.priceAdjustDialog.row || {};
+  const form = data.priceAdjustDialog.form;
+  const target = Number(form.paymentPrice);
+  if (!(target > 0)) {
+    proxy.$message.warning("调整后的应付金额必须大于 0");
+    return;
+  }
+  if (priceAdjustDiff.value.amount === 0) {
+    proxy.$message.warning("调整后的金额与当前应付金额相同");
+    return;
+  }
+  data.priceAdjustDialog.submitting = true;
+  editPrice({ id: row.id, paymentPrice: target, remark: form.remark })
+    .then(() => {
+      proxy.$message({
+        showClose: true,
+        message: "改价成功",
+        type: "success",
+      });
+      data.priceAdjustDialog.visible = false;
+      getPageF(data.page);
+    })
+    .catch(() => {})
+    .finally(() => {
+      data.priceAdjustDialog.submitting = false;
+    });
 }
 
 /**

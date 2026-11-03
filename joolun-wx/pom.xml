@@ -6,7 +6,7 @@
 	
     <groupId>com.joolun</groupId>
     <artifactId>joolun-wx</artifactId>
-    <version>3.9.2</version>
+    <version>3.9.3</version>
 
     <name>joolun-wx</name>
     <url>http://www.joolun.com</url>
@@ -16,25 +16,27 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>21</java.version>
-        <spring-boot.version>4.1.1</spring-boot.version>
+        <spring-boot.version>4.1.2</spring-boot.version>
+        <!--Lombok 需显式声明版本：注解处理器路径不参与 BOM 版本管理-->
+        <lombok.version>1.18.48</lombok.version>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
         <druid.version>1.2.28</druid.version>
         <bitwalker.version>1.21</bitwalker.version>
         <swagger.version>3.0.0</swagger.version>
         <kaptcha.version>2.3.3</kaptcha.version>
-        <pagehelper.boot.version>4.0.0</pagehelper.boot.version>
-        <fastjson.version>2.0.52</fastjson.version>
-        <oshi.version>6.9.2</oshi.version>
-        <commons.io.version>2.21.0</commons.io.version>
-        <poi.version>4.1.2</poi.version>
+        <pagehelper.boot.version>4.1.1</pagehelper.boot.version>
+        <fastjson.version>2.0.66</fastjson.version>
+        <oshi.version>7.7.3</oshi.version>
+        <commons.io.version>2.22.0</commons.io.version>
+        <poi.version>5.5.1</poi.version>
         <velocity.version>2.4.1</velocity.version>
         <jwt.version>0.13.0</jwt.version>
-        <mysql.version>8.0.33</mysql.version>
+        <mysql.version>9.7.0</mysql.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
-        <springdoc.version>3.0.3</springdoc.version>
-        <mybatis-plus.version>3.5.16</mybatis-plus.version>
-        <hutool.version>5.8.43</hutool.version>
-        <weixin-java.version>4.8.0</weixin-java.version>
+        <springdoc.version>3.2.0</springdoc.version>
+        <mybatis-plus.version>3.5.18.1</mybatis-plus.version>
+        <hutool.version>5.8.48</hutool.version>
+        <weixin-java.version>4.8.6.B</weixin-java.version>
         <ttl.version>2.14.5</ttl.version>
     </properties>
 
@@ -205,7 +207,7 @@
             <!--mybatis-plus-jsqlparser for PaginationInnerInterceptor-->
             <dependency>
                 <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-jsqlparser</artifactId>
+                <artifactId>mybatis-plus-jsqlparser-4.9</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
             <!--hutool-->
@@ -279,12 +281,55 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
+                    <!--
+                        从 JDK 23 起 javac 不再默认执行 classpath 上的注解处理器，
+                        不显式声明处理器路径时 Lombok 会被跳过，表现为大量「找不到符号: log」。
+                        显式声明后 JDK 21 / 25 都能正常编译。
+                    -->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
+            </plugin>
+            <!--
+                依赖护栏：PageHelper 6.1.x 按 JSqlParser 4.x 的 SimpleNode 签名编译，
+                一旦传递依赖把 JSqlParser 顶到 5.x，分页查询会在运行期抛 NoSuchMethodError。
+                这里在 validate 阶段直接拦下，避免问题拖到线上。
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.6.2</version>
+                <executions>
+                    <execution>
+                        <id>ban-incompatible-jsqlparser</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <bannedDependencies>
+                                    <excludes>
+                                        <exclude>com.github.jsqlparser:jsqlparser:[5.0,)</exclude>
+                                    </excludes>
+                                    <message>
+                                        JSqlParser 必须停留在 4.x：PageHelper 6.1.x 不兼容 5.x，会导致分页查询抛 NoSuchMethodError。
+                                        请使用 mybatis-plus-jsqlparser-4.9，不要改回 mybatis-plus-jsqlparser。
+                                    </message>
+                                </bannedDependencies>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

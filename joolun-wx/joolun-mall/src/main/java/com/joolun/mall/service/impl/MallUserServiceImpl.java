@@ -9,7 +9,7 @@ package com.joolun.mall.service.impl;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.joolun.mall.entity.MallUser;
 import com.joolun.mall.entity.MemberLevel;
 import com.joolun.mall.entity.MemberPointLog;
@@ -60,9 +60,10 @@ public class MallUserServiceImpl extends ServiceImpl<MallUserMapper, MallUser> i
 		if (StrUtil.isBlank(wxUserId)) {
 			return null;
 		}
+		// getOne 内部通过 RowBounds(0, 2) 取数，PageHelper 会把 RowBounds 翻译成 LIMIT 拼到 SQL 末尾，
+		// 因此这里不能再追加 last("limit 1")，否则会生成 “limit 1 LIMIT ?” 的非法 SQL。
 		return getOne(Wrappers.<MallUser>lambdaQuery()
-				.eq(MallUser::getWxUserId, wxUserId)
-				.last("limit 1"));
+				.eq(MallUser::getWxUserId, wxUserId), false);
 	}
 
 	@Override

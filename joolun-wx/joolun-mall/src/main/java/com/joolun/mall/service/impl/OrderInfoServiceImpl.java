@@ -8,12 +8,14 @@ package com.joolun.mall.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.github.binarywang.wxpay.bean.notify.WxPayRefundNotifyV3Result;
 import com.github.binarywang.wxpay.bean.request.WxPayRefundV3Request;
 import com.github.binarywang.wxpay.exception.WxPayException;
@@ -22,6 +24,7 @@ import com.joolun.mall.config.CommonConstants;
 import com.joolun.mall.config.MallRuntimeConfigService;
 import com.joolun.mall.constant.MallConstants;
 import com.joolun.mall.dto.CouponDiscountDTO;
+import com.joolun.mall.dto.OrderPriceAdjustDTO;
 import com.joolun.mall.dto.PlaceOrderDTO;
 import com.joolun.mall.dto.PlaceOrderGoodsDTO;
 import com.joolun.mall.entity.GoodsSku;
@@ -49,6 +52,7 @@ import com.joolun.mall.service.OrderLogisticsService;
 import com.joolun.mall.service.OrderOperateLogService;
 import com.joolun.mall.service.ShoppingCartService;
 import com.joolun.mall.service.UserAddressService;
+import com.joolun.mall.support.OrderPriceAdjustAllocator;
 import com.joolun.mall.support.FreightCalculator;
 import com.joolun.mall.support.MallGoodsSkuSupport;
 import com.joolun.mall.support.MallPricingCalculator;
@@ -61,6 +65,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -351,10 +356,11 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 			item.setReviewStatus("0");
 		}
 
+		// getOne 内部用 RowBounds(0, 2) 取数，PageHelper 会把它翻译成 LIMIT，
+		// 这里不能再写 last("limit 1")，否则 SQL 会同时出现两个 LIMIT。
 		UserAddress userAddress = userAddressService.getOne(Wrappers.<UserAddress>lambdaQuery()
 				.eq(UserAddress::getId, placeOrderDTO.getUserAddressId())
-				.eq(UserAddress::getUserId, placeOrderDTO.getUserId())
-				.last("limit 1"));
+				.eq(UserAddress::getUserId, placeOrderDTO.getUserId()), false);
 		if (userAddress == null) {
 			throw new IllegalArgumentException("收货地址不存在");
 		}
@@ -508,7 +514,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 		}
 		int expectedTotal = orderInfo.getPaymentPrice().movePointRight(2).intValueExact();
 		int expectedRefund = orderItem.getPaymentPrice().movePointRight(2).intValueExact();
-		if (!orderInfo.getOrderNo().equals(notifyResult.getOutTradeNo())
+		if (!matchesTradeNo(orderInfo, notifyResult.getOutTradeNo())
 				|| (StrUtil.isNotBlank(orderInfo.getTransactionId())
 				&& !orderInfo.getTransactionId().equals(notifyResult.getTransactionId()))
 				|| notifyResult.getAmount() == null
@@ -547,6 +553,146 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 				"订单 " + StrUtil.blankToDefault(orderInfo.getOrderNo(), "未记录")
 						+ " 的退款已回调成功，退款金额 " + defaultDecimal(orderItem.getPaymentPrice(), BigDecimal.ZERO) + " 元，系统已确认到账。",
 				"退款回调", buildMallUserOperateExtraInfo(orderInfo, orderItem));
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public OrderInfo adjustPrice(OrderPriceAdjustDTO dto) {
+		if (dto == null || StrUtil.isBlank(dto.getId())) {
+			throw new IllegalArgumentException("订单ID不能为空");
+		}
+		if (dto.getPaymentPrice() == null) {
+			throw new IllegalArgumentException("请输入调整后的应付金额");
+		}
+		BigDecimal targetPrice = dto.getPaymentPrice().setScale(2, RoundingMode.HALF_UP);
+		if (targetPrice.signum() <= 0) {
+			throw new IllegalArgumentException("调整后的应付金额必须大于0");
+		}
+		OrderInfo orderInfo = baseMapper.selectById(dto.getId());
+		if (orderInfo == null) {
+			throw new IllegalArgumentException("订单不存在");
+		}
+		if (!CommonConstants.NO.equals(orderInfo.getIsPay())) {
+			throw new IllegalArgumentException("只有未支付订单才能改价");
+		}
+		if (OrderInfoEnum.STATUS_5.getValue().equals(orderInfo.getStatus())) {
+			throw new IllegalArgumentException("已取消的订单不能改价");
+		}
+		BigDecimal currentPrice = defaultDecimal(orderInfo.getPaymentPrice(), BigDecimal.ZERO)
+				.setScale(2, RoundingMode.HALF_UP);
+		BigDecimal delta = targetPrice.subtract(currentPrice);
+		if (delta.signum() == 0) {
+			throw new IllegalArgumentException("调整后的金额与当前应付金额相同");
+		}
+
+		// 退款、售后都按订单项金额处理，改价差额必须分摊回明细，
+		// 否则会出现“订单实付 90，订单项合计仍为 100”的不一致。
+		List<OrderItem> orderItems = orderItemService.list(Wrappers.<OrderItem>lambdaQuery()
+				.eq(OrderItem::getOrderId, orderInfo.getId())
+				.orderByAsc(OrderItem::getCreateTime)
+				.orderByAsc(OrderItem::getId));
+		if (!orderItems.isEmpty()) {
+			List<BigDecimal> currentAmounts = orderItems.stream()
+					.map(item -> defaultDecimal(item.getPaymentPrice(), BigDecimal.ZERO))
+					.collect(Collectors.toList());
+			List<BigDecimal> shares = OrderPriceAdjustAllocator.allocate(delta, currentAmounts);
+			for (int index = 0; index < orderItems.size(); index++) {
+				BigDecimal adjusted = currentAmounts.get(index).add(shares.get(index))
+						.setScale(2, RoundingMode.HALF_UP);
+				if (adjusted.signum() < 0) {
+					throw new IllegalArgumentException("调整后的金额超出订单项可分摊范围");
+				}
+				orderItems.get(index).setPaymentPrice(adjusted);
+			}
+			orderItemService.updateBatchById(orderItems);
+		}
+
+		// 条件更新兜底并发：订单在改价过程中被支付或取消时，更新会失败并回滚整个事务。
+		// adjust_amount 用自增表达式而非读到的旧值，避免两次改价并发时累计金额互相覆盖。
+		LambdaUpdateWrapper<OrderInfo> updateWrapper = Wrappers.<OrderInfo>lambdaUpdate()
+				.eq(OrderInfo::getId, orderInfo.getId())
+				.eq(OrderInfo::getIsPay, CommonConstants.NO)
+				.and(wrapper -> wrapper.isNull(OrderInfo::getStatus)
+						.or().ne(OrderInfo::getStatus, OrderInfoEnum.STATUS_5.getValue()))
+				.set(OrderInfo::getPaymentPrice, targetPrice)
+				.setSql("adjust_amount = IFNULL(adjust_amount, 0) + " + delta.toPlainString())
+				.set(OrderInfo::getAdjustRemark, StrUtil.trim(dto.getRemark()))
+				.set(OrderInfo::getAdjustTime, LocalDateTime.now());
+		// 改价后必须换支付单号：微信要求同一商户订单号的下单金额保持一致，
+		// 复用旧单号会被拒绝（“订单号重复、amount/total 不一致”）。
+		// 这里不判断是否真的下过单，历史订单可能在本功能上线前就已存在预支付单。
+		closeWechatPrepayQuietly(StrUtil.blankToDefault(orderInfo.getPayTradeNo(), orderInfo.getOrderNo()));
+		updateWrapper.set(OrderInfo::getPayTradeNo, buildNextPayTradeNo(orderInfo));
+		boolean updated = update(updateWrapper);
+		if (!updated) {
+			throw new IllegalArgumentException("订单状态已变化，请刷新后重试");
+		}
+		return baseMapper.selectById(orderInfo.getId());
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public String resolvePayTradeNo(OrderInfo orderInfo) {
+		if (orderInfo == null || StrUtil.isBlank(orderInfo.getId())) {
+			throw new IllegalArgumentException("订单不存在");
+		}
+		if (StrUtil.isNotBlank(orderInfo.getPayTradeNo())) {
+			return orderInfo.getPayTradeNo();
+		}
+		// 已改价订单可能在本功能上线前就存在旧金额的预支付单，直接启用独立支付单号。
+		boolean adjusted = orderInfo.getAdjustAmount() != null && orderInfo.getAdjustAmount().signum() != 0;
+		String tradeNo = adjusted ? buildNextPayTradeNo(orderInfo) : orderInfo.getOrderNo();
+		update(Wrappers.<OrderInfo>lambdaUpdate()
+				.eq(OrderInfo::getId, orderInfo.getId())
+				.isNull(OrderInfo::getPayTradeNo)
+				.set(OrderInfo::getPayTradeNo, tradeNo));
+		return tradeNo;
+	}
+
+	/**
+	 * 尽力关闭微信侧的原预支付单。
+	 * 改价后旧预支付单金额已失效，若用户还停留在旧收银台，可能按旧金额付款；
+	 * 关闭失败（例如从未下单过）不影响改价主流程。
+	 *
+	 * @param outTradeNo 原支付单号
+	 */
+	private void closeWechatPrepayQuietly(String outTradeNo) {
+		if (StrUtil.isBlank(outTradeNo)) {
+			return;
+		}
+		try {
+			WxPayConfiguration.getPayService().closeOrderV3(outTradeNo);
+		} catch (Exception e) {
+			log.warn("关闭微信原预支付单失败，可按忽略处理，支付单号：{}，原因：{}", outTradeNo, e.getMessage());
+		}
+	}
+
+	/**
+	 * 生成改价后的新支付单号。
+	 * 微信要求同一商户订单号的下单金额必须一致，改价后只能换单号重新下单。
+	 *
+	 * @param orderInfo 订单
+	 * @return 新的支付单号
+	 */
+	private String buildNextPayTradeNo(OrderInfo orderInfo) {
+		String orderNo = StrUtil.blankToDefault(orderInfo.getOrderNo(), orderInfo.getId());
+		String tradeNo = StrUtil.format("{}-{}", orderNo, RandomUtil.randomNumbers(8));
+		return StrUtil.maxLength(tradeNo, 32);
+	}
+
+	/**
+	 * 判断微信回调中的商户订单号是否属于该订单。
+	 * 未改价订单用 order_no 下单，改价后的订单用 pay_trade_no 下单，两者都要兼容。
+	 *
+	 * @param orderInfo 订单
+	 * @param outTradeNo 微信回调中的商户订单号
+	 * @return 是否匹配
+	 */
+	private boolean matchesTradeNo(OrderInfo orderInfo, String outTradeNo) {
+		if (orderInfo == null || StrUtil.isBlank(outTradeNo)) {
+			return false;
+		}
+		return outTradeNo.equals(orderInfo.getOrderNo()) || outTradeNo.equals(orderInfo.getPayTradeNo());
 	}
 
 	/**

@@ -24,11 +24,15 @@
 		<result property="couponUserId" column="coupon_user_id"/>
 		<result property="couponDiscountAmount" column="coupon_discount_amount"/>
 		<result property="memberDiscountAmount" column="member_discount_amount"/>
+		<result property="adjustAmount" column="adjust_amount"/>
+		<result property="adjustRemark" column="adjust_remark"/>
+		<result property="adjustTime" column="adjust_time"/>
 		<result property="paymentTime" column="payment_time"/>
 		<result property="deliveryTime" column="delivery_time"/>
 		<result property="receiverTime" column="receiver_time"/>
 		<result property="closingTime" column="closing_time"/>
 		<result property="transactionId" column="transaction_id"/>
+		<result property="payTradeNo" column="pay_trade_no"/>
 		<result property="wxShippingStatus" column="wx_shipping_status"/>
 		<result property="wxShippingSyncTime" column="wx_shipping_sync_time"/>
 		<result property="wxShippingError" column="wx_shipping_error"/>
@@ -89,6 +93,9 @@
 		mall_order_info.`coupon_user_id`,
 		mall_order_info.`coupon_discount_amount`,
 		mall_order_info.`member_discount_amount`,
+		mall_order_info.`adjust_amount`,
+		mall_order_info.`adjust_remark`,
+		mall_order_info.`adjust_time`,
 		mall_order_info.`payment_time`,
 		mall_order_info.`delivery_time`,
 		mall_order_info.`receiver_time`,
@@ -98,6 +105,7 @@
 		mall_order_info.`status`,
 		mall_order_info.`user_message`,
 		mall_order_info.`transaction_id`,
+		mall_order_info.`pay_trade_no`,
 		mall_order_info.`wx_shipping_status`,
 		mall_order_info.`wx_shipping_sync_time`,
 		mall_order_info.`wx_shipping_error`,

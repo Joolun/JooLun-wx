@@ -6,7 +6,7 @@
  */
 package com.joolun.mall.dto;
 
-import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.baomidou.mybatisplus.spring.activerecord.Model;
 import com.joolun.common.annotation.Excel;
 import com.joolun.mall.entity.ShoppingCart;
 import lombok.Data;

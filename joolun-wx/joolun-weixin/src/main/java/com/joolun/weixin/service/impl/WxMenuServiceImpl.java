@@ -7,7 +7,7 @@
 package com.joolun.weixin.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.joolun.weixin.config.CommonConstants;
 import com.joolun.weixin.mapper.WxMenuMapper;
 import com.joolun.weixin.service.WxMenuService;

@@ -16,6 +16,7 @@ import com.joolun.common.core.domain.AjaxResult;
 import com.joolun.common.enums.DesensitizedType;
 import com.joolun.common.utils.SecurityUtils;
 import com.joolun.mall.config.CommonConstants;
+import com.joolun.mall.dto.OrderPriceAdjustDTO;
 import com.joolun.mall.entity.OrderInfo;
 import com.joolun.mall.entity.OrderItem;
 import com.joolun.mall.entity.OrderLogistics;
@@ -38,6 +39,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
 
 /**
  * 商城订单后台控制器。
@@ -261,6 +264,47 @@ public class OrderInfoController extends BaseController {
 			}
 		}
 		return AjaxResult.success();
+	}
+
+	/**
+	 * 后台调整订单应付金额。
+	 * 仅支持未支付且未取消的订单，改价后用户按新金额支付。
+	 *
+	 * @param dto 改价参数
+	 * @return 改价后的订单
+	 */
+	@PutMapping("/editPrice")
+	@PreAuthorize("@ss.hasPermi('mall:orderinfo:edit')")
+	public AjaxResult editPrice(@RequestBody OrderPriceAdjustDTO dto) {
+		if (dto == null || StrUtil.isBlank(dto.getId())) {
+			return AjaxResult.error("订单ID不能为空");
+		}
+		OrderInfo currentOrder = orderInfoService.getById(dto.getId());
+		if (currentOrder == null) {
+			return AjaxResult.error(MyReturnCode.ERR_70005.getCode(), MyReturnCode.ERR_70005.getMsg());
+		}
+		OrderInfo adjustedOrder = orderInfoService.adjustPrice(dto);
+		String priceChange = defaultAmount(currentOrder.getPaymentPrice()) + " 元调整为 "
+				+ defaultAmount(adjustedOrder.getPaymentPrice()) + " 元";
+		saveAdminOperateLog(adjustedOrder.getId(), null, "ADJUST_PRICE", "后台改价",
+				"后台已调整订单 " + StrUtil.blankToDefault(adjustedOrder.getOrderNo(), "未记录")
+						+ " 的应付金额，由 " + priceChange
+						+ "，调整说明：" + StrUtil.blankToDefault(StrUtil.trim(dto.getRemark()), "无"));
+		saveMallUserOperateLog(currentOrder.getUserId(), "ADJUST_PRICE", "商家调整订单价格",
+				"订单 " + StrUtil.blankToDefault(adjustedOrder.getOrderNo(), "未记录")
+						+ " 的应付金额已由 " + priceChange + "，请按新金额完成支付",
+				buildMallUserOperateExtraInfo(adjustedOrder, null, "ORDER_SERVICE"));
+		return AjaxResult.success(adjustedOrder);
+	}
+
+	/**
+	 * 金额为空时按 0 展示。
+	 *
+	 * @param amount 金额
+	 * @return 展示用金额
+	 */
+	private String defaultAmount(BigDecimal amount) {
+		return amount == null ? "0" : amount.toPlainString();
 	}
 
 	/**
